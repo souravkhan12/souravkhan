@@ -26,7 +26,7 @@ export default function Hero() {
             transition={{ duration: 0.7, delay: 0.15 }}
             className="text-6xl font-extrabold tracking-tight leading-tight text-gray-900"
           >
-            Hi, I'm{" "}
+            Hi, I'm
             <span className="bg-gradient-to-r from-[#6366f1] to-[#ec4899] bg-clip-text text-transparent">
               Sourav Khan
             </span>
