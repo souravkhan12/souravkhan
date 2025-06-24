@@ -21,10 +21,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.variable} ${inter.variable} antialiased bg-gray-50`}
-      >
-        <div className="max-w-[1200px] mx-auto px-6 py-4 ">{children}</div>
+      <body className={`${inter.variable} ${inter.variable} antialiased `}>
+        <div>{children}</div>
       </body>
     </html>
   );
