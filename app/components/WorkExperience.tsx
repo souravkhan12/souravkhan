@@ -47,7 +47,7 @@ export default function WorkExperience() {
               <p className="mb-2 text-sm text-zinc-600 dark:text-gray-300">
                 {Position[index]}
               </p>
-              <p className="mb-2 text-sm text-gray-500 dark:text-gray-300">
+              <p className="mb-2 text-sm font-normal text-gray-500 dark:text-gray-300">
                 {Date[index]}
               </p>
             </div>

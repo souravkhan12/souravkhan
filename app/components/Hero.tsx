@@ -5,7 +5,7 @@ import { MapPin } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden py-50">
+    <section className="relative overflow-hidden py-60">
       <div className="mx-auto flex flex-wrap items-center justify-between gap-30 pl-8">
         <div className="max-w-xl space-y-6">
           <motion.div
