@@ -20,7 +20,9 @@ export default function Contact() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  const handleChange = (e: { target: { id: any; value: any } }) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { id, value } = e.target;
     setFormData((prev) => ({
       ...prev,
