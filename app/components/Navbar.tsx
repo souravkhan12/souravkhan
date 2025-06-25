@@ -1,20 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { SunDim, Menu, X } from "lucide-react";
+import { SunDim, Menu, X, MoonIcon } from "lucide-react";
 import {
   motion,
   useMotionValueEvent,
   useScroll,
   useSpring,
 } from "motion/react";
+import { useDarkMode } from "../context/useDarkMode";
 
 export default function Page() {
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-  // const { isDarkMode, toggleDarkMode } = useDarkMode();
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 20);
@@ -49,7 +50,6 @@ export default function Page() {
 
   return (
     <>
-      {/* Navbar */}
       <motion.nav
         layout
         style={{
@@ -57,9 +57,8 @@ export default function Page() {
           width: scrolled ? "70%" : "80%",
           y: translateY,
         }}
-        className="fixed inset-x-0 top-3 z-20 mx-auto flex items-center justify-between rounded-full bg-white/80 px-4 py-1 backdrop-blur-md dark:bg-neutral-900/80"
+        className="fixed inset-x-0 top-3 z-20 mx-auto flex items-center justify-between rounded-full bg-white/80 px-4 py-1 backdrop-blur-md dark:bg-[#1E1E1E]/70"
       >
-        {/* Logo */}
         <motion.img
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, marginLeft: "-6px" }}
@@ -67,10 +66,9 @@ export default function Page() {
           src="/LogoBG.png"
           alt="Logo"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="h-10 w-10 cursor-pointer rounded-full sm:h-12 sm:w-12"
+          className="h-10 w-10 cursor-pointer rounded-full sm:h-12 sm:w-12 dark:bg-white"
         />
 
-        {/* Desktop nav links */}
         <motion.div
           variants={container}
           initial="hidden"
@@ -94,17 +92,16 @@ export default function Page() {
           ))}
 
           <motion.span
+            onClick={toggleDarkMode}
             variants={item}
             whileHover={{ rotate: 20, scale: 1.15 }}
             transition={{ type: "spring", stiffness: 250 }}
             className="cursor-pointer text-gray-700 dark:text-gray-200"
           >
-            {/* {isDarkMode ? <SunDim /> : <MoonIcon />} */}
-            <SunDim />
+            {isDarkMode ? <SunDim /> : <MoonIcon />}
           </motion.span>
         </motion.div>
 
-        {/* Hamburger Icon for Mobile */}
         <motion.div
           onClick={() => setIsOpen(!isOpen)}
           whileTap={{ scale: 0.9 }}

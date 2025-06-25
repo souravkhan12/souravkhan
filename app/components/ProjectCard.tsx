@@ -30,9 +30,14 @@ export default function ProjectCard({
   code,
 }: projectInfo) {
   return (
-    <div className="flex w-[90%] flex-col items-center justify-center gap-20 rounded-2xl bg-white p-6 md:flex-row">
-      <div className="group relative h-60 w-full self-stretch overflow-hidden rounded-xl border border-gray-200 md:w-[400px]">
-        <Image src={src} alt={`${title} image`} fill className="object-fill" />
+    <div className="flex w-[90%] flex-col items-center justify-center gap-20 rounded-2xl bg-white p-6 md:flex-row dark:bg-[#1E1E1E]">
+      <div className="group relative h-60 w-full self-stretch overflow-hidden rounded-xl border border-gray-200 md:w-[400px] dark:border-gray-700">
+        <Image
+          src={src}
+          alt={`${title} image`}
+          fill
+          className="rounded-2xl object-fill transition-transform duration-500 ease-in-out hover:scale-105"
+        />
       </div>
 
       <div className="flex-1">

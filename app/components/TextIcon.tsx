@@ -37,5 +37,9 @@ export default function TextIcon({ label }: TextIconProps) {
     (i) => i.label.toLowerCase() === label.toLowerCase(),
   );
 
-  return match ? match.icon : null;
+  return match ? (
+    <span className="text-[18px] text-gray-700 dark:text-gray-200">
+      {match.icon}
+    </span>
+  ) : null;
 }

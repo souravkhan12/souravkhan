@@ -23,7 +23,7 @@ export default function TechStack({ arr }: ListProps) {
         >
           <motion.div
             transition={{ type: "spring", stiffness: 200, damping: 10 }}
-            className="flex items-center gap-2 rounded-full border border-gray-200 bg-white p-2 dark:bg-neutral-800"
+            className="flex items-center gap-2 rounded-full border border-gray-200 bg-white p-2 shadow-sm dark:border-neutral-700 dark:bg-neutral-800 dark:shadow-md"
           >
             <TextIcon label={e} />
             {hover === idx && (
@@ -33,7 +33,7 @@ export default function TechStack({ arr }: ListProps) {
                 animate={{ opacity: 1, width: "auto" }}
                 exit={{ opacity: 0, width: 0 }}
                 transition={{ duration: 0.5 }}
-                className="text-xs whitespace-nowrap dark:text-gray-200"
+                className="text-xs whitespace-nowrap text-gray-700 dark:text-gray-200"
               >
                 {e}
               </motion.span>
