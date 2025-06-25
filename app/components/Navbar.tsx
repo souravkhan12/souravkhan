@@ -1,14 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { SunDim, Menu, X, MoonIcon } from "lucide-react";
+import { SunDim, Menu, X } from "lucide-react";
 import {
   motion,
   useMotionValueEvent,
   useScroll,
   useSpring,
 } from "motion/react";
-import { useDarkMode } from "@/app/context/useDarkMode";
 
 export default function Page() {
   const { scrollY } = useScroll();

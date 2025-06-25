@@ -69,8 +69,8 @@ export default function Contact() {
             Get in Touch
           </h2>
           <p className="text-gray-600 dark:text-gray-300">
-            I'd love to hear from you — feel free to reach out via email, phone,
-            or connect on LinkedIn.
+            I&apos;d love to hear from you — feel free to reach out via email,
+            phone, or connect on LinkedIn.
           </p>
           <div className="space-y-4">
             <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
