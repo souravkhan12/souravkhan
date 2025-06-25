@@ -75,21 +75,14 @@ export default function Hero() {
             </motion.a>
           </div>
         </div>
-
-        {/* Character image */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="relative"
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+          className="flex h-[300px] w-[250px] justify-center rounded-3xl border border-gray-300/30 bg-white/30 shadow-inner backdrop-blur-lg transition-all duration-300 ease-out hover:scale-105 sm:h-[250px] sm:w-[200px] md:h-[330px] md:w-[280px] dark:border-white/10 dark:bg-[#1E1E1E]"
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="flex h-[300px] w-[250px] justify-center rounded-3xl border border-gray-300/30 bg-white/30 shadow-inner backdrop-blur-lg transition-all duration-300 ease-out hover:scale-105 dark:border-white/10 dark:bg-[#1E1E1E]"
-          >
+          <div className="relative h-full w-full">
             {isDarkMode ? (
               <Image
                 src="/3dChar.png"
@@ -107,7 +100,7 @@ export default function Hero() {
                 className="rounded-2xl object-cover"
               />
             )}
-          </motion.div>
+          </div>
         </motion.div>
       </div>
     </section>
