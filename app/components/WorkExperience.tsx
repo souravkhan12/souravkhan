@@ -1,7 +1,8 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion, useScroll } from "motion/react";
 import TechStack from "./Techstack";
+import { useRef } from "react";
 
 const Work = [
   [
@@ -28,43 +29,69 @@ const Position = [
 ];
 
 export default function WorkExperience() {
+  const targetRef = useRef(null);
+
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+    offset: ["start center", "end end"],
+  });
+
   return (
-    <section className="flex h-full w-full flex-col px-4 py-16 md:px-8">
-      <motion.h2 className="mb-12 text-xl text-gray-500 dark:text-gray-100">
-        Work Experience
-      </motion.h2>
+    <section
+      ref={targetRef}
+      className="relative flex w-full flex-row gap-2 px-4 py-16 md:px-8"
+    >
+      <div className="relative mt-19 w-2">
+        <motion.div
+          style={{ scaleY: scrollYProgress }}
+          className="absolute h-full w-[2px] origin-top rounded-full bg-gray-500"
+        />
+        <motion.div
+          style={{ opacity: scrollYProgress }}
+          className="absolute top-[0%] left-[1px] h-3 w-3 -translate-x-1/2 bg-gray-500 shadow-md"
+        />
+        <motion.div
+          style={{ opacity: scrollYProgress }}
+          className="absolute top-[99%] left-[1px] h-3 w-3 -translate-x-1/2 bg-gray-500 shadow-md"
+        />
+      </div>
+      <div>
+        <motion.h2 className="mb-12 text-xl text-gray-500 dark:text-gray-100">
+          Work Experience
+        </motion.h2>
 
-      <div className="max-w-5xl space-y-12">
-        {Work.map((work, index) => (
-          <motion.div
-            key={index}
-            className="rounded-xl border border-gray-200 bg-white/80 p-6 font-semibold backdrop-blur-md dark:border-neutral-700 dark:bg-neutral-800/70"
-          >
-            <h3 className="mb-4 text-xl dark:text-gray-100">
-              {Heading[index]}
-            </h3>
-            <div className="flex gap-2">
-              <p className="mb-2 text-sm text-zinc-600 dark:text-gray-300">
-                {Position[index]}
-              </p>
-              <p className="mb-2 text-sm font-normal text-gray-500 dark:text-gray-300">
-                {Date[index]}
-              </p>
-            </div>
+        <div className="max-w-5xl space-y-12">
+          {Work.map((work, index) => (
+            <motion.div
+              key={index}
+              className="rounded-xl border border-gray-200 bg-white/80 p-6 font-semibold backdrop-blur-md dark:border-neutral-700 dark:bg-neutral-800/70"
+            >
+              <h3 className="mb-4 text-xl dark:text-gray-100">
+                {Heading[index]}
+              </h3>
+              <div className="flex gap-2">
+                <p className="mb-2 text-sm text-zinc-600 dark:text-gray-300">
+                  {Position[index]}
+                </p>
+                <p className="mb-2 text-sm font-normal text-gray-500 dark:text-gray-300">
+                  {Date[index]}
+                </p>
+              </div>
 
-            <ul className="list-disc space-y-4">
-              {work.map((item, idx) => (
-                <li
-                  key={idx}
-                  className="list-none justify-items-start text-sm leading-relaxed font-normal text-gray-500 dark:text-gray-300"
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <TechStack arr={techonology[index]} />
-          </motion.div>
-        ))}
+              <ul className="list-disc space-y-4">
+                {work.map((item, idx) => (
+                  <li
+                    key={idx}
+                    className="list-none justify-items-start text-sm leading-relaxed font-normal text-gray-500 dark:text-gray-300"
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <TechStack arr={techonology[index]} />
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );
