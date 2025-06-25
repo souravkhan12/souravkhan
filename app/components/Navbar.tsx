@@ -15,7 +15,7 @@ export default function Page() {
   const [scrolled, setScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-  const { isDarkMode, toggleDarkMode } = useDarkMode();
+  // const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 20);
@@ -95,13 +95,13 @@ export default function Page() {
           ))}
 
           <motion.span
-            onClick={toggleDarkMode}
             variants={item}
             whileHover={{ rotate: 20, scale: 1.15 }}
             transition={{ type: "spring", stiffness: 250 }}
             className="cursor-pointer text-gray-700 dark:text-gray-200"
           >
-            {isDarkMode ? <SunDim /> : <MoonIcon />}
+            {/* {isDarkMode ? <SunDim /> : <MoonIcon />} */}
+            <SunDim />
           </motion.span>
         </motion.div>
 
