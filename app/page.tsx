@@ -2,6 +2,7 @@ import Hero from "@/app/components/Hero";
 import Navbar from "@/app/components/Navbar";
 import WorkExperience from "@/app/components/WorkExperience";
 import Projects from "@/app/components/Projects";
+import Contact from "./components/Contact";
 
 export default function Page() {
   return (
@@ -12,6 +13,7 @@ export default function Page() {
         <Hero />
         <WorkExperience />
         <Projects />
+        <Contact />
       </div>
       <div className="relative -left-px col-start-4 row-span-full row-start-1 w-8 border-x border-x-(--pattern-fg) bg-[image:repeating-linear-gradient(315deg,_var(--pattern-fg)_0,_var(--pattern-fg)_1px,_transparent_0,_transparent_50%)] bg-[size:10px_10px] bg-fixed"></div>
     </div>

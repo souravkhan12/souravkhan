@@ -38,6 +38,7 @@ export default function WorkExperience() {
 
   return (
     <section
+      id="experience"
       ref={targetRef}
       className="relative flex w-full flex-row gap-2 px-4 py-16 md:px-8"
     >

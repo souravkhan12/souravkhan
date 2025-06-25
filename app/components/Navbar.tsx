@@ -1,18 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { SunDim, Menu, X } from "lucide-react";
+import { SunDim, Menu, X, MoonIcon } from "lucide-react";
 import {
   motion,
   useMotionValueEvent,
   useScroll,
   useSpring,
 } from "motion/react";
+import { useDarkMode } from "@/app/context/useDarkMode";
 
 export default function Page() {
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 20);
@@ -24,9 +27,7 @@ export default function Page() {
   });
 
   const navLinks = [
-    { name: "About", href: "#about" },
     { name: "Experience", href: "#experience" },
-    { name: "Skills", href: "#skills" },
     { name: "Projects", href: "#projects" },
     { name: "Contact", href: "#contact" },
   ];
@@ -94,12 +95,13 @@ export default function Page() {
           ))}
 
           <motion.span
+            onClick={toggleDarkMode}
             variants={item}
             whileHover={{ rotate: 20, scale: 1.15 }}
             transition={{ type: "spring", stiffness: 250 }}
             className="cursor-pointer text-gray-700 dark:text-gray-200"
           >
-            <SunDim />
+            {isDarkMode ? <SunDim /> : <MoonIcon />}
           </motion.span>
         </motion.div>
 

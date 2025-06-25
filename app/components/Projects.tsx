@@ -33,7 +33,7 @@ const List = [
 
 export default function Projects() {
   return (
-    <div>
+    <div id="projects">
       <h1 className="mb-12 text-xl text-gray-500 dark:text-gray-100">
         Projects
       </h1>

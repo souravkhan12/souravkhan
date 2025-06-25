@@ -22,3 +22,16 @@
     --foreground: #ededed;
   }
 }
+html {
+  scroll-behavior: smooth;
+}
+
+
+html {
+  @apply bg-white text-black;
+}
+
+html.dark {
+  @apply bg-gray-950 text-white;
+}
+
