@@ -129,6 +129,15 @@ export default function Page() {
               {name}
             </a>
           ))}
+          <motion.span
+            onClick={toggleDarkMode}
+            variants={item}
+            whileHover={{ rotate: 20, scale: 1.15 }}
+            transition={{ type: "spring", stiffness: 250 }}
+            className="cursor-pointer text-gray-700 dark:text-gray-200"
+          >
+            {isDarkMode ? <SunDim /> : <MoonIcon />}
+          </motion.span>
         </motion.div>
       )}
     </>

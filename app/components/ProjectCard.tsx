@@ -30,7 +30,7 @@ export default function ProjectCard({
   code,
 }: projectInfo) {
   return (
-    <div className="flex w-[90%] flex-col items-center justify-center gap-20 rounded-2xl bg-white p-6 md:flex-row dark:bg-[#1E1E1E]">
+    <div className="flex flex-col items-center justify-center gap-20 rounded-2xl bg-white p-6 md:flex-row dark:bg-[#1E1E1E]">
       <div className="group relative h-60 w-full self-stretch overflow-hidden rounded-xl border border-gray-200 md:w-[400px] dark:border-gray-700">
         <Image
           src={src}
@@ -45,7 +45,7 @@ export default function ProjectCard({
         <p className="mb-5 justify-items-start text-sm leading-relaxed font-normal text-gray-500 dark:text-gray-300">
           {info}
         </p>
-        <div className="flex justify-between gap-10">
+        <div className="flex flex-col justify-between gap-10 md:flex-row">
           <TechStack arr={techonology[id]} />
           <div className="flex items-end gap-4">
             <Link
