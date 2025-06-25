@@ -11,7 +11,7 @@ export default function Hero() {
   return (
     <section
       id="about"
-      className="relative overflow-hidden py-60 transition-colors duration-300"
+      className="relative overflow-hidden py-30 transition-colors duration-300 md:py-60"
     >
       <div className="mx-auto flex flex-col-reverse items-center justify-between gap-12 px-6 md:flex-row md:gap-20">
         <div className="max-w-xl space-y-6">
