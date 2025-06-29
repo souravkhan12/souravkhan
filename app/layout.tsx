@@ -42,7 +42,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head />
+      <head>
+        <meta
+          name="google-site-verification"
+          content="7M2IRTHlc59zkkjF36MIfj5bhCWGfDIwUUawU1wB7hI"
+        />
+      </head>
       <body className={`${inter.variable} antialiased`}>
         <DarkModeProvider>
           <div>{children}</div>
