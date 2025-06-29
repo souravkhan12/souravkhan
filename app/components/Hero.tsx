@@ -5,6 +5,33 @@ import Image from "next/image";
 import { MapPin } from "lucide-react";
 import { useDarkMode } from "../context/useDarkMode";
 
+export const metadata = {
+  title: "Hero Page | React & NextJS Developer",
+  description:
+    "Hi, I'm Sourav Khan — a goal-driven Software Engineer building sleek, scalable, modern web experiences with React, Next.js, and C++.",
+  canonical: "https://portfolio-souravkhan.vercel.app/",
+  openGraph: {
+    url: "https://portfolio-souravkhan.vercel.app/",
+    title: "Sourav Khan | React & NextJS Developer",
+    description:
+      "Goal-driven software engineer delivering modern, performant React and NextJS applications.",
+    images: [
+      {
+        url: "https://portfolio-souravkhan.vercel.app/preview.png",
+        width: 1200,
+        height: 630,
+        alt: "Portfolio preview image",
+      },
+    ],
+    site_name: "Sourav Khan Portfolio",
+  },
+  twitter: {
+    handle: "@souravkhan654",
+    site: "@souravkhan654",
+    cardType: "summary_large_image",
+  },
+};
+
 export default function Hero() {
   const { isDarkMode } = useDarkMode();
 
@@ -23,15 +50,19 @@ export default function Hero() {
             className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-3 py-1 shadow-sm dark:border-gray-600 dark:bg-[#1E1E1E]"
           >
             <MapPin className="h-4 w-4 text-[#6366f1]" />
-            <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+            <motion.span
+              initial={{ filter: "blur(10px)" }}
+              animate={{ filter: 0 }}
+              className="text-sm font-medium text-gray-600 dark:text-gray-300"
+            >
               Ambala, India
-            </span>
+            </motion.span>
           </motion.div>
 
           {/* Heading */}
           <motion.h1
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 10, filter: "blur(10px)" }}
+            animate={{ opacity: 1, y: 0, filter: 0 }}
             transition={{ duration: 0.7, delay: 0.15 }}
             className="text-4xl leading-tight font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl dark:text-white"
           >

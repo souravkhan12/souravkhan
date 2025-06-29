@@ -21,6 +21,33 @@ const techonology = [
   ["react", "cpp", "node", "mongodb", "sql"],
 ];
 
+export const metadata = {
+  title: "Projects | React & NextJS Developer",
+  description:
+    "Hi, I'm Sourav Khan — a goal-driven Software Engineer building sleek, scalable, modern web experiences with React, Next.js, and C++.",
+  canonical: "https://portfolio-souravkhan.vercel.app/",
+  openGraph: {
+    url: "https://portfolio-souravkhan.vercel.app/",
+    title: "Sourav Khan | React & NextJS Developer",
+    description:
+      "Goal-driven software engineer delivering modern, performant React and NextJS applications.",
+    images: [
+      {
+        url: "https://portfolio-souravkhan.vercel.app/preview.png",
+        width: 1200,
+        height: 630,
+        alt: "Portfolio preview image",
+      },
+    ],
+    site_name: "Sourav Khan Portfolio",
+  },
+  twitter: {
+    handle: "@souravkhan654",
+    site: "@souravkhan654",
+    cardType: "summary_large_image",
+  },
+};
+
 export default function ProjectCard({
   id,
   title,

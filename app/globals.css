@@ -21,4 +21,16 @@ html {
   scroll-behavior: smooth;
 }
 
+.magnify-area h1, 
+.magnify-area p, 
+.magnify-area span {
+  transition: transform 0.2s ease;
+}
+
+.magnify-area h1:hover, 
+.magnify-area p:hover, 
+.magnify-area span:hover {
+  transform: scale(1.2);
+}
+
 
