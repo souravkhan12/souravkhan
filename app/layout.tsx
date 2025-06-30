@@ -9,13 +9,13 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Sourav Khan | React & NextJS Developer",
+  title: "Sourav Khan | Software Engineer",
   description:
     "Hi, I'm Sourav Khan — a goal-driven Software Engineer building sleek, scalable, modern web experiences with React, Next.js, and C++.",
   canonical: "https://portfolio-souravkhan.vercel.app/",
   openGraph: {
     url: "https://portfolio-souravkhan.vercel.app/",
-    title: "Sourav Khan | React & NextJS Developer",
+    title: "Sourav Khan | Software Engineer",
     description:
       "Goal-driven software engineer delivering modern, performant React and NextJS applications.",
     images: [
@@ -26,7 +26,7 @@ export const metadata = {
         alt: "Portfolio preview image",
       },
     ],
-    site_name: "Sourav Khan Portfolio",
+    site_name: ["Sourav Khan Portfolio", "sourav khan", "Sourav khan", "khan", "Sourav"]
   },
   twitter: {
     handle: "@souravkhan654",

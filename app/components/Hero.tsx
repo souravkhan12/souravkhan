@@ -5,32 +5,6 @@ import Image from "next/image";
 import { MapPin } from "lucide-react";
 import { useDarkMode } from "../context/useDarkMode";
 
-export const metadata = {
-  title: "Hero Page | React & NextJS Developer",
-  description:
-    "Hi, I'm Sourav Khan — a goal-driven Software Engineer building sleek, scalable, modern web experiences with React, Next.js, and C++.",
-  canonical: "https://portfolio-souravkhan.vercel.app/",
-  openGraph: {
-    url: "https://portfolio-souravkhan.vercel.app/",
-    title: "Sourav Khan | React & NextJS Developer",
-    description:
-      "Goal-driven software engineer delivering modern, performant React and NextJS applications.",
-    images: [
-      {
-        url: "https://portfolio-souravkhan.vercel.app/preview.png",
-        width: 1200,
-        height: 630,
-        alt: "Portfolio preview image",
-      },
-    ],
-    site_name: "Sourav Khan Portfolio",
-  },
-  twitter: {
-    handle: "@souravkhan654",
-    site: "@souravkhan654",
-    cardType: "summary_large_image",
-  },
-};
 
 export default function Hero() {
   const { isDarkMode } = useDarkMode();
@@ -42,7 +16,6 @@ export default function Hero() {
     >
       <div className="mx-auto flex flex-col-reverse items-center justify-between gap-12 px-6 md:flex-row md:gap-20">
         <div className="max-w-xl space-y-6">
-          {/* Location pill */}
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -59,7 +32,6 @@ export default function Hero() {
             </motion.span>
           </motion.div>
 
-          {/* Heading */}
           <motion.h1
             initial={{ opacity: 0, y: 10, filter: "blur(10px)" }}
             animate={{ opacity: 1, y: 0, filter: 0 }}
@@ -71,16 +43,13 @@ export default function Hero() {
               Sourav Khan
             </span>
           </motion.h1>
-
-          {/* Description */}
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
             className="text-lg leading-relaxed text-gray-500 dark:text-gray-400"
           >
-            A goal-driven Software Engineer building sleek, scalable, modern web
-            experiences with React, Next.js, and top-tier front-end stacks.
+            I'm a full stack Software Engineer. I am passionate about creating a user-centered design, gathering and translating user data into design decisions and products.
           </motion.p>
 
           {/* Buttons */}
