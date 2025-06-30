@@ -40,7 +40,7 @@ export default function WorkExperience() {
     <section
       id="experience"
       ref={targetRef}
-      className="relative flex w-full flex-row gap-2 px-4 py-5 md:px-8 md:py-16"
+      className="relative flex w-full flex-row gap-2 px-4 py-5 lg:px-8 lg:py-16"
     >
       <div className="relative mt-19 w-2">
         <motion.div

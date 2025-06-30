@@ -57,8 +57,8 @@ export default function ProjectCard({
   code,
 }: projectInfo) {
   return (
-    <div className="flex flex-col items-center justify-center gap-20 rounded-2xl bg-white p-6 md:flex-row dark:bg-[#1E1E1E]">
-      <div className="group relative h-60 w-full self-stretch overflow-hidden rounded-xl border border-gray-200 md:w-[400px] dark:border-gray-700">
+    <div className="flex flex-col items-center justify-center gap-20 rounded-2xl bg-white p-6 lg:flex-row dark:bg-[#1E1E1E]">
+      <div className="group relative h-60 w-full self-stretch overflow-hidden rounded-xl border border-gray-200 lg:w-[400px] dark:border-gray-700">
         <Image
           src={src}
           alt={`${title} image`}

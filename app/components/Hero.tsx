@@ -12,9 +12,9 @@ export default function Hero() {
   return (
     <section
       id="about"
-      className="relative overflow-hidden py-30 transition-colors duration-300 md:py-60"
+      className="relative overflow-hidden py-30 transition-colors duration-300 lg:py-60"
     >
-      <div className="mx-auto flex flex-col-reverse items-center justify-between gap-12 px-6 md:flex-row md:gap-20">
+      <div className="mx-auto flex flex-col-reverse items-center justify-between gap-12 px-6 lg:flex-row lg:gap-20">
         <div className="max-w-xl space-y-6">
           <motion.div
             initial={{ opacity: 0, y: 8 }}
@@ -36,9 +36,9 @@ export default function Hero() {
             initial={{ opacity: 0, y: 10, filter: "blur(10px)" }}
             animate={{ opacity: 1, y: 0, filter: 0 }}
             transition={{ duration: 0.7, delay: 0.15 }}
-            className="text-4xl leading-tight font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl dark:text-white"
+            className="text-3xl leading-tight font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl dark:text-white"
           >
-            Hi, I&apos;m
+            Hi, I&apos;m{" "}
             <span className="bg-gradient-to-r from-[#6366f1] to-[#ec4899] bg-clip-text text-transparent">
               Sourav Khan
             </span>

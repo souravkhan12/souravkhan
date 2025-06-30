@@ -10,32 +10,6 @@ import {
 import { useState } from "react";
 import Link from "next/link";
 
-export const metadata = {
-  title: "Contact Me | React & NextJS Developer",
-  description:
-    "Hi, I'm Sourav Khan — a goal-driven Software Engineer building sleek, scalable, modern web experiences with React, Next.js, and C++.",
-  canonical: "https://portfolio-souravkhan.vercel.app/",
-  openGraph: {
-    url: "https://portfolio-souravkhan.vercel.app/",
-    title: "Sourav Khan | React & NextJS Developer",
-    description:
-      "Goal-driven software engineer delivering modern, performant React and NextJS applications.",
-    images: [
-      {
-        url: "https://portfolio-souravkhan.vercel.app/preview.png",
-        width: 1200,
-        height: 630,
-        alt: "Portfolio preview image",
-      },
-    ],
-    site_name: "Sourav Khan Portfolio",
-  },
-  twitter: {
-    handle: "@souravkhan654",
-    site: "@souravkhan654",
-    cardType: "summary_large_image",
-  },
-};
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -90,7 +64,7 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="my-24 mt-50 px-6 md:px-16">
+    <section id="contact" className="my-24 mt-50 px-4 lg:px-16">
       <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
         {/* Contact Info */}
         <div className="space-y-6">
