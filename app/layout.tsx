@@ -54,8 +54,6 @@ export default function RootLayout({
           content="7M2IRTHlc59zkkjF36MIfj5bhCWGfDIwUUawU1wB7hI"
         />
         <meta name="robots" content="all" />
-        <meta name="googlebot" content="noindex,nofollow" />
-        <meta name="google" content="nositelinkssearchbox" />
       </head>
       <body className={`${inter.variable} antialiased`}>
         <DarkModeProvider>
