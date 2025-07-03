@@ -26,7 +26,13 @@ export const metadata = {
         alt: "Portfolio preview image",
       },
     ],
-    site_name: ["Sourav Khan Portfolio", "sourav khan", "Sourav khan", "khan", "Sourav"]
+    site_name: [
+      "Sourav Khan Portfolio",
+      "sourav khan",
+      "Sourav khan",
+      "khan",
+      "Sourav",
+    ],
   },
   twitter: {
     handle: "@souravkhan654",
@@ -47,6 +53,9 @@ export default function RootLayout({
           name="google-site-verification"
           content="7M2IRTHlc59zkkjF36MIfj5bhCWGfDIwUUawU1wB7hI"
         />
+        <meta name="robots" content="all" />
+        <meta name="googlebot" content="noindex,nofollow" />
+        <meta name="google" content="nositelinkssearchbox" />
       </head>
       <body className={`${inter.variable} antialiased`}>
         <DarkModeProvider>
