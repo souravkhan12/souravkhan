@@ -85,15 +85,15 @@ export default function Hero() {
           <div className="relative h-full w-full">
             {isDarkMode ? (
               <Image
-                src="/3dChar.png"
+                src="/sourav.png"
                 alt="3D Character"
                 fill
                 priority
-                className="rounded-2xl object-contain"
+                className="rounded-2xl object-cover"
               />
             ) : (
               <Image
-                src="/3dCharW.png"
+                src="/sourav.png"
                 alt="3D Character"
                 fill
                 priority
