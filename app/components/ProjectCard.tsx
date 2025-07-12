@@ -63,7 +63,7 @@ export default function ProjectCard({
           src={src}
           alt={`${title} image`}
           fill
-          className="rounded-2xl object-fill transition-transform duration-500 ease-in-out hover:scale-105"
+          className="rounded-2xl object-cover transition-transform duration-500 ease-in-out hover:scale-105"
         />
       </div>
 

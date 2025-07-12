@@ -42,7 +42,7 @@ export default function WorkExperience() {
       ref={targetRef}
       className="relative flex w-full flex-row gap-2 px-4 py-5 lg:px-8 lg:py-16"
     >
-      <div className="relative mt-19 w-2">
+      <div className="relative mt-19 w-8">
         <motion.div
           style={{ scaleY: scrollYProgress }}
           className="absolute h-full w-[2px] origin-top rounded-full bg-gray-500"
