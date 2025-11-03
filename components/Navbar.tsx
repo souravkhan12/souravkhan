@@ -9,6 +9,7 @@ import {
   useSpring,
 } from "motion/react";
 import { useTheme } from "next-themes";
+import { useMounted } from "@/hooks/use-mounted";
 
 export default function Page() {
   const { scrollY } = useScroll();
@@ -16,6 +17,8 @@ export default function Page() {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const isDarkMode = theme === "dark";
+
+  const mounted = useMounted();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 20);
@@ -47,6 +50,10 @@ export default function Page() {
     hidden: { opacity: 0, y: 4 },
     visible: { opacity: 1, y: 0 },
   };
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <>
