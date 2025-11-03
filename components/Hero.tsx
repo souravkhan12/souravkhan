@@ -3,12 +3,11 @@
 import { motion } from "motion/react";
 import Image from "next/image";
 import { MapPin } from "lucide-react";
-import { useDarkMode } from "../context/useDarkMode";
-
+import { useTheme } from "next-themes";
 
 export default function Hero() {
-  const { isDarkMode } = useDarkMode();
-
+  const { theme } = useTheme();
+  const isDarkMode = theme === "dark";
   return (
     <section
       id="about"
@@ -49,7 +48,9 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.3 }}
             className="text-lg leading-relaxed text-gray-500 dark:text-gray-400"
           >
-            I&apos;m a full stack Software Engineer. I am passionate about creating a user-centered design, gathering and translating user data into design decisions and products.
+            I&apos;m a full stack Software Engineer. I am passionate about
+            creating a user-centered design, gathering and translating user data
+            into design decisions and products.
           </motion.p>
 
           {/* Buttons */}

@@ -1,7 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { DarkModeProvider } from "./context/useDarkMode";
-import Script from "next/script";
+
+import { ThemeProvider } from "@/components/theme-provider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -42,62 +42,18 @@ export const metadata = {
   },
 };
 
-const personSchema = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  name: "Sourav",
-  alternateName: "Sourav Khan",
-  url: "https://portfolio-souravkhan.vercel.app/",
-  sameAs: [
-    "https://linkedin.com/in/souravkhan1",
-    "https://github.com/souravkhan12",
-  ],
-  jobTitle: "Software Engineer",
-  description:
-    "Sourav is a goal-driven Software Engineer building sleek, scalable, modern web experiences using React, Next.js, and C++",
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <head>
-        <meta
-          name="google-site-verification"
-          content="7M2IRTHlc59zkkjF36MIfj5bhCWGfDIwUUawU1wB7hI"
-        />
-        <meta name="robots" content="all" />
-        <meta name="description" content={metadata.description} />
-        <meta
-          name="keywords"
-          content="Sourav, Software Engineer, Developer, React, Next.js, Portfolio"
-        />
-        {/* Explicitly set title */}
-        <title>Sourav | Software Engineer, Developer, Portfolio</title>
-        {/* Canonical link */}
-        <link rel="canonical" href={metadata.canonical} />
-        {/* OpenGraph & Twitter tags - you can add more as needed */}
-        <meta property="og:title" content={metadata.openGraph.title} />
-        <meta property="og:description" content={metadata.openGraph.description} />
-        <meta property="og:url" content={metadata.openGraph.url} />
-        <meta property="og:site_name" content="Sourav Portfolio" />
-        <meta name="twitter:card" content={metadata.twitter.cardType} />
-        <meta name="twitter:creator" content={metadata.twitter.handle} />
-        {/* Add JSON-LD structured data */}
-        <Script
-          id="person-schema"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
-          strategy="beforeInteractive"
-        />
-      </head>
+    <html lang="en" suppressHydrationWarning>
+      <head />
       <body className={`${inter.variable} antialiased`}>
-        <DarkModeProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div>{children}</div>
-        </DarkModeProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
