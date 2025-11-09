@@ -5,32 +5,28 @@
   --background: #ffffff;
   --foreground: #171717;
 
-  --shadow-navbar: 
-    0px 2px 3px -1px rgba(0, 0, 0, 0.1),
-    0px 1px 0px 0px rgba(25, 28, 33, 0.02),
+  --shadow-navbar:
+    0px 2px 3px -1px rgba(0, 0, 0, 0.1), 0px 1px 0px 0px rgba(25, 28, 33, 0.02),
     0px 0px 0px 1px rgba(25, 28, 33, 0.08);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 html {
-  scroll-behavior: smooth;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
 }
 
-.magnify-area h1, 
-.magnify-area p, 
+.magnify-area h1,
+.magnify-area p,
 .magnify-area span {
   transition: transform 0.2s ease;
 }
 
-.magnify-area h1:hover, 
-.magnify-area p:hover, 
+.magnify-area h1:hover,
+.magnify-area p:hover,
 .magnify-area span:hover {
   transform: scale(1.2);
 }
-
-

@@ -9,6 +9,7 @@ import {
   useSpring,
 } from "motion/react";
 import { useTheme } from "next-themes";
+import { navLinks } from "@/utils/nav-links";
 import { useMounted } from "@/hooks/use-mounted";
 
 export default function Page() {
@@ -18,22 +19,9 @@ export default function Page() {
   const { theme, setTheme } = useTheme();
   const isDarkMode = theme === "dark";
 
-  const mounted = useMounted();
-
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 20);
   });
-
-  const translateY = useSpring(scrolled ? 10 : 0, {
-    stiffness: 300,
-    damping: 24,
-  });
-
-  const navLinks = [
-    { name: "Experience", href: "#experience" },
-    { name: "Projects", href: "#projects" },
-    { name: "Contact", href: "#contact" },
-  ];
 
   const container = {
     hidden: { opacity: 0 },
@@ -51,6 +39,7 @@ export default function Page() {
     visible: { opacity: 1, y: 0 },
   };
 
+  const mounted = useMounted();
   if (!mounted) {
     return null;
   }
@@ -58,15 +47,14 @@ export default function Page() {
   return (
     <>
       <motion.nav
-        layout
+        layout={true}
         style={{
           boxShadow: scrolled ? "var(--shadow-navbar)" : "none",
-          width: scrolled ? "70%" : "80%",
-          y: translateY,
         }}
-        className="fixed inset-x-0 top-3 z-20 mx-auto flex items-center justify-between rounded-full bg-white/80 px-4 py-1 backdrop-blur-md dark:bg-[#1E1E1E]/70"
+        className="fixed inset-x-0 top-3 z-20 mx-auto flex w-[80%] max-w-7xl items-center justify-between rounded-full bg-white/80 px-4 py-1 backdrop-blur-md dark:bg-[#1E1E1E]/70"
       >
         <motion.img
+          layout="position"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, marginLeft: "-6px" }}
           transition={{ duration: 0.4, ease: "easeOut" }}

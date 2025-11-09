@@ -57,7 +57,7 @@ export default function ProjectCard({
   code,
 }: projectInfo) {
   return (
-    <div className="flex flex-col items-center justify-center gap-20 rounded-2xl bg-white p-6 lg:flex-row dark:bg-[#1E1E1E]">
+    <div className="flex flex-col items-center justify-center gap-20 rounded-2xl bg-white py-5 lg:flex-row dark:bg-[#1E1E1E]">
       <div className="group relative h-60 w-full self-stretch overflow-hidden rounded-xl border border-gray-200 lg:w-[400px] dark:border-gray-700">
         <Image
           src={src}
@@ -68,8 +68,8 @@ export default function ProjectCard({
       </div>
 
       <div className="flex-1">
-        <h1 className="mb-5 text-xl dark:text-gray-100">{title}</h1>
-        <p className="mb-5 justify-items-start text-sm leading-relaxed font-normal text-gray-500 dark:text-gray-300">
+        <h1 className="mb-5 text-2xl dark:text-gray-100">{title}</h1>
+        <p className="mb-5 justify-items-start leading-relaxed font-normal text-gray-500 dark:text-gray-300">
           {info}
         </p>
         <div className="flex flex-col justify-between gap-10 md:flex-row">
@@ -78,14 +78,14 @@ export default function ProjectCard({
             <Link
               href={link}
               target="_blank"
-              className="rounded-full bg-gray-800 px-4 py-2 text-white transition hover:bg-gray-900"
+              className="rounded-full bg-gray-800 px-3 py-3 text-white transition hover:bg-gray-900"
             >
               <SiGithub />
             </Link>
             <Link
               href={code}
               target="_blank"
-              className="rounded-full bg-gray-800 px-4 py-2 text-white transition hover:bg-gray-900"
+              className="rounded-full bg-gray-800 px-3 py-3 text-white transition hover:bg-gray-900"
             >
               <LuExternalLink />
             </Link>

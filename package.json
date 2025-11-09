@@ -8,12 +8,15 @@
     "start": "next start",
     "lint": "eslint .",
     "postbuild": "next-sitemap",
+    "upgrade:next": "npx @next/codemod@latest upgrade latest",
+    "upgrade:tailwind": "npx @tailwindcss/upgrade@latest",
     "prepare": "husky"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,css,md}": "prettier --write"
   },
   "dependencies": {
+    "@ngxpert/cmdk": "^3.0.0",
     "lucide-react": "^0.522.0",
     "motion": "^12.18.1",
     "next": "16.0.1",

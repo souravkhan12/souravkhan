@@ -63,7 +63,7 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="my-24 mt-50 px-4 lg:px-16">
+    <section id="contact" className="my-24 mt-50">
       <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
         {/* Contact Info */}
         <div className="space-y-6">
@@ -105,7 +105,7 @@ export default function Contact() {
 
         {/* Contact Form */}
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+          <h2 className="text-2xl text-gray-800 dark:text-gray-100">
             Send Me a Message
           </h2>
 
