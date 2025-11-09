@@ -8,6 +8,7 @@ import { useTheme } from "next-themes";
 export default function Hero() {
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
+
   return (
     <section
       id="about"

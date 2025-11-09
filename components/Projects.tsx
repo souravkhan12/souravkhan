@@ -34,9 +34,7 @@ const List = [
 export default function Projects() {
   return (
     <div id="projects">
-      <h1 className="mb-12 text-xl text-gray-500 dark:text-gray-100">
-        Projects
-      </h1>
+      <h1 className="text-xl text-gray-500 dark:text-gray-100">Projects</h1>
       <div className="flex flex-col justify-center gap-20">
         {List.map((L, idx) => (
           <ProjectCard
