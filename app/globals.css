@@ -2,7 +2,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #ffffff;
+  --background: #f6f6f6be;
   --foreground: #171717;
 
   --shadow-navbar:

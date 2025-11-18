@@ -17,6 +17,9 @@
 /.next/
 /out/
 
+# docs 
+/components/docs/*
+
 # production
 /build
 
