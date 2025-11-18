@@ -2,17 +2,13 @@
 
 import { useState } from "react";
 import { SunDim, Menu, X, MoonIcon } from "lucide-react";
-import {
-  motion,
-  useMotionValueEvent,
-  useScroll,
-  useSpring,
-} from "motion/react";
+import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import { useTheme } from "next-themes";
 import { navLinks } from "@/utils/nav-links";
 import { useMounted } from "@/hooks/use-mounted";
+import { MOTION_VARIANTS } from "@/constants/theme";
 
-export default function Page() {
+export default function Navbar() {
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -22,22 +18,6 @@ export default function Page() {
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 20);
   });
-
-  const container = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.12,
-        delayChildren: 0.1,
-      },
-    },
-  };
-
-  const item = {
-    hidden: { opacity: 0, y: 4 },
-    visible: { opacity: 1, y: 0 },
-  };
 
   const mounted = useMounted();
   if (!mounted) {
@@ -65,7 +45,7 @@ export default function Page() {
         />
 
         <motion.div
-          variants={container}
+          variants={MOTION_VARIANTS.containerStagger}
           initial="hidden"
           animate="visible"
           className="hidden flex-row items-center justify-center gap-6 md:flex"
@@ -74,13 +54,12 @@ export default function Page() {
             <motion.a
               key={i}
               href={href}
-              variants={item}
+              variants={MOTION_VARIANTS.staggerItem}
               whileHover={{
                 scale: 1.05,
-                color: "#1e40af",
               }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="cursor-pointer text-[15px] font-medium text-gray-700 dark:text-gray-200"
+              className="cursor-pointer text-[15px] font-medium text-gray-700 transition-colors hover:text-blue-600 dark:text-gray-200 dark:hover:text-blue-400"
             >
               {name}
             </motion.a>
@@ -88,7 +67,7 @@ export default function Page() {
 
           <motion.span
             onClick={setTheme.bind(null, isDarkMode ? "light" : "dark")}
-            variants={item}
+            variants={MOTION_VARIANTS.staggerItem}
             whileHover={{ rotate: 20, scale: 1.15 }}
             transition={{ type: "spring", stiffness: 250 }}
             className="cursor-pointer text-gray-700 dark:text-gray-200"
@@ -126,7 +105,6 @@ export default function Page() {
           ))}
           <motion.span
             onClick={setTheme.bind(null, isDarkMode ? "light" : "dark")}
-            variants={item}
             whileHover={{ rotate: 20, scale: 1.15 }}
             transition={{ type: "spring", stiffness: 250 }}
             className="cursor-pointer text-gray-700 dark:text-gray-200"

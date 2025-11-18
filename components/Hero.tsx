@@ -3,80 +3,93 @@
 import { motion } from "motion/react";
 import Image from "next/image";
 import { MapPin } from "lucide-react";
-import { useTheme } from "next-themes";
+import { HERO, CONTACT_INFO } from "@/constants/data";
+import { LAYOUT } from "@/constants/styles";
+import { Button } from "@/components/ui";
 
 export default function Hero() {
-  const { theme } = useTheme();
-  const isDarkMode = theme === "dark";
-
   return (
-    <section
-      id="about"
-      className="relative overflow-hidden py-30 transition-colors duration-300 lg:py-60"
-    >
-      <div className="mx-auto flex flex-col-reverse items-center justify-between gap-12 px-6 lg:flex-row lg:gap-20">
+    <section id="about" className={LAYOUT.section}>
+      <div className="mx-auto flex flex-col-reverse items-center justify-between gap-12 px-6 py-30 lg:flex-row lg:gap-20">
+        {/* Hero Text Content */}
         <div className="max-w-xl space-y-6">
+          {/* Location Badge */}
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-3 py-1 shadow-sm dark:border-gray-600 dark:bg-[#1E1E1E]"
           >
-            <MapPin className="h-4 w-4 text-[#6366f1]" />
+            <MapPin className="h-4 w-4 text-indigo-500" />
             <motion.span
               initial={{ filter: "blur(10px)" }}
-              animate={{ filter: 0 }}
+              animate={{ filter: "blur(0px)" }}
               className="text-sm font-medium text-gray-600 dark:text-gray-300"
             >
-              Ambala, India
+              {HERO.location}
             </motion.span>
           </motion.div>
 
+          {/* Main Heading */}
           <motion.h1
             initial={{ opacity: 0, y: 10, filter: "blur(10px)" }}
-            animate={{ opacity: 1, y: 0, filter: 0 }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ duration: 0.7, delay: 0.15 }}
-            className="text-3xl leading-tight font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl dark:text-white"
+            className="text-5xl leading-tight font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl dark:text-white"
           >
             Hi, I&apos;m{" "}
-            <span className="bg-gradient-to-r from-[#6366f1] to-[#ec4899] bg-clip-text text-transparent">
-              Sourav Khan
+            <span className="bg-linear-to-r from-indigo-500 to-pink-500 bg-clip-text text-transparent">
+              {HERO.name}
             </span>
           </motion.h1>
+
+          {/* Bio */}
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-lg leading-relaxed text-gray-500 dark:text-gray-400"
+            className={LAYOUT.subheading}
           >
-            I&apos;m a full stack Software Engineer. I am passionate about
-            creating a user-centered design, gathering and translating user data
-            into design decisions and products.
+            {HERO.bio}
           </motion.p>
 
-          {/* Buttons */}
+          {/* CTA Buttons */}
           <div className="mt-6 flex gap-4">
-            <motion.a
-              href="mailto:souravkhan654@gmail.com"
+            <motion.div
               whileHover={{ scale: 1.02, y: -1 }}
               whileTap={{ scale: 0.98 }}
               transition={{ type: "spring", stiffness: 250, damping: 20 }}
-              className="inline-flex items-center rounded-lg bg-gray-900 px-3 py-2 text-white shadow-md transition-all focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 focus:outline-none dark:bg-gray-500 dark:text-black"
             >
-              Get In Touch
-            </motion.a>
+              <Button
+                as="a"
+                href={`mailto:${CONTACT_INFO.email}`}
+                variant="primary"
+                size="md"
+              >
+                Get In Touch
+              </Button>
+            </motion.div>
 
-            <motion.a
-              href="https://drive.google.com/file/d/15GtLZtvaBVLNUr9QGnvha0xIDKstgcb2/view?usp=sharing"
+            <motion.div
               whileHover={{ scale: 1.02, y: -1 }}
               whileTap={{ scale: 0.98 }}
               transition={{ type: "spring", stiffness: 250, damping: 20 }}
-              className="inline-flex items-center rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm transition-all hover:bg-gray-50 focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:outline-none dark:border-gray-600 dark:bg-[#1E1E1E] dark:text-gray-100 dark:hover:bg-[#2a2a2a]"
             >
-              Resume
-            </motion.a>
+              <Button
+                as="a"
+                href={CONTACT_INFO.resume}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="secondary"
+                size="md"
+              >
+                Resume
+              </Button>
+            </motion.div>
           </div>
         </div>
+
+        {/* Hero Image */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -85,23 +98,13 @@ export default function Hero() {
           className="flex h-[300px] w-[250px] justify-center rounded-3xl border border-gray-300/30 bg-white/30 shadow-inner backdrop-blur-lg transition-all duration-300 ease-out hover:scale-105 sm:h-[250px] sm:w-[200px] md:h-[330px] md:w-[280px] dark:border-white/10 dark:bg-[#1E1E1E]"
         >
           <div className="relative h-full w-full">
-            {isDarkMode ? (
-              <Image
-                src="/sourav.png"
-                alt="3D Character"
-                fill
-                priority
-                className="rounded-2xl object-cover"
-              />
-            ) : (
-              <Image
-                src="/sourav.png"
-                alt="3D Character"
-                fill
-                priority
-                className="rounded-2xl object-cover"
-              />
-            )}
+            <Image
+              src="/sourav.png"
+              alt={HERO.name}
+              fill
+              priority
+              className="rounded-2xl object-cover"
+            />
           </div>
         </motion.div>
       </div>

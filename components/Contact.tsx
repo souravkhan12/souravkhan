@@ -9,9 +9,15 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
+import { CONTACT_INFO } from "@/constants/data";
+import { LAYOUT } from "@/constants/styles";
+import { FormData } from "@/types";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/Textarea";
 
 export default function Contact() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
     message: "",
@@ -65,37 +71,48 @@ export default function Contact() {
   return (
     <section id="contact" className="my-24 mt-50">
       <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
-        {/* Contact Info */}
-        <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-            Get in Touch
-          </h2>
+        {/* Contact Information */}
+        <div className="space-y-10">
+          <h2 className={LAYOUT.heading}>Get in Touch</h2>
           <p className="text-gray-600 dark:text-gray-300">
             I&apos;d love to hear from you — feel free to reach out via email,
             phone, or connect on LinkedIn.
           </p>
-          <div className="space-y-4">
+
+          <div className="space-y-2">
+            {/* Email */}
             <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-              <LucideMail className="h-5 w-5 text-gray-600" />
-              <Link href="mailto:souravkhan654@gmail.com">
-                souravkhan654@gmail.com
+              <LucideMail className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+              <Link
+                href={`mailto:${CONTACT_INFO.email}`}
+                className="hover:text-indigo-600 dark:hover:text-indigo-400"
+              >
+                {CONTACT_INFO.email}
               </Link>
             </div>
+
+            {/* Phone */}
             <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-              <LucidePhone className="h-5 w-5 text-gray-600" />
-              <span>+91 8814028649</span>
+              <LucidePhone className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+              <Link href={`tel:${CONTACT_INFO.phone}`}>
+                {CONTACT_INFO.phone}
+              </Link>
             </div>
+
+            {/* Location */}
             <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-              <LucideMapPin className="h-5 w-5 text-gray-600" />
-              <span>Ambala, India</span>
+              <LucideMapPin className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+              <span>{CONTACT_INFO.location}</span>
             </div>
+
+            {/* LinkedIn */}
             <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-              <LucideLinkedin className="h-5 w-5 text-gray-600" />
+              <LucideLinkedin className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               <a
-                href="https://www.linkedin.com/in/souravkhan1"
+                href={CONTACT_INFO.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:underline"
+                className="hover:text-indigo-600 dark:hover:text-indigo-400"
               >
                 LinkedIn Profile
               </a>
@@ -105,58 +122,65 @@ export default function Contact() {
 
         {/* Contact Form */}
         <div className="space-y-6">
-          <h2 className="text-2xl text-gray-800 dark:text-gray-100">
-            Send Me a Message
-          </h2>
+          <h2 className={LAYOUT.heading}>Send Me a Message</h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <input
+            <Input
               id="name"
               type="text"
               value={formData.name}
               onChange={handleChange}
               placeholder="Your Name"
+              label="Name"
+              fullWidth
               required
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-600 focus:outline-none dark:border-gray-700 dark:bg-neutral-900 dark:text-white"
             />
-            <input
+            <Input
               id="email"
               type="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="Your Email"
+              placeholder="your@email.com"
+              label="Email"
+              icon={<LucideMail size={18} />}
+              fullWidth
               required
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-600 focus:outline-none dark:border-gray-700 dark:bg-neutral-900 dark:text-white"
             />
-            <textarea
+            <Textarea
               id="message"
               rows={4}
               value={formData.message}
               onChange={handleChange}
               placeholder="Your Message"
+              label="Message"
+              charCountMax={1000}
+              fullWidth
               required
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-600 focus:outline-none dark:border-gray-700 dark:bg-neutral-900 dark:text-white"
             />
 
-            <button
+            <Button
               type="submit"
-              disabled={isSubmitting}
-              className="w-full rounded-lg bg-gray-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:opacity-50"
+              variant="primary"
+              size="lg"
+              fullWidth
+              isLoading={isSubmitting}
             >
               {isSubmitting ? "Sending..." : "Send Message"}
-            </button>
+            </Button>
           </form>
 
           {/* Success message */}
           {isSuccess && (
-            <p className="flex items-center gap-2 text-green-600">
+            <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
               <CheckCircle className="h-5 w-5" />
               Message sent successfully!
-            </p>
+            </div>
           )}
 
           {/* Error message */}
-          {errorMsg && <p className="text-red-600">Error: {errorMsg}</p>}
+          {errorMsg && (
+            <p className="text-red-600 dark:text-red-400">Error: {errorMsg}</p>
+          )}
         </div>
       </div>
     </section>
