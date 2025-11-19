@@ -16,14 +16,12 @@ export default function WorkExperience() {
           <motion.div key={index}>
             <Card padding="lg" variant="default">
               {/* Company & Position */}
-              <h3 className="mb-4 text-2xl text-zinc-700 dark:text-gray-100">
+              <h3 className="mb-3 text-xl dark:text-gray-100">
                 {experience.company}
               </h3>
 
               <div className="flex gap-2 pb-2">
-                <p className="mb-2 text-gray-600 dark:text-gray-300">
-                  {experience.position}
-                </p>
+                <p className="mb-2 dark:text-gray-300">{experience.position}</p>
                 {experience.duration && (
                   <p className="mb-2 text-sm font-normal text-gray-500 dark:text-gray-300">
                     {experience.duration}
