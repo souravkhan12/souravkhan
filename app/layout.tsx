@@ -1,16 +1,10 @@
-import { Inter } from "next/font/google";
 import { Metadata } from "next";
 import "./globals.css";
 
 import { ThemeProvider } from "@/components/theme-provider";
 import { SchemaMarkup } from "@/components/SchemaMarkup";
 import { SEO_CONFIG } from "@/constants/seo";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-});
+import { fontMono, fontSans } from "@/lib/fonts";
 
 export const metadata: Metadata = {
   title: {
@@ -91,11 +85,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${fontSans.variable} ${fontMono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <SchemaMarkup />
       </head>
-      <body className={`${inter.variable} antialiased`}>
+      <body className={`antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
         </ThemeProvider>

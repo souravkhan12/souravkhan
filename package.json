@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@ngxpert/cmdk": "^3.0.0",
+    "clsx": "^2.1.1",
     "lucide-react": "^0.522.0",
     "motion": "^12.18.1",
     "next": "16.0.1",
@@ -26,7 +27,8 @@
     "ogl": "^1.0.11",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "react-icons": "^5.5.0"
+    "react-icons": "^5.5.0",
+    "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

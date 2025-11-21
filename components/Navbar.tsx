@@ -30,8 +30,10 @@ export default function Navbar() {
         layout={true}
         style={{
           boxShadow: scrolled ? "var(--shadow-navbar)" : "none",
+          width: scrolled ? "50%" : "50%",
+          transition: "width 0.3s ease, box-shadow 0.3s ease",
         }}
-        className="fixed inset-x-0 top-3 z-20 mx-auto flex w-[80%] max-w-7xl items-center justify-between rounded-full bg-white/80 px-4 py-1 backdrop-blur-md dark:bg-[#1E1E1E]/70"
+        className="fixed inset-x-0 top-3 z-20 mx-auto flex max-w-[1000px] items-center justify-between rounded-full bg-white/80 px-4 py-1 backdrop-blur-md dark:bg-[#1E1E1E]/70"
       >
         <motion.img
           layout="position"
@@ -45,6 +47,7 @@ export default function Navbar() {
         />
 
         <motion.div
+          layout="position"
           variants={MOTION_VARIANTS.containerStagger}
           initial="hidden"
           animate="visible"

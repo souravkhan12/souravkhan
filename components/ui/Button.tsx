@@ -54,7 +54,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref,
   ) => {
     // Determine component to render
-    const Component = (as || "button") as any;
+    const Component = as || "button";
     // Variant styles
     const variantClasses: Record<string, string> = {
       primary:

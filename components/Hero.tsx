@@ -1,46 +1,30 @@
 "use client";
 
 import { motion } from "motion/react";
-import Image from "next/image";
-import { MapPin } from "lucide-react";
 import { HERO, CONTACT_INFO } from "@/constants/data";
 import { LAYOUT } from "@/constants/styles";
 import { Button } from "@/components/ui";
+import Avatar from "@/components/ui/Avatar";
+import Location from "./ui/Location";
 
 export default function Hero() {
   return (
     <section id="about" className={LAYOUT.section}>
-      <div className="mx-auto flex flex-col-reverse items-center justify-between gap-12 px-6 py-30 lg:flex-row lg:gap-20">
-        {/* Hero Text Content */}
-        <div className="max-w-xl space-y-6">
-          {/* Location Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-3 py-1 shadow-sm dark:border-gray-600 dark:bg-[#1E1E1E]"
-          >
-            <MapPin className="h-4 w-4 text-indigo-500" />
-            <motion.span
-              initial={{ filter: "blur(10px)" }}
-              animate={{ filter: "blur(0px)" }}
-              className="text-sm font-medium text-gray-600 dark:text-gray-300"
-            >
-              {HERO.location}
-            </motion.span>
-          </motion.div>
+      <div className="mx-auto flex flex-col justify-between gap-12 px-6 py-10 lg:gap-20">
+        <div>
+          <Avatar />
+          <Location />
+        </div>
 
-          {/* Main Heading */}
+        <div className="space-y-2">
           <motion.h1
             initial={{ opacity: 0, y: 10, filter: "blur(10px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ duration: 0.7, delay: 0.15 }}
-            className="text-5xl leading-tight font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl dark:text-white"
+            className="text-4xl leading-tight font-bold tracking-tight text-[#3E4959] dark:text-white"
           >
-            Hi, I&apos;m{" "}
-            <span className="bg-linear-to-r from-indigo-500 to-pink-500 bg-clip-text text-transparent">
-              {HERO.name}
-            </span>
+            Hi, I&apos;m <span className="">{HERO.name}</span>
+            <span className="text-[#8F8F91]"> Software Engineer</span>
           </motion.h1>
 
           {/* Bio */}
@@ -88,25 +72,6 @@ export default function Hero() {
             </motion.div>
           </div>
         </div>
-
-        {/* Hero Image */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          whileHover={{ scale: 1.05 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="flex h-[300px] w-[250px] justify-center rounded-3xl border border-gray-300/30 bg-white/30 shadow-inner backdrop-blur-lg transition-all duration-300 ease-out hover:scale-105 sm:h-[250px] sm:w-[200px] md:h-[330px] md:w-[280px] dark:border-white/10 dark:bg-[#1E1E1E]"
-        >
-          <div className="relative h-full w-full">
-            <Image
-              src="/sourav.png"
-              alt={HERO.name}
-              fill
-              priority
-              className="rounded-2xl object-cover"
-            />
-          </div>
-        </motion.div>
       </div>
     </section>
   );

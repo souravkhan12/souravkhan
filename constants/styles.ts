@@ -1,8 +1,8 @@
 // Tailwind utility classes for common patterns
 export const LAYOUT = {
   // Container classes
-  container: "mx-auto max-w-[600px] flex-1 px-6 lg:max-w-[1200px]",
-
+  container: "mx-auto max-w-[600px] flex-1 px-6 lg:max-w-[800px]",
+  width: "max-w-[650px] lg:max-w-[850px]",
   // Section classes
   section: "relative py-16 transition-colors duration-300 lg:py-24",
   sectionHead: "mb-12 text-xl text-gray-500 dark:text-gray-100",

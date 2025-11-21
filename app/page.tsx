@@ -6,15 +6,25 @@ import Contact from "@/components/Contact";
 import { PatternDivider } from "@/components/PatternDivider";
 import { ProjectSchemaMarkup } from "@/components/ProjectSchemaMarkup";
 import { LAYOUT } from "@/constants/styles";
+import { cn } from "@/lib/utils";
 
 export default function Page() {
+  const OuterStyle = cn(
+    "flex overflow-x-hidden",
+    `${LAYOUT.width}`,
+    "mx-auto",
+    "[--pattern-fg:var(--color-gray-950)]/5",
+    "dark:bg-[#1E1E1E] dark:[--pattern-fg:var(--color-white)]/10",
+  );
+
   return (
     <>
       <ProjectSchemaMarkup />
-      <div className="flex overflow-x-hidden [--pattern-fg:var(--color-gray-950)]/5 dark:bg-[#1E1E1E] dark:[--pattern-fg:var(--color-white)]/10">
+
+      <div className={OuterStyle}>
         <PatternDivider position="left" />
 
-        <div className={`${LAYOUT.container} dark:bg-[#1E1E1E]`}>
+        <div className={cn(LAYOUT.container, "dark:bg-[#1E1E1E]")}>
           <Navbar />
           <Hero />
           <WorkExperience />

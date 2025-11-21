@@ -100,5 +100,5 @@ export const HERO = {
   name: "Sourav Khan",
   title: "Software Engineer",
   location: "Ambala, India",
-  bio: "I'm a full stack Software Engineer. I am passionate about creating a user-centered design, gathering and translating user data into design decisions and products.",
+  bio: "I'm a Software Engineer. I am passionate about creating a user-centered design, gathering and translating user data into design decisions and products.",
 };
