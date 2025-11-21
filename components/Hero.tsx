@@ -35,12 +35,10 @@ export default function Hero() {
             initial={{ opacity: 0, y: 10, filter: "blur(10px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ duration: 0.7, delay: 0.15 }}
-            className="text-5xl leading-tight font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl dark:text-white"
+            className="text-4xl leading-tight font-bold tracking-tight text-[#3E4959] dark:text-white"
           >
-            Hi, I&apos;m{" "}
-            <span className="bg-linear-to-r from-indigo-500 to-pink-500 bg-clip-text text-transparent">
-              {HERO.name}
-            </span>
+            Hi, I&apos;m <span className="">{HERO.name}</span>
+            <span className="text-[#8F8F91]"> Software Engineer</span>
           </motion.h1>
 
           {/* Bio */}
