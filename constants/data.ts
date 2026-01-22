@@ -43,7 +43,7 @@ export const WORK_EXPERIENCE = [
   {
     company: "The unmarketing Agency",
     position: "Frontend Developer",
-    duration: "Sep 2025 - Present",
+    duration: "Aug 2025 - Present",
     achievements: [
       "Developed and maintained responsive web applications using React, Redux, and Tailwind CSS, enhancing user experience and performance. Collaborated with cross-functional teams to implement new features and optimize existing functionalities, resulting in a 20% increase in user engagement.",
     ],
