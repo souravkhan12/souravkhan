@@ -16,7 +16,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       className="flex flex-col items-center justify-center gap-20 lg:flex-row"
     >
       {/* Project Image */}
-      <div className="group relative h-60 w-full self-stretch overflow-hidden rounded-xl border border-gray-200 lg:w-[400px] dark:border-gray-700">
+      <div className="group relative h-60 w-full self-stretch overflow-hidden rounded-2xl border border-gray-200 lg:w-[400px] dark:border-gray-700">
         <Image
           src={project.image}
           alt={`${project.title} screenshot`}
@@ -27,10 +27,10 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
       {/* Project Info */}
       <div className="flex-1">
-        <h2 className="mb-5 font-sans text-xl dark:text-gray-100">
+        <h2 className="mb-5 text-xl font-semibold tracking-tight dark:text-gray-100">
           {project.title}
         </h2>
-        <p className="mb-5 justify-items-start leading-relaxed text-gray-500 dark:text-gray-300">
+        <p className="mb-5 leading-relaxed text-gray-600 dark:text-gray-300">
           {project.description}
         </p>
 

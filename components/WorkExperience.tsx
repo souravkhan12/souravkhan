@@ -11,32 +11,32 @@ export default function WorkExperience() {
 
   return (
     <Section id="experience" title="Work Experience" ref={targetRef}>
-      <div className="space-y-12">
+      <div className="space-y-8 sm:space-y-12">
         {WORK_EXPERIENCE.map((experience, index) => (
           <motion.div key={index}>
-            <Card padding="lg" variant="default">
+            <Card padding="md" variant="default">
               {/* Company & Position */}
-              <h3 className="mb-3 font-sans text-xl dark:text-gray-100">
+              <h3 className="mb-2 text-lg font-semibold tracking-tight sm:mb-3 sm:text-xl dark:text-gray-100">
                 {experience.company}
               </h3>
 
-              <div className="flex gap-2 pb-2">
-                <p className="mb-2 font-sans dark:text-gray-300">
+              <div className="flex flex-col pb-2 sm:flex-row sm:items-center sm:gap-2">
+                <p className="mb-1 text-sm font-medium sm:mb-2 sm:text-base dark:text-gray-300">
                   {experience.position}
                 </p>
                 {experience.duration && (
-                  <p className="mb-2 flex items-center font-serif text-sm leading-tight font-normal text-gray-500 dark:text-gray-300">
+                  <p className="mb-2 text-xs text-gray-500 sm:text-sm dark:text-gray-300">
                     {experience.duration}
                   </p>
                 )}
               </div>
 
               {/* Achievements */}
-              <ul className="list-disc space-y-4">
+              <ul className="list-disc space-y-2 sm:space-y-4">
                 {experience.achievements.map((achievement, idx) => (
                   <li
                     key={idx}
-                    className="list-none justify-items-start font-sans leading-relaxed font-normal text-gray-500 dark:text-gray-300"
+                    className="list-none text-sm leading-relaxed text-gray-600 sm:text-base dark:text-gray-300"
                   >
                     {achievement}
                   </li>

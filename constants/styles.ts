@@ -1,11 +1,12 @@
 // Tailwind utility classes for common patterns
 export const LAYOUT = {
   // Container classes
-  container: "mx-auto max-w-[600px] flex-1 px-6 lg:max-w-[1200px]",
+  container:
+    "mx-auto max-w-[600px] flex-1 px-4 sm:px-6 lg:max-w-[1200px] overflow-x-auto",
 
   // Section classes
-  section: "relative py-16 transition-colors duration-300 lg:py-24",
-  sectionHead: "mb-12 text-xl text-gray-500 dark:text-gray-100",
+  section: "relative py-12 sm:py-16 transition-colors duration-300",
+  sectionHead: "mb-8 sm:mb-12 text-xl text-gray-500 dark:text-gray-100",
 
   // Grid patterns
   patternDivider:
@@ -16,9 +17,10 @@ export const LAYOUT = {
   cardPadding: "p-6",
 
   // Text
-  heading: "text-2xl font-sans text-gray-800 dark:text-gray-100",
-  subheading: "text-lg leading-relaxed text-gray-500 dark:text-gray-400",
-  body: "font-normal text-gray-500 dark:text-gray-300",
+  heading:
+    "text-2xl font-semibold tracking-tight text-gray-800 dark:text-gray-100",
+  subheading: " leading-relaxed font-medium text-gray-600 dark:text-gray-400",
+  body: "font-normal text-gray-600 dark:text-gray-300",
 
   // Buttons
   buttonBase:

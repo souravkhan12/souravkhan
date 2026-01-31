@@ -69,17 +69,17 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="my-24 mt-50">
-      <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
+    <section id="contact" className="my-16 sm:my-20 md:my-24">
+      <div className="grid grid-cols-1 items-center gap-8 px-4 sm:px-6 md:grid-cols-2 md:gap-12">
         {/* Contact Information */}
-        <div className="space-y-10">
+        <div className="space-y-8 sm:space-y-10">
           <h2 className={LAYOUT.heading}>Get in Touch</h2>
-          <p className="text-gray-600 dark:text-gray-300">
+          <p className="text-sm text-gray-600 sm:text-base dark:text-gray-300">
             I&apos;d love to hear from you — feel free to reach out via email,
             phone, or connect on LinkedIn.
           </p>
 
-          <div className="space-y-2">
+          <div className="space-y-3 sm:space-y-4">
             {/* Email */}
             <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
               <LucideMail className="h-5 w-5 text-gray-600 dark:text-gray-400" />
@@ -121,10 +121,10 @@ export default function Contact() {
         </div>
 
         {/* Contact Form */}
-        <div className="space-y-6">
+        <div className="space-y-6 sm:space-y-8">
           <h2 className={LAYOUT.heading}>Send Me a Message</h2>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             <Input
               id="name"
               type="text"

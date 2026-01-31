@@ -10,7 +10,7 @@ import { Button } from "@/components/ui";
 export default function Hero() {
   return (
     <section id="about" className={LAYOUT.section}>
-      <div className="mx-auto flex flex-col-reverse items-center justify-between gap-12 px-6 py-30 lg:flex-row lg:gap-20">
+      <div className="mx-auto flex flex-col-reverse items-center justify-between gap-8 px-4 py-12 sm:px-6 lg:flex-row lg:gap-20 lg:py-16">
         {/* Hero Text Content */}
         <div className="max-w-xl space-y-6">
           {/* Location Badge */}
@@ -35,7 +35,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 10, filter: "blur(10px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ duration: 0.7, delay: 0.15 }}
-            className="text-4xl leading-tight font-bold tracking-tight text-[#3E4959] dark:text-white"
+            className="text-3xl leading-tight font-semibold tracking-tight text-[#3E4959] sm:text-4xl dark:text-white"
           >
             Hi, I&apos;m <span className="">{HERO.name}</span>
             <span className="text-[#8F8F91]"> Software Engineer</span>
@@ -52,17 +52,19 @@ export default function Hero() {
           </motion.p>
 
           {/* CTA Buttons */}
-          <div className="mt-6 flex gap-4">
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:gap-4">
             <motion.div
               whileHover={{ scale: 1.02, y: -1 }}
               whileTap={{ scale: 0.98 }}
               transition={{ type: "spring", stiffness: 250, damping: 20 }}
+              className="w-full sm:w-auto"
             >
               <Button
                 as="a"
                 href={`mailto:${CONTACT_INFO.email}`}
                 variant="primary"
                 size="md"
+                className="w-full sm:w-auto"
               >
                 Get In Touch
               </Button>
@@ -72,6 +74,7 @@ export default function Hero() {
               whileHover={{ scale: 1.02, y: -1 }}
               whileTap={{ scale: 0.98 }}
               transition={{ type: "spring", stiffness: 250, damping: 20 }}
+              className="w-full sm:w-auto"
             >
               <Button
                 as="a"
@@ -80,6 +83,7 @@ export default function Hero() {
                 rel="noopener noreferrer"
                 variant="secondary"
                 size="md"
+                className="w-full sm:w-auto"
               >
                 Resume
               </Button>
@@ -93,7 +97,7 @@ export default function Hero() {
           animate={{ opacity: 1, scale: 1 }}
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.8, delay: 0.5 }}
-          className="flex h-[300px] w-[250px] justify-center rounded-3xl border border-gray-300/30 bg-white/30 shadow-inner backdrop-blur-lg transition-all duration-300 ease-out hover:scale-105 sm:h-[250px] sm:w-[200px] md:h-[330px] md:w-[280px] dark:border-white/10 dark:bg-[#1E1E1E]"
+          className="flex h-[280px] w-[220px] justify-center rounded-2xl border border-gray-300/30 bg-white/30 shadow-inner backdrop-blur-lg transition-all duration-300 ease-out hover:scale-105 sm:h-[300px] sm:w-[240px] md:h-[330px] md:w-[280px] dark:border-white/10 dark:bg-[#1E1E1E]"
         >
           <div className="relative h-full w-full">
             <Image

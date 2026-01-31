@@ -10,9 +10,9 @@ type GraphSize = {
 
 export function useResponsiveGraphSize(): GraphSize {
   const [size, setSize] = useState<GraphSize>({
-    blockSize: 6,
-    blockMargin: 1,
-    fontSize: 8,
+    blockSize: 12,
+    blockMargin: 2,
+    fontSize: 10,
   });
 
   const update = useCallback(() => {
@@ -20,19 +20,16 @@ export function useResponsiveGraphSize(): GraphSize {
 
     if (w >= 1536) {
       // 2xl screens
-      setSize({ blockSize: 15, blockMargin: 5, fontSize: 16 });
+      setSize({ blockSize: 18, blockMargin: 4, fontSize: 14 });
     } else if (w >= 1280) {
       // xl
-      setSize({ blockSize: 14, blockMargin: 4, fontSize: 14 });
+      setSize({ blockSize: 17, blockMargin: 4, fontSize: 13 });
     } else if (w >= 1024) {
       // lg
-      setSize({ blockSize: 12, blockMargin: 4, fontSize: 13 });
-    } else if (w >= 768) {
-      // md tablets
-      setSize({ blockSize: 8, blockMargin: 2, fontSize: 10 });
+      setSize({ blockSize: 16, blockMargin: 3, fontSize: 12 });
     } else {
-      // mobile
-      setSize({ blockSize: 6, blockMargin: 1, fontSize: 8 });
+      // md tablets
+      setSize({ blockSize: 12, blockMargin: 2, fontSize: 10 });
     }
   }, []);
 

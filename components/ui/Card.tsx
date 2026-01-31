@@ -36,17 +36,17 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ) => {
     const variantClasses: Record<string, string> = {
       default:
-        "bg-white dark:bg-[#1E1E1E] rounded-xl border border-gray-200 dark:border-gray-700",
+        "bg-white dark:bg-[#1E1E1E] rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-300",
       elevated:
-        "bg-white/80 dark:bg-neutral-800/70 rounded-xl border border-gray-200 dark:border-neutral-700 shadow-md backdrop-blur-md",
+        "bg-white/80 dark:bg-neutral-800/70 rounded-2xl border border-gray-200 dark:border-neutral-700 shadow-lg backdrop-blur-md hover:shadow-xl transition-all duration-300",
       outline:
-        "bg-transparent rounded-xl border border-gray-300 dark:border-gray-600",
+        "bg-transparent rounded-2xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-neutral-900/50 transition-colors duration-300",
     };
 
     const paddingClasses: Record<string, string> = {
-      sm: "p-3",
-      md: "p-6",
-      lg: "p-8",
+      sm: "p-3 sm:p-4",
+      md: "p-4 sm:p-6",
+      lg: "p-6 sm:p-8",
     };
 
     const hoverClasses = hover
