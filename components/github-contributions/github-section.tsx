@@ -7,13 +7,20 @@ import GitHubContributionGraph, {
 export async function GitHubContributions() {
   const contributions = await getGitHubContributions();
 
-  return (
-    <>
-      <h2 className="sr-only">GitHub Contributions</h2>
+  // Handle empty data gracefully
+  if (!contributions || contributions.length === 0) {
+    return (
+      <div className="text-muted-foreground flex h-40.5 w-full items-center justify-center">
+        <p>GitHub contributions temporarily unavailable</p>
+      </div>
+    );
+  }
 
+  return (
+    <div className="relative w-full">
       <Suspense fallback={<GitHubContributionFallback />}>
         <GitHubContributionGraph contributions={contributions} />
       </Suspense>
-    </>
+    </div>
   );
 }
