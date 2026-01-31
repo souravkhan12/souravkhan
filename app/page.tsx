@@ -6,9 +6,8 @@ import Contact from "@/components/Contact";
 import { PatternDivider } from "@/components/PatternDivider";
 import { ProjectSchemaMarkup } from "@/components/ProjectSchemaMarkup";
 import { LAYOUT } from "@/constants/styles";
-import { GitHubCalendar } from "react-github-calendar";
 import { Section } from "@/components/ui";
-import { GithubSection } from "@/components/github-section";
+import { GitHubContributions } from "@/components/github-contributions/github-section";
 
 export default function Page() {
   return (
@@ -22,10 +21,12 @@ export default function Page() {
           <Hero />
           <WorkExperience />
           <Projects />
-          <Section title="GitHub Contributions" id="github">
-            <div className="flex justify-center">
-              <GithubSection />
-            </div>
+          <Section
+            title="GitHub Contributions"
+            id="github"
+            className="mx-auto flex"
+          >
+            <GitHubContributions />
           </Section>
           <Contact />
         </div>

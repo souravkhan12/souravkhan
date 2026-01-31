@@ -90,7 +90,7 @@ export default function RootLayout({
         <SchemaMarkup />
       </head>
       <body
-        className={`${sans.variable} ${mono.variable} ${serif.variable} antialiased`}
+        className={`${sans.variable} ${mono.variable} ${serif.variable} font-sans antialiased`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}

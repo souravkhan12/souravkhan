@@ -102,3 +102,5 @@ export const HERO = {
   location: "Ambala, India",
   bio: "I'm a full stack Software Engineer. I am passionate about creating a user-centered design, gathering and translating user data into design decisions and products.",
 };
+
+export const GITHUB_USERNAME = "souravkhan12";

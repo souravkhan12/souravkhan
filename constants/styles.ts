@@ -16,7 +16,7 @@ export const LAYOUT = {
   cardPadding: "p-6",
 
   // Text
-  heading: "text-2xl font-bold text-gray-800 dark:text-gray-100",
+  heading: "text-2xl font-sans text-gray-800 dark:text-gray-100",
   subheading: "text-lg leading-relaxed text-gray-500 dark:text-gray-400",
   body: "font-normal text-gray-500 dark:text-gray-300",
 

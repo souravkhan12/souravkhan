@@ -34,8 +34,8 @@ const Section = React.forwardRef<HTMLDivElement, SectionProps>(
       title,
       subtitle,
       variant = "default",
-      spacing = "md",
-      fullWidth = false,
+      spacing = "sm",
+      fullWidth = true,
       centered = false,
       children,
       ...props
@@ -74,8 +74,8 @@ const Section = React.forwardRef<HTMLDivElement, SectionProps>(
       <section className={containerClasses} id={id} ref={ref} {...props}>
         <div className={contentClasses}>
           {title && (
-            <div className="mb-12">
-              <h2 className="text-3xl font-semibold text-gray-900 dark:text-white">
+            <div className="mb-5">
+              <h2 className="font-sans text-2xl text-gray-900 dark:text-white">
                 {title}
               </h2>
               {subtitle && (

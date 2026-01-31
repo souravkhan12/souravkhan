@@ -27,7 +27,9 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
       {/* Project Info */}
       <div className="flex-1">
-        <h2 className="mb-5 text-xl dark:text-gray-100">{project.title}</h2>
+        <h2 className="mb-5 font-sans text-xl dark:text-gray-100">
+          {project.title}
+        </h2>
         <p className="mb-5 justify-items-start leading-relaxed text-gray-500 dark:text-gray-300">
           {project.description}
         </p>
