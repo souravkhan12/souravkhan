@@ -15,14 +15,14 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       variant="default"
       className="flex flex-col items-center justify-center gap-20 lg:flex-row"
     >
-      {/* Project Image */}
-      <div className="group relative h-60 w-full self-stretch overflow-hidden rounded-2xl border border-gray-200 lg:w-[400px] dark:border-gray-700">
+      <div className="group relative h-60 w-full self-stretch overflow-hidden rounded-[12px] border border-gray-200/20 lg:w-[400px] dark:border-gray-700/20">
         <Image
           src={project.image}
           alt={`${project.title} screenshot`}
           fill
-          className="rounded-2xl object-cover transition-transform duration-500 ease-in-out hover:scale-105"
+          className="object-cover transition-transform duration-500 ease-in-out hover:scale-105"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
       </div>
 
       {/* Project Info */}
