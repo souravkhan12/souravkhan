@@ -1,18 +1,18 @@
-import {
-  IBM_Plex_Mono as FontMono,
-  Hanken_Grotesk as FontSans,
-} from "next/font/google";
+import { Bitter, Plus_Jakarta_Sans, Roboto_Mono } from "next/font/google";
 
-export const fontSans = FontSans({
-  weight: ["400", "500", "600"],
-  display: "swap",
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
-
-export const fontMono = FontMono({
-  weight: ["400", "500", "600"],
-  display: "swap",
+export const mono = Roboto_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
+  weight: ["400", "700"],
+});
+export const sans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  weight: ["300", "400", "500", "600"],
+});
+export const serif = Bitter({
+  subsets: ["latin"],
+  variable: "--font-serif",
+  weight: ["400", "600"],
+  style: ["normal", "italic"],
 });

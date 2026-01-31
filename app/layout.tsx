@@ -4,7 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SchemaMarkup } from "@/components/SchemaMarkup";
 import { SEO_CONFIG } from "@/constants/seo";
-import { fontMono, fontSans } from "@/utils/fonts";
+import { mono, sans, serif } from "@/utils/fonts";
 
 export const metadata: Metadata = {
   title: {
@@ -89,7 +89,9 @@ export default function RootLayout({
       <head>
         <SchemaMarkup />
       </head>
-      <body className={`${fontSans.variable} ${fontMono.variable} antialiased`}>
+      <body
+        className={`${sans.variable} ${mono.variable} ${serif.variable} antialiased`}
+      >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
         </ThemeProvider>

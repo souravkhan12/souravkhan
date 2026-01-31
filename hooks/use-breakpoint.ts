@@ -1,0 +1,15 @@
+// hooks/useBreakpoint.ts
+import { useEffect, useState } from "react";
+
+export function useBreakpoint() {
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    const onResize = () => setWidth(window.innerWidth);
+    onResize();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  return width;
+}

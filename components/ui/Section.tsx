@@ -75,7 +75,7 @@ const Section = React.forwardRef<HTMLDivElement, SectionProps>(
         <div className={contentClasses}>
           {title && (
             <div className="mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+              <h2 className="text-3xl font-semibold text-gray-900 dark:text-white">
                 {title}
               </h2>
               {subtitle && (
