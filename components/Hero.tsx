@@ -59,14 +59,13 @@ export default function Hero() {
               transition={{ type: "spring", stiffness: 250, damping: 20 }}
               className="w-full sm:w-auto"
             >
-              <Button
-                as="a"
-                href={`mailto:${CONTACT_INFO.email}`}
-                variant="primary"
-                size="md"
-                className="w-full sm:w-auto"
-              >
-                Get In Touch
+              <Button asChild variant="default" size="default">
+                <a
+                  href={`mailto:${CONTACT_INFO.email}`}
+                  className="w-full sm:w-auto"
+                >
+                  Get In Touch
+                </a>
               </Button>
             </motion.div>
 
@@ -76,16 +75,15 @@ export default function Hero() {
               transition={{ type: "spring", stiffness: 250, damping: 20 }}
               className="w-full sm:w-auto"
             >
-              <Button
-                as="a"
-                href={CONTACT_INFO.resume}
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="secondary"
-                size="md"
-                className="w-full sm:w-auto"
-              >
-                Resume
+              <Button asChild variant="outline" className="w-full sm:w-auto">
+                <a
+                  href={CONTACT_INFO.resume}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto"
+                >
+                  Resume
+                </a>
               </Button>
             </motion.div>
           </div>

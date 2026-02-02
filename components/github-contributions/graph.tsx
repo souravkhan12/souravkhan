@@ -1,16 +1,18 @@
 "use client";
 
 import { memo } from "react";
-import { useResponsiveGraphSize } from "@/components/github-contributions/use-responsive";
 import {
   ContributionGraph,
   ContributionGraphBlock,
   ContributionGraphCalendar,
   ContributionGraphFooter,
+  ContributionGraphLegend,
   ContributionGraphTotalCount,
 } from "@/components/kibo-ui/contribution-graph";
 import type { Activity } from "@/components/kibo-ui/contribution-graph";
+import { useResponsiveGraphSize } from "@/components/github-contributions/use-responsive";
 import { cn } from "@/lib/utils";
+import { Pill } from "../kibo-ui/pill";
 import { LoaderIcon } from "lucide-react";
 
 const GitHubContributionGraph = memo(
@@ -42,13 +44,10 @@ const GitHubContributionGraph = memo(
                 "Dec",
               ],
               weekdays: ["", "Mon", "", "Wed", "", "Fri", ""],
-              totalCount: "{{count}} contributions in {{year}}",
-              legend: {
-                less: "Less",
-                more: "More",
-              },
+              legend: { less: "Less", more: "More" },
             }}
           >
+            {/* Calendar */}
             <ContributionGraphCalendar>
               {({ activity, dayIndex, weekIndex }) => (
                 <ContributionGraphBlock
@@ -68,9 +67,42 @@ const GitHubContributionGraph = memo(
               )}
             </ContributionGraphCalendar>
 
+            {/* Footer */}
             <ContributionGraphFooter>
-              <div className="flex w-full items-center justify-between">
-                <ContributionGraphTotalCount />
+              <div className="flex w-full items-center justify-between gap-4">
+                <ContributionGraphTotalCount>
+                  {({ totalCount, year }) => (
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground text-sm">
+                        Year {year}:
+                      </span>
+                      <Pill variant="secondary">
+                        {totalCount.toLocaleString()} contributions
+                      </Pill>
+                    </div>
+                  )}
+                </ContributionGraphTotalCount>
+
+                <ContributionGraphLegend>
+                  {({ level }) => (
+                    <div className="group relative h-3 w-3">
+                      <div
+                        data-level={level}
+                        className={cn(
+                          "border-border h-full w-full rounded-sm border",
+                          level === 0 && "bg-muted",
+                          level === 1 && "bg-emerald-200 dark:bg-emerald-900",
+                          level === 2 && "bg-emerald-400 dark:bg-emerald-700",
+                          level === 3 && "bg-emerald-600 dark:bg-emerald-500",
+                          level === 4 && "bg-emerald-800 dark:bg-emerald-300",
+                        )}
+                      />
+                      <span className="bg-popover absolute -top-8 hidden rounded px-2 py-1 text-xs shadow group-hover:block">
+                        Level {level}
+                      </span>
+                    </div>
+                  )}
+                </ContributionGraphLegend>
               </div>
             </ContributionGraphFooter>
           </ContributionGraph>
@@ -81,7 +113,6 @@ const GitHubContributionGraph = memo(
 );
 
 GitHubContributionGraph.displayName = "GitHubContributionGraph";
-
 export default GitHubContributionGraph;
 
 export function GitHubContributionFallback() {

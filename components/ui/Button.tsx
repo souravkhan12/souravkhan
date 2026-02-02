@@ -1,126 +1,64 @@
-import React from "react";
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { Slot } from "radix-ui";
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  /** Button style variant */
-  variant?: "primary" | "secondary" | "ghost" | "danger" | "success";
-  /** Button size */
-  size?: "sm" | "md" | "lg" | "icon";
-  /** Make button full width */
-  fullWidth?: boolean;
-  /** Show loading state with spinner */
-  isLoading?: boolean;
-  /** Icon element to display */
-  icon?: React.ReactNode;
-  /** Icon position relative to text */
-  iconPosition?: "left" | "right";
-  /** Render as different HTML element */
-  as?: React.ElementType;
-  /** URL for link button */
-  href?: string;
-  /** HTML target attribute */
-  target?: string;
-  /** HTML rel attribute */
-  rel?: string;
-}
+import { cn } from "@/lib/utils";
 
-/**
- * Button component with multiple variants and sizes
- *
- * @component
- * @example
- * <Button variant="primary">Click me</Button>
- * <Button as="a" href="/link">Link Button</Button>
- * <Button isLoading>Submitting...</Button>
- */
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      className = "",
-      variant = "primary",
-      size = "md",
-      fullWidth = false,
-      isLoading = false,
-      icon,
-      iconPosition = "left",
-      children,
-      disabled,
-      as,
-      href,
-      target,
-      rel,
-      ...props
+const buttonVariants = cva(
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive:
+          "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+        outline:
+          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost:
+          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+        link: "text-primary underline-offset-4 hover:underline",
+      },
+      size: {
+        default: "h-9 px-4 py-2 has-[>svg]:px-3",
+        xs: "h-6 gap-1 rounded-md px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3",
+        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
+        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
+        icon: "size-9",
+        "icon-xs": "size-6 rounded-md [&_svg:not([class*='size-'])]:size-3",
+        "icon-sm": "size-8",
+        "icon-lg": "size-10",
+      },
     },
-    ref,
-  ) => {
-    // Determine component to render
-    const Component = (as || "button") as any;
-    // Variant styles
-    const variantClasses: Record<string, string> = {
-      primary:
-        "bg-gray-900 text-white shadow-md hover:bg-gray-800 focus:ring-gray-900 dark:bg-gray-500 dark:text-black dark:hover:bg-gray-600",
-      secondary:
-        "border border-gray-300 bg-white text-gray-900 shadow-sm hover:bg-gray-50 focus:ring-gray-300 dark:border-gray-600 dark:bg-[#1E1E1E] dark:text-gray-100 dark:hover:bg-[#2a2a2a]",
-      ghost:
-        "text-gray-900 hover:bg-gray-100 focus:ring-gray-300 dark:text-gray-100 dark:hover:bg-gray-800",
-      danger:
-        "bg-red-600 text-white hover:bg-red-700 focus:ring-red-600 dark:hover:bg-red-500",
-      success:
-        "bg-green-600 text-white hover:bg-green-700 focus:ring-green-600 dark:hover:bg-green-500",
-    };
-
-    // Size styles
-    const sizeClasses: Record<string, string> = {
-      sm: "px-3 py-1.5 text-sm",
-      md: "px-4 py-2 text-base",
-      lg: "px-6 py-3 text-lg",
-      icon: "p-2",
-    };
-
-    const baseClasses =
-      "inline-flex items-center justify-center rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
-
-    const combinedClasses = [
-      baseClasses,
-      variantClasses[variant] || variantClasses.primary,
-      sizeClasses[size] || sizeClasses.md,
-      fullWidth ? "w-full" : "",
-      className,
-    ]
-      .filter(Boolean)
-      .join(" ");
-
-    return (
-      <Component
-        className={combinedClasses}
-        disabled={disabled || isLoading}
-        ref={ref}
-        href={href}
-        target={target}
-        rel={rel}
-        {...props}
-      >
-        {isLoading ? (
-          <>
-            <span className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-            {children}
-          </>
-        ) : (
-          <>
-            {icon && iconPosition === "left" && (
-              <span className="mr-2 flex items-center">{icon}</span>
-            )}
-            {children}
-            {icon && iconPosition === "right" && (
-              <span className="ml-2 flex items-center">{icon}</span>
-            )}
-          </>
-        )}
-      </Component>
-    );
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
   },
 );
 
-Button.displayName = "Button";
+function Button({
+  className,
+  variant = "default",
+  size = "default",
+  asChild = false,
+  ...props
+}: React.ComponentProps<"button"> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean;
+  }) {
+  const Comp = asChild ? Slot.Root : "button";
 
-export { Button };
+  return (
+    <Comp
+      data-slot="button"
+      data-variant={variant}
+      data-size={size}
+      className={cn(buttonVariants({ variant, size, className }))}
+      {...props}
+    />
+  );
+}
+
+export { Button, buttonVariants };

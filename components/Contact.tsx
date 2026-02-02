@@ -157,13 +157,12 @@ export default function Contact() {
               fullWidth
               required
             />
-
             <Button
               type="submit"
-              variant="primary"
+              variant="default"
               size="lg"
-              fullWidth
-              isLoading={isSubmitting}
+              className="w-full"
+              disabled={isSubmitting}
             >
               {isSubmitting ? "Sending..." : "Send Message"}
             </Button>

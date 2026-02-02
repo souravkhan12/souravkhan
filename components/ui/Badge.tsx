@@ -1,84 +1,48 @@
-import React from "react";
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { Slot } from "radix-ui";
 
-export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  /** Badge color variant */
-  variant?: "default" | "primary" | "secondary" | "success" | "danger";
-  /** Badge size */
-  size?: "sm" | "md" | "lg";
-  /** Icon element to display */
-  icon?: React.ReactNode;
-  /** Show close button */
-  removable?: boolean;
-  /** Callback when close button clicked */
-  onRemove?: () => void;
-}
+import { cn } from "@/lib/utils";
 
-/**
- * Badge component for tags and labels
- *
- * @component
- * @example
- * <Badge variant="primary">React</Badge>
- * <Badge variant="success" removable onRemove={() => {}}>Tag</Badge>
- */
-const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
-  (
-    {
-      className = "",
-      variant = "default",
-      size = "md",
-      icon,
-      removable = false,
-      onRemove,
-      children,
-      ...props
+const badgeVariants = cva(
+  "inline-flex items-center justify-center rounded-full border border-transparent px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground [a&]:hover:bg-primary/90",
+        secondary:
+          "bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90",
+        destructive:
+          "bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+        outline:
+          "border-border text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
+        ghost: "[a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 [a&]:hover:underline",
+      },
     },
-    ref,
-  ) => {
-    const variantClasses: Record<string, string> = {
-      default: "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100",
-      primary:
-        "bg-indigo-100 text-indigo-900 dark:bg-indigo-900 dark:text-indigo-100",
-      secondary:
-        "bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100",
-      success:
-        "bg-green-100 text-green-900 dark:bg-green-900 dark:text-green-100",
-      danger: "bg-red-100 text-red-900 dark:bg-red-900 dark:text-red-100",
-    };
-
-    const sizeClasses: Record<string, string> = {
-      sm: "px-2 py-1 text-xs",
-      md: "px-3 py-1.5 text-sm",
-      lg: "px-4 py-2 text-base",
-    };
-
-    const combinedClasses = [
-      "inline-flex items-center gap-1.5 rounded-full font-medium transition-colors",
-      variantClasses[variant] || variantClasses.default,
-      sizeClasses[size] || sizeClasses.md,
-      className,
-    ]
-      .filter(Boolean)
-      .join(" ");
-
-    return (
-      <span className={combinedClasses} ref={ref} {...props}>
-        {icon && <span className="flex items-center">{icon}</span>}
-        {children}
-        {removable && (
-          <button
-            onClick={onRemove}
-            className="ml-1 hover:opacity-70"
-            aria-label="Remove"
-          >
-            ✕
-          </button>
-        )}
-      </span>
-    );
+    defaultVariants: {
+      variant: "default",
+    },
   },
 );
 
-Badge.displayName = "Badge";
+function Badge({
+  className,
+  variant = "default",
+  asChild = false,
+  ...props
+}: React.ComponentProps<"span"> &
+  VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
+  const Comp = asChild ? Slot.Root : "span";
 
-export { Badge };
+  return (
+    <Comp
+      data-slot="badge"
+      data-variant={variant}
+      className={cn(badgeVariants({ variant }), className)}
+      {...props}
+    />
+  );
+}
+
+export { Badge, badgeVariants };
