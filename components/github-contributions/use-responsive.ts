@@ -18,15 +18,12 @@ export function useResponsiveGraphSize(): GraphSize {
   const update = useCallback(() => {
     const w = window.innerWidth;
 
-    if (w >= 1536) {
-      // 2xl screens
-      setSize({ blockSize: 18, blockMargin: 4, fontSize: 14 });
-    } else if (w >= 1280) {
+    if (w >= 1280) {
       // xl
-      setSize({ blockSize: 17, blockMargin: 4, fontSize: 13 });
+      setSize({ blockSize: 16, blockMargin: 3, fontSize: 13 });
     } else if (w >= 1024) {
       // lg
-      setSize({ blockSize: 16, blockMargin: 3, fontSize: 12 });
+      setSize({ blockSize: 14, blockMargin: 3, fontSize: 12 });
     } else {
       // md tablets
       setSize({ blockSize: 12, blockMargin: 2, fontSize: 10 });

@@ -8,6 +8,7 @@ import { ProjectSchemaMarkup } from "@/components/ProjectSchemaMarkup";
 import { LAYOUT } from "@/constants/styles";
 import { Section } from "@/components/ui";
 import { GitHubContributions } from "@/components/github-contributions/github-section";
+import Footer from "@/components/footer";
 
 export default function Page() {
   return (
@@ -29,6 +30,7 @@ export default function Page() {
             <GitHubContributions />
           </Section>
           <Contact />
+          <Footer />
         </div>
 
         <PatternDivider position="right" />
