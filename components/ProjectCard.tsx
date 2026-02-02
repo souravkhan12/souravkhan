@@ -38,27 +38,26 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         <div className="flex flex-col justify-between gap-10 md:flex-row">
           <TechStack technologies={project.technologies} />
           <div className="flex items-end gap-4">
-            <Button
-              as="a"
-              href={project.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              size="icon"
-              variant="secondary"
-              aria-label={`${project.title} live link`}
-            >
-              <LuExternalLink />
+            <Button asChild size="icon" variant="secondary">
+              <a
+                href={project.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${project.title} live link`}
+              >
+                <LuExternalLink />
+              </a>
             </Button>
-            <Button
-              as="a"
-              href={project.code}
-              target="_blank"
-              rel="noopener noreferrer"
-              size="icon"
-              variant="secondary"
-              aria-label={`${project.title} source code`}
-            >
-              <SiGithub />
+
+            <Button asChild size="icon" variant="secondary">
+              <a
+                href={project.code}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${project.title} source code`}
+              >
+                <SiGithub />
+              </a>
             </Button>
           </div>
         </div>
