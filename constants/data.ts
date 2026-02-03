@@ -4,7 +4,7 @@ export const PROJECTS = [
     title: "HorizonStay",
     description:
       "This application emulates the management of a hotel, providing various functionalities needed for hotel operations. It is built with React and React-Query and connects to a Supabase API",
-    image: "/horizonStay.png",
+    image: "/horizon.png",
     link: "https://horizon-stay.vercel.app/",
     code: "https://github.com/souravkhan12/HorizonStay",
     technologies: ["cpp", "react", "node", "html", "tailwind", "sql", "next"],
