@@ -1,7 +1,7 @@
 // Project data
 export const PROJECTS = [
   {
-    title: "HorizonStay",
+    title: "The Web Oasis",
     description:
       "This application emulates the management of a hotel, providing various functionalities needed for hotel operations. It is built with React and React-Query and connects to a Supabase API",
     image: "/horizon.png",
