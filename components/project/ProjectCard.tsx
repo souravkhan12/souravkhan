@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { LuExternalLink } from "react-icons/lu";
 import { SiGithub } from "react-icons/si";
-import TechStack from "./Techstack";
+import TechStack from "../tech-stack/Techstack";
 import { Project } from "@/types";
 import { Card, Button } from "@/components/ui";
 

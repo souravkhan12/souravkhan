@@ -9,8 +9,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
-import { CONTACT_INFO } from "@/constants/data";
-import { LAYOUT } from "@/constants/styles";
+import { CONTACT_INFO } from "@/config/data";
+import { LAYOUT } from "@/config/styles";
 import { FormData } from "@/types";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";

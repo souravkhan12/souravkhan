@@ -1,5 +1,5 @@
 import ProjectCard from "./ProjectCard";
-import { PROJECTS } from "@/constants/data";
+import { PROJECTS } from "@/config/data";
 import { Section } from "@/components/ui";
 
 export default function Projects() {

@@ -1,4 +1,4 @@
-import { PROJECTS } from "@/constants/data";
+import { PROJECTS } from "@/config/data";
 
 /**
  * Project Schema Markup

@@ -1,7 +1,7 @@
 import { unstable_cache } from "next/cache";
 
 import type { Activity } from "@/components/kibo-ui/contribution-graph";
-import { GITHUB_USERNAME } from "@/constants/data";
+import { GITHUB_USERNAME } from "@/config/data";
 
 type GitHubContributionsResponse = {
   contributions: Activity[];

@@ -1,15 +1,16 @@
 import { Metadata } from "next";
-import "./globals.css";
-
-import { ThemeProvider } from "@/components/theme-provider";
-import { SchemaMarkup } from "@/components/SchemaMarkup";
-import { SEO_CONFIG } from "@/constants/seo";
+import "@/styles/globals.css";
+import { ThemeProvider } from "@/components/theme/theme-provider";
+import { SEO_CONFIG } from "@/config/seo";
 import { mono, sans, serif } from "@/utils/fonts";
 
 export const metadata: Metadata = {
   title: {
     default: SEO_CONFIG.title,
     template: "%s | Sourav Khan",
+  },
+  icons: {
+    icon: "/favicon.ico",
   },
   description: SEO_CONFIG.description,
   authors: [
@@ -86,9 +87,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <SchemaMarkup />
-      </head>
       <body
         className={`${sans.variable} ${mono.variable} ${serif.variable} font-sans antialiased`}
       >

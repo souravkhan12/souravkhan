@@ -4,7 +4,7 @@ export const PROJECTS = [
     title: "The Web Oasis",
     description:
       "This application emulates the management of a hotel, providing various functionalities needed for hotel operations. It is built with React and React-Query and connects to a Supabase API",
-    image: "/horizon.png",
+    image: "/projects/horizon.png",
     link: "https://horizon-stay.vercel.app/",
     code: "https://github.com/souravkhan12/HorizonStay",
     technologies: ["cpp", "react", "node", "html", "tailwind", "sql", "next"],
@@ -13,7 +13,7 @@ export const PROJECTS = [
     title: "HorizonStay Client",
     description:
       "The HorizonStay is a user-friendly web application built with Next.js and React. It allows users to explore and book cabins in a serene, remote location. For a seamless experience, we've integrated NextAuth for secure Google logins.",
-    image: "/HorizonC.png",
+    image: "/projects/HorizonC.png",
     link: "https://horizon-search-client.vercel.app/",
     code: "https://github.com/souravkhan12/horizonSearchFT",
     technologies: ["react", "redux", "css", "html"],
@@ -22,7 +22,7 @@ export const PROJECTS = [
     title: "AtlasLogs",
     description:
       "A world map that tracks your footsteps into every city you can think of. Developed as part of a React course, this project uses React, React-DOM, Leaflet, Vite, and CSS Modules.",
-    image: "/AtlasLog.png",
+    image: "/projects/AtlasLog.png",
     link: "https://atlas-logs-algw-caizdlp2u-sourav-khans-projects.vercel.app/",
     code: "https://github.com/souravkhan12/AtlasLogs",
     technologies: ["react", "cpp", "node", "mongodb", "sql"],
@@ -31,7 +31,7 @@ export const PROJECTS = [
     title: "ReactSwigZo",
     description:
       "This app emulates a pizza ordering service where users can select and order pizzas. Developed using React and Redux, it showcases basic functionalities such as state management and user interaction. This app was created as part of a course to learn the fundamentals of React and Redux.",
-    image: "/pizzApp.png",
+    image: "/projects/pizzApp.png",
     link: "https://react-swig-zo.vercel.app/",
     code: "https://github.com/souravkhan12/React-SwigZo",
     technologies: ["react", "cpp", "node", "mongodb", "sql"],

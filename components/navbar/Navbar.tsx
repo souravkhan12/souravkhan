@@ -4,9 +4,9 @@ import { useState } from "react";
 import { SunDim, Menu, X, MoonIcon } from "lucide-react";
 import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import { useTheme } from "next-themes";
-import { navLinks } from "@/utils/nav-links";
+import { navLinks } from "@/config/nav-links";
 import { useMounted } from "@/hooks/use-mounted";
-import { MOTION_VARIANTS } from "@/constants/theme";
+import { MOTION_VARIANTS } from "@/config/theme";
 
 export default function Navbar() {
   const { scrollY } = useScroll();

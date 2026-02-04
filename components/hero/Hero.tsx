@@ -3,8 +3,8 @@
 import { motion } from "motion/react";
 import Image from "next/image";
 import { MapPin } from "lucide-react";
-import { HERO, CONTACT_INFO } from "@/constants/data";
-import { LAYOUT } from "@/constants/styles";
+import { HERO, CONTACT_INFO } from "@/config/data";
+import { LAYOUT } from "@/config/styles";
 import { Button } from "@/components/ui";
 
 export default function Hero() {

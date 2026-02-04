@@ -1,9 +1,9 @@
 "use client";
 
 import { motion } from "motion/react";
-import TechStack from "./Techstack";
+import TechStack from "../tech-stack/Techstack";
 import { useRef } from "react";
-import { WORK_EXPERIENCE } from "@/constants/data";
+import { WORK_EXPERIENCE } from "@/config/data";
 import { Section, Card } from "@/components/ui";
 
 export default function WorkExperience() {

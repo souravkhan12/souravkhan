@@ -12,28 +12,24 @@ export const SEO_CONFIG = {
   description:
     "Portfolio of Sourav Khan, a goal-driven Full Stack Software Engineer building sleek, scalable, modern web experiences with React, Next.js, Node.js, and C++. Located in Ambala, India.",
 
-  // Keywords for SEO
+  // Keywords for SEO - optimized for search queries like "sourav portfolio" and "sourav khan"
   keywords: [
     "Sourav Khan",
-    "sourav",
+    "Sourav Khan Portfolio",
     "sourav portfolio",
     "sourav khan portfolio",
-    "Software Developer",
+    "Sourav Khan Software Engineer",
+    "Sourav Khan Developer",
+    "Full Stack Software Engineer",
     "Software Engineer",
-    "Full Stack Developer",
     "React Developer",
     "Next.js Developer",
     "Node.js Developer",
-    "C++ Programmer",
-    "Web Developer",
-    "Frontend Developer",
-    "Backend Developer",
-    "Portfolio",
-    "Ambala",
-    "India",
-    "React",
     "TypeScript",
     "JavaScript",
+    "Web Developer",
+    "Ambala India",
+    "Sourav Khan Ambala",
   ],
 
   // Open Graph
@@ -52,35 +48,6 @@ export const SEO_CONFIG = {
   // Canonical URL
   canonical: "https://portfolio-souravkhan.vercel.app",
 
-  // Social links
-  socialProfiles: {
-    linkedin: "https://www.linkedin.com/in/souravkhan1",
-    github: "https://github.com/souravkhan12",
-    twitter: "https://twitter.com/souravkhan654",
-    email: "souravkhan654@gmail.com",
-  },
-
   // Verification
-  googleVerification: "", // Add your Google Search Console verification code here
-  bingVerification: "", // Add your Bing Webmaster Tools verification code here
-
-  // Schema.org markup
-  jsonLd: {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    name: "Sourav Khan",
-    url: "https://portfolio-souravkhan.vercel.app",
-    jobTitle: "Full Stack Software Engineer",
-    image: "https://portfolio-souravkhan.vercel.app/sourav.png",
-    location: {
-      "@type": "Place",
-      name: "Ambala, India",
-    },
-    email: "souravkhan654@gmail.com",
-    sameAs: [
-      "https://www.linkedin.com/in/souravkhan1",
-      "https://github.com/souravkhan12",
-      "https://twitter.com/souravkhan654",
-    ],
-  },
+  googleVerification: "",
 };

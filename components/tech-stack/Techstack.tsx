@@ -1,7 +1,7 @@
 "use client";
 
+import TextIcon from "@/components/tech-stack/TextIcon";
 import { motion } from "motion/react";
-import TextIcon from "./TextIcon";
 import { useState } from "react";
 
 interface TechStackProps {
