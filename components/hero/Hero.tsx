@@ -102,7 +102,7 @@ export default function Hero() {
               src="/sourav.png"
               alt={HERO.name}
               fill
-              priority
+              fetchPriority="high"
               className="rounded-2xl object-cover"
             />
           </div>

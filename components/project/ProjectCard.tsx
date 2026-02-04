@@ -1,9 +1,9 @@
 import Image from "next/image";
 import { LuExternalLink } from "react-icons/lu";
 import { SiGithub } from "react-icons/si";
-import TechStack from "../tech-stack/Techstack";
 import { Project } from "@/types";
 import { Card, Button } from "@/components/ui";
+import TechStack from "@/components/tech-stack/Techstack";
 
 interface ProjectCardProps {
   project: Project;
@@ -20,6 +20,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           src={project.image}
           alt={`${project.title} screenshot`}
           fill
+          fetchPriority="high"
           className="object-cover transition-transform duration-500 ease-in-out hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
