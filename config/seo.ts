@@ -49,5 +49,5 @@ export const SEO_CONFIG = {
   canonical: "https://portfolio-souravkhan.vercel.app",
 
   // Verification
-  googleVerification: "",
+  googleVerification: "googlee69f3bdc83c77aa8.html",
 };
