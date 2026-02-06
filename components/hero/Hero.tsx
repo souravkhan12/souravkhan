@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import Image from "next/image";
-import { MapPin } from "lucide-react";
+import { Dot } from "lucide-react";
 import { HERO, CONTACT_INFO } from "@/config/data";
 import { LAYOUT } from "@/config/styles";
 import { Button } from "@/components/ui";
@@ -11,34 +11,30 @@ export default function Hero() {
   return (
     <section id="about" className={LAYOUT.section}>
       <div className="mx-auto flex flex-col-reverse items-center justify-between gap-8 px-4 py-12 sm:px-6 lg:flex-row lg:gap-20 lg:py-16">
-        {/* Hero Text Content */}
         <div className="max-w-xl space-y-6">
-          {/* Location Badge */}
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-3 py-1 shadow-sm dark:border-gray-600 dark:bg-[#1E1E1E]"
+            className="inline-flex items-center gap-2 rounded-full border border-green-500 bg-green-50 px-2 py-1 dark:border-green-400 dark:bg-green-900/30"
           >
-            <MapPin className="h-4 w-4 text-indigo-500" />
             <motion.span
               initial={{ filter: "blur(10px)" }}
               animate={{ filter: "blur(0px)" }}
-              className="text-sm font-medium text-gray-600 dark:text-gray-300"
+              className="text-xs text-green-700 dark:text-green-300"
             >
-              {HERO.location}
+              {HERO.available}
             </motion.span>
           </motion.div>
 
-          {/* Main Heading */}
           <motion.h1
             initial={{ opacity: 0, y: 10, filter: "blur(10px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ duration: 0.7, delay: 0.15 }}
             className="text-3xl leading-tight font-semibold tracking-tight text-[#3E4959] sm:text-4xl dark:text-white"
           >
-            Hi, I&apos;m <span className="">{HERO.name}</span>
-            <span className="text-[#8F8F91]"> Software Engineer</span>
+            Hi, I&apos;m <span className="">{HERO.name} -</span>
+            <span className="font-extrabold text-[#8F8F91]">{HERO.title}</span>
           </motion.h1>
 
           {/* Bio */}

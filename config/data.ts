@@ -5,7 +5,7 @@ export const PROJECTS = [
     description:
       "This application emulates the management of a hotel, providing various functionalities needed for hotel operations. It is built with React and React-Query and connects to a Supabase API",
     image: "/projects/horizon.png",
-    link: "https://horizon-stay.vercel.app/",
+    link: "https://the-web-oasis.vercel.app/",
     code: "https://github.com/souravkhan12/HorizonStay",
     technologies: ["cpp", "react", "node", "html", "tailwind", "sql", "next"],
   },
@@ -98,9 +98,9 @@ export const SOCIAL_LINKS = {
 // Hero section
 export const HERO = {
   name: "Sourav Khan",
-  title: "Software Engineer",
-  location: "Ambala, India",
-  bio: "I'm a full stack Software Engineer. I am passionate about creating a user-centered design, gathering and translating user data into design decisions and products.",
+  title: "Full Stack Developer",
+  available: "Available for work",
+  bio: "Building scalable web applications with clean architecture and exceptional user experiences. I transform complex requirements into production-ready solutions that deliver real-world impact.",
 };
 
 export const GITHUB_USERNAME = "souravkhan12";
