@@ -10,7 +10,7 @@ export default function HeroTechStack() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className="flex flex-wrap gap-4 pt-4"
+      className="mb-0 flex flex-wrap gap-2 pt-4 sm:mb-2 sm:gap-3 sm:pt-6"
     >
       {HERO_TECH_STACK.map((tech, index) => (
         <motion.div
@@ -21,8 +21,8 @@ export default function HeroTechStack() {
           className="group relative"
         >
           {/* Icon */}
-          <div className="opacity-80 transition group-hover:opacity-100">
-            <TextIcon label={tech.icon} size={22} />
+          <div className="h-5 w-5 opacity-80 transition group-hover:opacity-100 sm:h-[22px] sm:w-[22px]">
+            <TextIcon label={tech.icon} size={20} />
           </div>
 
           {/* Tooltip */}
