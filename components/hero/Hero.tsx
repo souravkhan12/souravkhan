@@ -2,10 +2,10 @@
 
 import { motion } from "motion/react";
 import Image from "next/image";
-import { Dot } from "lucide-react";
 import { HERO, CONTACT_INFO } from "@/config/data";
 import { LAYOUT } from "@/config/styles";
 import { Button } from "@/components/ui";
+import HeroTechStack from "@/components/hero/HeroTechStack";
 
 export default function Hero() {
   return (
@@ -83,6 +83,7 @@ export default function Hero() {
               </Button>
             </motion.div>
           </div>
+          <HeroTechStack />
         </div>
 
         {/* Hero Image */}

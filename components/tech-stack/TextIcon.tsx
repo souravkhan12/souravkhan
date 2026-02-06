@@ -19,9 +19,10 @@ import {
 
 type TextIconProps = {
   label: string;
+  size?: number;
 };
 
-export default function TextIcon({ label }: TextIconProps) {
+export default function TextIcon({ label, size = 15 }: TextIconProps) {
   const icons = [
     { icon: <SiReact />, label: "react", color: "#61DAFB" },
     { icon: <SiTypescript />, label: "typescript", color: "#3178C6" },
@@ -45,8 +46,8 @@ export default function TextIcon({ label }: TextIconProps) {
 
   return match ? (
     <span
-      className="text-[15px] transition-transform"
-      style={{ color: match.color }}
+      className="transition-transform"
+      style={{ color: match.color, fontSize: size }}
     >
       {match.icon}
     </span>

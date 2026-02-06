@@ -9,6 +9,7 @@ import { LAYOUT } from "@/config/styles";
 import { Section } from "@/components/ui";
 import { GitHubContributions } from "@/components/github-contributions/github-section";
 import Footer from "@/components/footer/footer";
+import HeroTechStack from "@/components/hero/HeroTechStack";
 
 export default function Page() {
   return (
