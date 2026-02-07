@@ -74,45 +74,45 @@ export default function Contact() {
         {/* Contact Information */}
         <div className="space-y-8 sm:space-y-10">
           <h2 className={LAYOUT.heading}>Get in Touch</h2>
-          <p className="text-sm text-gray-600 sm:text-base dark:text-gray-300">
+          <p className="text-muted-foreground text-sm sm:text-base">
             I&apos;d love to hear from you — feel free to reach out via email,
             phone, or connect on LinkedIn.
           </p>
 
           <div className="space-y-3 sm:space-y-4">
             {/* Email */}
-            <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-              <LucideMail className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <div className="text-foreground flex items-center gap-3">
+              <LucideMail className="text-muted-foreground h-5 w-5" />
               <Link
                 href={`mailto:${CONTACT_INFO.email}`}
-                className="hover:text-indigo-600 dark:hover:text-indigo-400"
+                className="hover:text-primary"
               >
                 {CONTACT_INFO.email}
               </Link>
             </div>
 
             {/* Phone */}
-            <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-              <LucidePhone className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <div className="text-foreground flex items-center gap-3">
+              <LucidePhone className="text-muted-foreground h-5 w-5" />
               <Link href={`tel:${CONTACT_INFO.phone}`}>
                 {CONTACT_INFO.phone}
               </Link>
             </div>
 
             {/* Location */}
-            <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-              <LucideMapPin className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <div className="text-foreground flex items-center gap-3">
+              <LucideMapPin className="text-muted-foreground h-5 w-5" />
               <span>{CONTACT_INFO.location}</span>
             </div>
 
             {/* LinkedIn */}
-            <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-              <LucideLinkedin className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <div className="text-foreground flex items-center gap-3">
+              <LucideLinkedin className="text-muted-foreground h-5 w-5" />
               <a
                 href={CONTACT_INFO.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-indigo-600 dark:hover:text-indigo-400"
+                className="hover:text-primary"
               >
                 LinkedIn Profile
               </a>
@@ -170,16 +170,14 @@ export default function Contact() {
 
           {/* Success message */}
           {isSuccess && (
-            <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
+            <div className="text-primary flex items-center gap-2">
               <CheckCircle className="h-5 w-5" />
               Message sent successfully!
             </div>
           )}
 
           {/* Error message */}
-          {errorMsg && (
-            <p className="text-red-600 dark:text-red-400">Error: {errorMsg}</p>
-          )}
+          {errorMsg && <p className="text-destructive">Error: {errorMsg}</p>}
         </div>
       </div>
     </section>

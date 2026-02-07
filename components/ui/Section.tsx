@@ -1,88 +1,81 @@
 import React from "react";
+import { cn } from "@/lib/utils";
 
-export interface SectionProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface SectionProps extends React.HTMLAttributes<HTMLElement> {
   /** Section ID for anchor links */
   id?: string;
   /** Section heading text */
   title?: string;
-  /** Section subheading text */
-  subtitle?: string;
-  /** Section background variant */
-  variant?: "default" | "accent";
-  /** Vertical spacing amount */
-  spacing?: "sm" | "md" | "lg";
-  /** Make content full width */
-  fullWidth?: boolean;
-  /** Center align content */
+  /** Section description text */
+  description?: string;
+  /** Vertical spacing - compact, default, or roomy */
+  spacing?: "compact" | "default" | "roomy";
+  /** Content max width constraint */
+  container?: "default" | "wide" | "narrow";
+  /** Center align all content */
   centered?: boolean;
 }
 
 /**
- * Section container with title and spacing options
+ * Section container with consistent spacing and typography
  *
  * @component
  * @example
- * <Section title="Projects" id="projects" spacing="lg">
- *   <div>Your content here</div>
+ * <Section title="Projects" description="Recent work" spacing="default">
+ *   <ProjectList />
  * </Section>
  */
-const Section = React.forwardRef<HTMLDivElement, SectionProps>(
+const Section = React.forwardRef<HTMLElement, SectionProps>(
   (
     {
-      className = "",
+      className,
       id,
       title,
-      subtitle,
-      variant = "default",
-      spacing = "sm",
-      fullWidth = true,
+      description,
+      spacing = "default",
+      container = "wide",
       centered = false,
       children,
       ...props
     },
     ref,
   ) => {
-    const spacingClasses: Record<string, string> = {
-      sm: "py-6 sm:py-8",
-      md: "py-12 sm:py-16",
-      lg: "py-20 sm:py-24",
+    const spacingStyles = {
+      compact: "py-6 sm:py-8",
+      default: "py-12 sm:py-16",
+      roomy: "py-16 sm:py-24",
     };
 
-    const variantClasses: Record<string, string> = {
-      default: "bg-transparent",
-      accent: "bg-gray-50 dark:bg-neutral-900/50",
+    const containerStyles = {
+      narrow: "max-w-3xl",
+      default: "max-w-5xl",
+      wide: "max-w-7xl",
     };
-
-    const containerClasses = [
-      "w-full relative",
-      spacingClasses[spacing] || spacingClasses.md,
-      variantClasses[variant] || variantClasses.default,
-      className,
-    ]
-      .filter(Boolean)
-      .join(" ");
-
-    const contentClasses = [
-      "mx-auto",
-      fullWidth
-        ? "w-full px-4 sm:px-6 lg:px-8"
-        : "max-w-6xl px-4 sm:px-6 lg:px-8",
-      centered ? "text-center" : "",
-    ]
-      .filter(Boolean)
-      .join(" ");
 
     return (
-      <section className={containerClasses} id={id} ref={ref} {...props}>
-        <div className={contentClasses}>
-          {title && (
-            <div className="mb-4 sm:mb-5">
-              <h2 className="text-xl font-semibold tracking-tight text-gray-900 sm:text-2xl dark:text-white">
-                {title}
-              </h2>
-              {subtitle && (
-                <p className="mt-2 text-base font-medium text-gray-600 sm:text-lg dark:text-gray-400">
-                  {subtitle}
+      <section
+        ref={ref}
+        id={id}
+        className={cn("w-full", spacingStyles[spacing], className)}
+        {...props}
+      >
+        <div
+          className={cn(
+            "mx-auto px-4 sm:px-6 lg:px-8",
+            containerStyles[container],
+            centered && "text-center",
+          )}
+        >
+          {(title || description) && (
+            <div className={cn("mb-8 sm:mb-10", centered && "mx-auto")}>
+              {title && (
+                <span className="text-foreground text-xl font-bold tracking-tight sm:text-2xl">
+                  {title}
+                </span>
+              )}
+              {description && (
+                <p className="text-muted-foreground mt-2 text-base sm:text-lg">
+                  {description}
                 </p>
               )}
             </div>

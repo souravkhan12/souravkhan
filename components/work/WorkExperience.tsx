@@ -16,16 +16,16 @@ export default function WorkExperience() {
           <motion.div key={index}>
             <Card padding="md" variant="default">
               {/* Company & Position */}
-              <h3 className="mb-2 text-lg font-semibold tracking-tight sm:mb-3 sm:text-xl dark:text-gray-100">
+              <h3 className="text-foreground mb-2 text-lg font-semibold tracking-tight sm:mb-3 sm:text-xl">
                 {experience.company}
               </h3>
 
               <div className="flex flex-col pb-2 sm:flex-row sm:items-center sm:gap-2">
-                <p className="mb-1 text-sm font-medium sm:mb-2 sm:text-base dark:text-gray-300">
+                <p className="text-muted-foreground mb-1 text-sm font-medium sm:mb-2 sm:text-base">
                   {experience.position}
                 </p>
                 {experience.duration && (
-                  <p className="mb-2 text-xs text-gray-500 sm:text-sm dark:text-gray-300">
+                  <p className="text-muted-foreground mb-2 text-xs sm:text-sm">
                     {experience.duration}
                   </p>
                 )}
@@ -36,7 +36,7 @@ export default function WorkExperience() {
                 {experience.achievements.map((achievement, idx) => (
                   <li
                     key={idx}
-                    className="list-none text-sm leading-relaxed text-gray-600 sm:text-base dark:text-gray-300"
+                    className="text-muted-foreground list-none text-sm leading-relaxed sm:text-base"
                   >
                     {achievement}
                   </li>
@@ -44,7 +44,10 @@ export default function WorkExperience() {
               </ul>
 
               {/* Technologies */}
-              <TechStack technologies={experience.technologies} />
+              <TechStack
+                technologies={experience.technologies}
+                colorful={true}
+              />
             </Card>
           </motion.div>
         ))}

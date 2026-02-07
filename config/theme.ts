@@ -1,23 +1,23 @@
-// Theme colors and design tokens
+// Theme colors and design tokens - all colors reference CSS variables from globals.css
 export const THEME = {
   colors: {
-    primary: "#6366f1",
-    secondary: "#ec4899",
+    primary: "var(--primary)",
+    secondary: "var(--secondary)",
     background: {
-      light: "#ffffff",
-      dark: "#1E1E1E",
+      light: "var(--background)",
+      dark: "var(--background)",
     },
     text: {
-      light: "#1f2937",
-      dark: "#f3f4f6",
+      light: "var(--foreground)",
+      dark: "var(--foreground)",
     },
     border: {
-      light: "#d1d5db",
-      dark: "#404040",
+      light: "var(--border)",
+      dark: "var(--border)",
     },
     muted: {
-      light: "#6b7280",
-      dark: "#9ca3af",
+      light: "var(--muted-foreground)",
+      dark: "var(--muted-foreground)",
     },
   },
   shadows: {

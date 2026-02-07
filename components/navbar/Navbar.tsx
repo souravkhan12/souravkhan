@@ -1,19 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { SunDim, Menu, X, MoonIcon } from "lucide-react";
 import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import { useTheme } from "next-themes";
 import { navLinks } from "@/config/nav-links";
 import { useMounted } from "@/hooks/use-mounted";
 import { MOTION_VARIANTS } from "@/config/theme";
+import { useOutsideClick } from "@/hooks/use-outside-clickc";
 
 export default function Navbar() {
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
+
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const isDarkMode = theme === "dark";
+
+  const navRef = useRef<HTMLDivElement>(null);
+  useOutsideClick({ ref: navRef, callback: () => setIsOpen(false) });
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 20);
@@ -31,7 +36,7 @@ export default function Navbar() {
         style={{
           boxShadow: scrolled ? "var(--shadow-navbar)" : "none",
         }}
-        className="fixed inset-x-0 top-3 z-20 mx-auto flex w-[80%] max-w-6xl items-center justify-between rounded-full bg-white/80 px-4 py-1 backdrop-blur-md dark:bg-[#1E1E1E]/70"
+        className="bg-background/80 fixed inset-x-0 top-3 z-20 mx-auto flex w-[80%] max-w-6xl items-center justify-between rounded-full px-4 py-1 backdrop-blur-md"
       >
         <motion.img
           layout="position"
@@ -59,7 +64,7 @@ export default function Navbar() {
                 scale: 1.05,
               }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="cursor-pointer text-[15px] font-medium text-gray-700 transition-colors hover:text-blue-600 dark:text-gray-200 dark:hover:text-blue-400"
+              className="text-foreground hover:text-primary dark:text-muted-foreground cursor-pointer text-[15px] font-medium transition-colors"
             >
               {name}
             </motion.a>
@@ -70,35 +75,40 @@ export default function Navbar() {
             variants={MOTION_VARIANTS.staggerItem}
             whileHover={{ rotate: 20, scale: 1.15 }}
             transition={{ type: "spring", stiffness: 250 }}
-            className="cursor-pointer text-gray-700 dark:text-gray-200"
+            className="text-foreground dark:text-muted-foreground cursor-pointer"
           >
-            {isDarkMode ? <SunDim /> : <MoonIcon />}
+            {isDarkMode ? (
+              <SunDim className="text-primary" />
+            ) : (
+              <MoonIcon className="text-foreground" />
+            )}
           </motion.span>
         </motion.div>
 
-        <motion.div
+        <motion.button
           onClick={() => setIsOpen(!isOpen)}
           whileTap={{ scale: 0.9 }}
-          className="cursor-pointer text-gray-800 md:hidden dark:text-gray-100"
+          className="text-foreground cursor-pointer md:hidden"
         >
           {isOpen ? <X size={26} /> : <Menu size={26} />}
-        </motion.div>
+        </motion.button>
       </motion.nav>
 
       {/* Mobile Menu */}
       {isOpen && (
         <motion.div
+          ref={navRef}
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="fixed top-20 right-4 left-4 z-30 flex flex-col gap-4 rounded-xl bg-white p-4 shadow-lg md:hidden dark:bg-neutral-900"
+          className="bg-card border-border fixed top-20 right-4 left-4 z-30 flex flex-col gap-4 rounded-xl border p-4 shadow-lg md:hidden"
         >
           {navLinks.map(({ name, href }, i) => (
             <a
               key={i}
               href={href}
               onClick={() => setIsOpen(false)}
-              className="text-base font-medium text-gray-700 dark:text-gray-200"
+              className="text-foreground dark:text-muted-foreground text-base font-medium"
             >
               {name}
             </a>
@@ -107,9 +117,13 @@ export default function Navbar() {
             onClick={setTheme.bind(null, isDarkMode ? "light" : "dark")}
             whileHover={{ rotate: 20, scale: 1.15 }}
             transition={{ type: "spring", stiffness: 250 }}
-            className="cursor-pointer text-gray-700 dark:text-gray-200"
+            className="text-foreground dark:text-muted-foreground cursor-pointer"
           >
-            {isDarkMode ? <SunDim /> : <MoonIcon />}
+            {isDarkMode ? (
+              <SunDim className="text-primary" />
+            ) : (
+              <MoonIcon className="text-foreground" />
+            )}
           </motion.span>
         </motion.div>
       )}

@@ -34,12 +34,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     ref,
   ) => {
     const inputClasses = [
-      "w-full rounded-lg border border-gray-300 px-4 py-3",
-      "placeholder-gray-400 transition-colors",
-      "focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20",
-      "dark:border-gray-600 dark:bg-neutral-900 dark:text-white dark:placeholder-gray-500",
-      error && "border-red-500 focus:ring-red-500/20",
-      disabled && "cursor-not-allowed opacity-50",
+      "w-full rounded-lg border border-input bg-background px-4 py-3",
+      "placeholder:text-muted-foreground transition-colors",
+      "focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20",
+      "disabled:cursor-not-allowed disabled:opacity-50",
+      error && "border-destructive focus:ring-destructive/20",
       icon && "pl-10",
       fullWidth ? "w-full" : "",
       className,
@@ -50,13 +49,13 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className={fullWidth ? "w-full" : ""}>
         {label && (
-          <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-100">
+          <label className="text-foreground mb-2 block text-sm font-medium">
             {label}
           </label>
         )}
         <div className="relative">
           {icon && (
-            <div className="absolute top-1/2 left-3 flex -translate-y-1/2 items-center text-gray-500">
+            <div className="text-muted-foreground absolute top-1/2 left-3 flex -translate-y-1/2 items-center">
               {icon}
             </div>
           )}
@@ -67,7 +66,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
         </div>
-        {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+        {error && <p className="text-destructive mt-1 text-sm">{error}</p>}
       </div>
     );
   },

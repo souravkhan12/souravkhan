@@ -36,11 +36,11 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ) => {
     const variantClasses: Record<string, string> = {
       default:
-        "bg-white dark:bg-[#1E1E1E] rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-300",
+        "bg-card rounded-2xl border border-border shadow-sm hover:shadow-md transition-shadow duration-300",
       elevated:
-        "bg-white/80 dark:bg-neutral-800/70 rounded-2xl border border-gray-200 dark:border-neutral-700 shadow-lg backdrop-blur-md hover:shadow-xl transition-all duration-300",
+        "bg-card/80 rounded-2xl border border-border shadow-lg backdrop-blur-md hover:shadow-xl transition-all duration-300",
       outline:
-        "bg-transparent rounded-2xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-neutral-900/50 transition-colors duration-300",
+        "bg-transparent rounded-2xl border border-border hover:bg-muted/50 transition-colors duration-300",
     };
 
     const paddingClasses: Record<string, string> = {
@@ -53,7 +53,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
       ? "transition-all duration-300 hover:shadow-lg hover:scale-105"
       : "";
     const gradientClass = gradient
-      ? "bg-gradient-to-br from-indigo-500/10 to-pink-500/10"
+      ? "bg-gradient-to-br from-primary/10 to-primary/5"
       : "";
 
     const combinedClasses = [

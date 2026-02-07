@@ -39,12 +39,11 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     );
 
     const textareaClasses = [
-      "w-full rounded-lg border border-gray-300 px-4 py-3",
-      "placeholder-gray-400 transition-colors resize-none",
-      "focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20",
-      "dark:border-gray-600 dark:bg-neutral-900 dark:text-white dark:placeholder-gray-500",
-      error && "border-red-500 focus:ring-red-500/20",
-      disabled && "cursor-not-allowed opacity-50",
+      "w-full rounded-lg border border-input bg-background px-4 py-3",
+      "placeholder:text-muted-foreground transition-colors resize-none",
+      "focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20",
+      "disabled:cursor-not-allowed disabled:opacity-50",
+      error && "border-destructive focus:ring-destructive/20",
       fullWidth ? "w-full" : "",
       className,
     ]
@@ -54,7 +53,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <div className={fullWidth ? "w-full" : ""}>
         {label && (
-          <label className="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-100">
+          <label className="text-foreground mb-2 block text-sm font-medium">
             {label}
           </label>
         )}
@@ -70,8 +69,8 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           }}
           {...props}
         />
-        <div className="flex justify-between text-xs text-gray-500">
-          {error && <span className="text-red-500">{error}</span>}
+        <div className="text-muted-foreground flex justify-between text-xs">
+          {error && <span className="text-destructive">{error}</span>}
           {charCountMax && (
             <span className="ml-auto">
               {charCount}/{charCountMax}

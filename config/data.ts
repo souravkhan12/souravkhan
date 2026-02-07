@@ -103,18 +103,16 @@ export const HERO = {
   bio: "Building scalable web applications with clean architecture and exceptional user experiences. I transform complex requirements into production-ready solutions that deliver real-world impact.",
 };
 
-// Tech stack for hero section
+// Hero tech stack — minimal & neutral
 export const HERO_TECH_STACK = [
-  { name: "React", icon: "react", color: "#61DAFB" },
-  { name: "Next.js", icon: "next", color: "#000000" },
-  { name: "TypeScript", icon: "typescript", color: "#3178C6" },
-  { name: "Node.js", icon: "node", color: "#339933" },
-  { name: "Tailwind", icon: "tailwind", color: "#06B6D4" },
-  { name: "C++", icon: "cpp", color: "#00599C" },
-  { name: "CSS3", icon: "css", color: "#1572B6" },
-  { name: "Redux", icon: "redux", color: "#764ABC" },
-  { name: "AWS", icon: "aws", color: "#FF9900" },
-  { name: "GitHub", icon: "github", color: "#2088FF" },
+  { name: "React", icon: "react" },
+  { name: "Next.js", icon: "next" },
+  { name: "TypeScript", icon: "typescript" },
+  { name: "Node.js", icon: "node" },
+  { name: "Tailwind", icon: "tailwind" },
+  { name: "AWS", icon: "aws" },
+  { name: "MongoDB", icon: "mongodb" },
+  { name: "CPP", icon: "cpp" },
 ];
 
 export const GITHUB_USERNAME = "souravkhan12";

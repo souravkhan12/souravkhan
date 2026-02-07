@@ -15,18 +15,22 @@ export default function Page() {
   return (
     <>
       <ProjectSchemaMarkup />
-      <div className="flex [--pattern-fg:var(--color-gray-950)]/5 dark:bg-[#1E1E1E] dark:[--pattern-fg:var(--color-white)]/10">
+      <div className="dark:bg-background flex [--pattern-fg:var(--foreground)]/5 dark:[--pattern-fg:var(--foreground)]/10">
         <PatternDivider position="left" />
 
-        <div className={`${LAYOUT.container} dark:bg-[#1E1E1E]`}>
+        <div className={`${LAYOUT.container} dark:bg-background`}>
           <Navbar />
           <Hero />
+          <Section title="Tech Stack" spacing="compact">
+            <HeroTechStack />
+          </Section>
           <WorkExperience />
           <Projects />
           <Section
             title="GitHub Contributions"
             id="github"
             className="mx-auto flex"
+            spacing="compact"
           >
             <GitHubContributions />
           </Section>
