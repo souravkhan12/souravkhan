@@ -17,39 +17,50 @@ import {
   SiAmazon,
 } from "react-icons/si";
 
+import { TECH_COLORS } from "@/config/tech-colors";
+
 type TextIconProps = {
   label: string;
   size?: number;
+  className?: string;
+  colorful?: boolean;
 };
 
-export default function TextIcon({ label, size = 15 }: TextIconProps) {
-  const icons = [
-    { icon: <SiReact />, label: "react", color: "#61DAFB" },
-    { icon: <SiTypescript />, label: "typescript", color: "#3178C6" },
-    { icon: <SiRedux />, label: "redux", color: "#764ABC" },
-    { icon: <SiNextdotjs />, label: "next", color: "#000000" },
-    { icon: <SiCplusplus />, label: "cpp", color: "#00599C" },
-    { icon: <SiMongodb />, label: "mongodb", color: "#13AA52" },
-    { icon: <SiMysql />, label: "sql", color: "#00758F" },
-    { icon: <SiNodedotjs />, label: "node", color: "#339933" },
-    { icon: <SiHtml5 />, label: "html", color: "#E34C26" },
-    { icon: <SiCss3 />, label: "css", color: "#1572B6" },
-    { icon: <SiTailwindcss />, label: "tailwind", color: "#06B6D4" },
-    { icon: <SiThirdweb />, label: "thirdweb", color: "#E500FF" },
-    { icon: <SiGithubactions />, label: "github", color: "#2088FF" },
-    { icon: <SiAmazon />, label: "aws", color: "#FF9900" },
-  ];
+const ICON_MAP: Record<string, React.ReactNode> = {
+  react: <SiReact />,
+  typescript: <SiTypescript />,
+  redux: <SiRedux />,
+  next: <SiNextdotjs />,
+  cpp: <SiCplusplus />,
+  mongodb: <SiMongodb />,
+  sql: <SiMysql />,
+  node: <SiNodedotjs />,
+  html: <SiHtml5 />,
+  css: <SiCss3 />,
+  tailwind: <SiTailwindcss />,
+  thirdweb: <SiThirdweb />,
+  github: <SiGithubactions />,
+  aws: <SiAmazon />,
+};
 
-  const match = icons.find(
-    (i) => i.label.toLowerCase() === label.toLowerCase(),
-  );
+export default function TextIcon({
+  label,
+  size = 16,
+  className = "",
+  colorful = false,
+}: TextIconProps) {
+  const Icon = ICON_MAP[label.toLowerCase()];
+  if (!Icon) return null;
 
-  return match ? (
+  const color = colorful ? TECH_COLORS[label.toLowerCase()] : undefined;
+
+  return (
     <span
-      className="transition-transform"
-      style={{ color: match.color, fontSize: size }}
+      className={`inline-flex items-center leading-none ${className}`}
+      style={{ fontSize: size, color }}
+      aria-hidden
     >
-      {match.icon}
+      {Icon}
     </span>
-  ) : null;
+  );
 }

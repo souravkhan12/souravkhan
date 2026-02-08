@@ -21,6 +21,9 @@ export default function Page() {
         <div className={`${LAYOUT.container} dark:bg-[#1E1E1E]`}>
           <Navbar />
           <Hero />
+          <Section title="Tech Stack">
+            <HeroTechStack />
+          </Section>
           <WorkExperience />
           <Projects />
           <Section
