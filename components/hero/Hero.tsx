@@ -5,27 +5,14 @@ import Image from "next/image";
 import { HERO, CONTACT_INFO } from "@/config/data";
 import { LAYOUT } from "@/config/styles";
 import { Button } from "@/components/ui";
-import HeroTechStack from "@/components/hero/HeroTechStack";
+import { AvailabilityBadge } from "@/components/hero/AvailabilityBadge";
 
 export default function Hero() {
   return (
     <section id="about" className={LAYOUT.section}>
       <div className="mx-auto flex flex-col-reverse items-center justify-between gap-8 px-4 py-12 sm:px-6 lg:flex-row lg:gap-20 lg:py-16">
         <div className="max-w-xl space-y-6">
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 rounded-full border border-green-500 bg-green-50 px-2 py-1 dark:border-green-400 dark:bg-green-900/30"
-          >
-            <motion.span
-              initial={{ filter: "blur(10px)" }}
-              animate={{ filter: "blur(0px)" }}
-              className="text-xs text-green-700 dark:text-green-300"
-            >
-              {HERO.available}
-            </motion.span>
-          </motion.div>
+          <AvailabilityBadge text="Available for Work" />
 
           <motion.h1
             initial={{ opacity: 0, y: 10, filter: "blur(10px)" }}
@@ -83,7 +70,6 @@ export default function Hero() {
               </Button>
             </motion.div>
           </div>
-          <HeroTechStack />
         </div>
 
         {/* Hero Image */}

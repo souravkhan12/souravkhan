@@ -6,9 +6,13 @@ import { useState } from "react";
 
 interface TechStackProps {
   technologies: string[];
+  colorful?: boolean;
 }
 
-export default function TechStack({ technologies }: TechStackProps) {
+export default function TechStack({
+  technologies,
+  colorful = false,
+}: TechStackProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
@@ -23,16 +27,16 @@ export default function TechStack({ technologies }: TechStackProps) {
         >
           <motion.div
             transition={{ type: "spring", stiffness: 200, damping: 10 }}
-            className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1.5 shadow-sm dark:border-neutral-700 dark:bg-neutral-800 dark:shadow-md"
+            className="bg-card inline-flex items-center gap-2 rounded-full border px-3 py-1.5 shadow-sm"
           >
-            <TextIcon label={tech} />
+            <TextIcon label={tech} colorful={colorful} />
             <motion.span
               layout
               initial={{ opacity: 0, width: 0 }}
               animate={{ opacity: 1, width: "auto" }}
               exit={{ opacity: 0, width: 0 }}
               transition={{ duration: 0.3 }}
-              className="text-xs font-medium text-gray-700 dark:text-gray-200"
+              className="text-foreground text-xs font-medium"
             >
               {tech}
             </motion.span>
