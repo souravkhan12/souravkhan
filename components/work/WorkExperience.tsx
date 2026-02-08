@@ -44,7 +44,10 @@ export default function WorkExperience() {
               </ul>
 
               {/* Technologies */}
-              <TechStack technologies={experience.technologies} />
+              <TechStack
+                technologies={experience.technologies}
+                colorful={true}
+              />
             </Card>
           </motion.div>
         ))}

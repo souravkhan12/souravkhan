@@ -37,7 +37,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
         {/* Tech Stack and Links */}
         <div className="flex flex-col justify-between gap-10 md:flex-row">
-          <TechStack technologies={project.technologies} />
+          <TechStack technologies={project.technologies} colorful={true} />
           <div className="flex items-end gap-4">
             <Button asChild size="icon" variant="secondary">
               <a
