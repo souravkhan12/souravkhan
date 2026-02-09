@@ -8,8 +8,9 @@ export default function HeroTechStack() {
   return (
     <motion.div
       initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
+      whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
+      viewport={{ once: true, amount: 0.1 }}
     >
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
         {HERO_TECH_STACK.map((tech) => (

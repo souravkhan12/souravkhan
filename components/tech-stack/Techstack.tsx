@@ -16,7 +16,13 @@ export default function TechStack({
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
-    <motion.ul className="mt-3 flex list-none flex-wrap gap-2">
+    <motion.ul
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      transition={{ duration: 0.6, delay: 0.2 }}
+      viewport={{ once: true, amount: 0.1 }}
+      className="mt-3 flex list-none flex-wrap gap-2"
+    >
       {technologies.map((tech, index) => (
         <motion.li
           key={index}

@@ -2,18 +2,27 @@
 
 import { motion } from "motion/react";
 import TechStack from "../tech-stack/Techstack";
-import { useRef } from "react";
 import { WORK_EXPERIENCE } from "@/config/data";
 import { Section, Card } from "@/components/ui";
+import { MOTION_VARIANTS } from "@/config/theme";
 
 export default function WorkExperience() {
-  const targetRef = useRef(null);
-
   return (
-    <Section id="experience" title="Work Experience" ref={targetRef}>
+    <Section id="experience" title="Work Experience">
       <div className="space-y-8 sm:space-y-12">
         {WORK_EXPERIENCE.map((experience, index) => (
-          <motion.div key={index}>
+          <motion.div
+            key={index}
+            variants={MOTION_VARIANTS.slideUp}
+            initial="hidden"
+            whileInView="visible"
+            transition={{
+              duration: 0.6,
+              delay: index * 0.1,
+              ease: "easeOut",
+            }}
+            viewport={{ once: true, amount: 0.1 }}
+          >
             <Card padding="md" variant="default">
               {/* Company & Position */}
               <h3 className="mb-2 text-lg font-semibold tracking-tight sm:mb-3 sm:text-xl dark:text-gray-100">

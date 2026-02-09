@@ -16,8 +16,9 @@ export default function Hero() {
 
           <motion.h1
             initial={{ opacity: 0, y: 10, filter: "blur(10px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ duration: 0.7, delay: 0.15 }}
+            viewport={{ once: true, amount: 0.1 }}
             className="text-3xl leading-tight font-semibold tracking-tight text-[#3E4959] sm:text-4xl dark:text-white"
           >
             Hi, I&apos;m <span className="">{HERO.name} -</span>
@@ -27,8 +28,9 @@ export default function Hero() {
           {/* Bio */}
           <motion.p
             initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
+            viewport={{ once: true, amount: 0.1 }}
             className={LAYOUT.subheading}
           >
             {HERO.bio}
@@ -75,9 +77,10 @@ export default function Hero() {
         {/* Hero Image */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
+          whileInView={{ opacity: 1, scale: 1 }}
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.8, delay: 0.5 }}
+          viewport={{ once: true, amount: 0.1 }}
           className="flex h-[280px] w-[220px] justify-center rounded-2xl border border-gray-300/30 bg-white/30 shadow-inner backdrop-blur-lg transition-all duration-300 ease-out hover:scale-105 sm:h-[300px] sm:w-[240px] md:h-[330px] md:w-[280px] dark:border-white/10 dark:bg-[#1E1E1E]"
         >
           <div className="relative h-full w-full">
