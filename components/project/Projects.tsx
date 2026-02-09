@@ -12,12 +12,12 @@ export default function Projects() {
         {PROJECTS.map((project, index) => (
           <motion.div
             key={index}
-            variants={MOTION_VARIANTS.slideInScale}
+            variants={MOTION_VARIANTS.slideUp}
             initial="hidden"
             whileInView="visible"
             transition={{
               duration: 0.6,
-              delay: index * 0.15,
+              delay: index * 0.1,
               ease: "easeOut",
             }}
             viewport={{ once: true, amount: 0.1 }}
