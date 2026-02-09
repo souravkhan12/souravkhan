@@ -20,7 +20,6 @@ export default function ProjectCard({ project }: ProjectCardProps) {
     >
       <motion.div
         className="group relative h-60 w-full self-stretch overflow-hidden rounded-[12px] border border-gray-200/20 lg:w-[400px] dark:border-gray-700/20"
-        whileHover={{ scale: 1.02 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
       >
         <Image
@@ -30,12 +29,6 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           fetchPriority="high"
           className="object-cover transition-transform duration-500 ease-in-out hover:scale-105"
         />
-        <motion.div
-          className="absolute inset-0 bg-linear-to-t from-black/10 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-          initial={{ opacity: 0 }}
-          whileHover={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
-        ></motion.div>
       </motion.div>
 
       {/* Project Info */}
