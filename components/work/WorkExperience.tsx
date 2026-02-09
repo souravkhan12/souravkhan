@@ -25,19 +25,31 @@ export default function WorkExperience() {
           >
             <Card padding="md" variant="default">
               {/* Company & Position */}
-              <h3 className="mb-2 text-lg font-semibold tracking-tight sm:mb-3 sm:text-xl dark:text-gray-100">
-                {experience.company}
-              </h3>
+              <div className="flex flex-col items-start md:flex-row md:items-center md:justify-between">
+                <div>
+                  <h3 className="mb-2 text-lg font-semibold tracking-tight sm:mb-3 sm:text-xl dark:text-gray-100">
+                    {experience.company}
+                  </h3>
 
-              <div className="flex flex-col pb-2 sm:flex-row sm:items-center sm:gap-2">
-                <p className="mb-1 text-sm font-medium sm:mb-2 sm:text-base dark:text-gray-300">
-                  {experience.position}
-                </p>
-                {experience.duration && (
-                  <p className="mb-2 text-xs text-gray-500 sm:text-sm dark:text-gray-300">
-                    {experience.duration}
-                  </p>
-                )}
+                  <div className="flex flex-col pb-2 sm:flex-row sm:items-center sm:gap-2">
+                    <p className="mb-1 text-sm font-medium sm:mb-2 sm:text-base dark:text-gray-300">
+                      {experience.position}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col pb-4 md:items-end">
+                  {experience.duration && (
+                    <p className="mb-2 text-xs text-gray-500 sm:text-sm dark:text-gray-300">
+                      {experience.duration}
+                    </p>
+                  )}
+                  {experience.location && (
+                    <p className="mb-2 text-xs text-gray-500 sm:text-sm dark:text-gray-300">
+                      {experience.location}
+                    </p>
+                  )}
+                </div>
               </div>
 
               {/* Achievements */}

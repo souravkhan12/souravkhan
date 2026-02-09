@@ -44,6 +44,7 @@ export const WORK_EXPERIENCE = [
     company: "The unmarketing Agency",
     position: "Frontend Developer",
     duration: "Aug 2025 - Present",
+    location: "Goa, Remote",
     achievements: [
       "Developed and maintained responsive web applications using React, Redux, and Tailwind CSS, enhancing user experience and performance. Collaborated with cross-functional teams to implement new features and optimize existing functionalities, resulting in a 20% increase in user engagement.",
     ],
@@ -53,6 +54,7 @@ export const WORK_EXPERIENCE = [
     company: "Samsung",
     position: "Software Engineer",
     duration: "Sep 2024 - Sep 2025",
+    location: "Noida, Onsite",
     achievements: [
       "Built a real-time monitoring system for 100K+ TV models and 50+ languages, improving system efficiency by 30%. Developed Pvod DevTool for profiling 3 streaming apps, cutting manual effort by 80%.",
     ],
@@ -62,6 +64,7 @@ export const WORK_EXPERIENCE = [
     company: "OriginCore",
     position: "Frontend Developer",
     duration: "Feb 2023 - July 2023",
+    location: "Remote",
     achievements: [
       "Created dynamic, responsive UIs using React, Redux, and React Query. Optimized frontend performance with code splitting and lazy loading.",
     ],
@@ -71,6 +74,7 @@ export const WORK_EXPERIENCE = [
     company: "Chegg",
     position: "Subject Matter Expert (SME)",
     duration: "",
+    location: "Remote",
     achievements: [
       "Solved 100+ advanced academic problems in DSA, DBMS, and OS with a 98% approval rating.",
     ],

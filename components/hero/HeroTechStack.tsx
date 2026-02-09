@@ -22,6 +22,7 @@ export default function HeroTechStack() {
               label={tech.icon}
               size={22}
               className="opacity-70 group-hover:opacity-100"
+              colorful={true}
             />
           </div>
         ))}
