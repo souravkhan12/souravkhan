@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@ngxpert/cmdk": "^3.0.0",
+    "@studio-freight/react-lenis": "^0.0.47",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",

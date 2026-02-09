@@ -1,9 +1,9 @@
 import { Metadata } from "next";
 import "@/styles/globals.css";
-import { ThemeProvider } from "@/components/theme/theme-provider";
 import { SEO_CONFIG } from "@/config/seo";
 import { CONTACT_INFO, SOCIAL_LINKS } from "@/config/data";
 import { mono, sans, serif } from "@/utils/fonts";
+import Providers from "@/components/ui/provider";
 
 export const metadata: Metadata = {
   title: {
@@ -136,9 +136,7 @@ export default function RootLayout({
       <body
         className={`${sans.variable} ${mono.variable} ${serif.variable} font-sans antialiased`}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
-        </ThemeProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

@@ -32,6 +32,18 @@ export default function Navbar() {
     return null;
   }
 
+  const handleSmoothScroll = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+  ) => {
+    e.preventDefault();
+    const targetId = href.replace("#", "");
+    const element = document.getElementById(targetId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
     <>
       <motion.nav
@@ -62,6 +74,7 @@ export default function Navbar() {
             <motion.a
               key={i}
               href={href}
+              onClick={(e) => handleSmoothScroll(e, href)}
               variants={MOTION_VARIANTS.staggerItem}
               whileHover={{
                 scale: 1.05,
@@ -107,7 +120,10 @@ export default function Navbar() {
               <a
                 key={i}
                 href={href}
-                onClick={() => setIsOpen(false)}
+                onClick={(e) => {
+                  handleSmoothScroll(e, href);
+                  setIsOpen(false);
+                }}
                 className="text-base font-medium text-gray-700 dark:text-gray-200"
               >
                 {name}
