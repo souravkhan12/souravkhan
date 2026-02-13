@@ -58,7 +58,7 @@ export default function Navbar() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, marginLeft: "-6px" }}
           transition={{ duration: 0.4, ease: "easeOut" }}
-          src="/LogoBG.png"
+          src="/LogoBG.webp"
           alt="Logo"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           className="h-10 w-10 cursor-pointer rounded-full sm:h-12 sm:w-12 dark:bg-white"

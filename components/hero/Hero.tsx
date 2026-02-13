@@ -85,7 +85,7 @@ export default function Hero() {
         >
           <div className="relative h-full w-full">
             <Image
-              src="/sourav.png"
+              src="/sourav.webp"
               alt={HERO.name}
               fill
               fetchPriority="high"

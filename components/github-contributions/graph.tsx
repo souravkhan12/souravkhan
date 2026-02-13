@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { Pill } from "../kibo-ui/pill";
 import { LoaderIcon } from "lucide-react";
 import { Card } from "@/components/ui";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const GitHubContributionGraph = memo(
   ({ contributions }: { contributions: Activity[] }) => {
@@ -121,7 +122,7 @@ export default GitHubContributionGraph;
 export function GitHubContributionFallback() {
   return (
     <div className="flex h-40.5 w-full items-center justify-center">
-      <LoaderIcon className="text-muted-foreground animate-spin" />
+      <Skeleton className="h-full w-full" />
     </div>
   );
 }
