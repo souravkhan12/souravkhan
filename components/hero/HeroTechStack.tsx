@@ -1,12 +1,11 @@
-"use client";
-
-import { motion } from "motion/react";
+import { MotionDiv } from "@/components/ui/motion-wrapper";
 import { HERO_TECH_STACK } from "@/config/data";
 import TextIcon from "@/components/tech-stack/TextIcon";
+import { motion } from "motion/react";
 
 export default function HeroTechStack() {
   return (
-    <motion.div
+    <MotionDiv
       initial={{ opacity: 0, y: 6 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
@@ -27,6 +26,6 @@ export default function HeroTechStack() {
           </div>
         ))}
       </div>
-    </motion.div>
+    </MotionDiv>
   );
 }

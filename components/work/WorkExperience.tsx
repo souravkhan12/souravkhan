@@ -1,6 +1,4 @@
-"use client";
-
-import { motion } from "motion/react";
+import { MotionDiv } from "@/components/ui/motion-wrapper";
 import TechStack from "../tech-stack/Techstack";
 import { WORK_EXPERIENCE } from "@/config/data";
 import { Section, Card } from "@/components/ui";
@@ -11,7 +9,7 @@ export default function WorkExperience() {
     <Section id="experience" title="Work Experience">
       <div className="space-y-8 sm:space-y-12">
         {WORK_EXPERIENCE.map((experience, index) => (
-          <motion.div
+          <MotionDiv
             key={index}
             variants={MOTION_VARIANTS.slideUp}
             initial="hidden"
@@ -70,7 +68,7 @@ export default function WorkExperience() {
                 colorful={true}
               />
             </Card>
-          </motion.div>
+          </MotionDiv>
         ))}
       </div>
     </Section>

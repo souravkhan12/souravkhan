@@ -1,6 +1,4 @@
-"use client";
-
-import { motion } from "motion/react";
+import { MotionSpan } from "@/components/ui/motion-wrapper";
 import { Dot } from "lucide-react";
 import { Badge } from "@/components/ui";
 
@@ -15,7 +13,7 @@ export function AvailabilityBadge({ text }: AvailabilityBadgeProps) {
       className="flex items-center gap-1.5 border-emerald-500/30 bg-emerald-500/10 px-2 py-1.5 text-[11px] font-medium text-emerald-700 dark:text-emerald-400"
     >
       {/* live indicator */}
-      <motion.span
+      <MotionSpan
         animate={{ scale: [1, 1.2, 1] }}
         transition={{
           duration: 1.6,
@@ -25,7 +23,7 @@ export function AvailabilityBadge({ text }: AvailabilityBadgeProps) {
         className="flex items-center justify-center text-emerald-500"
       >
         <Dot size={8} strokeWidth={5} />
-      </motion.span>
+      </MotionSpan>
 
       <span className="leading-none">{text}</span>
     </Badge>

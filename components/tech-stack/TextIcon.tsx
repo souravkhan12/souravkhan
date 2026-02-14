@@ -1,5 +1,3 @@
-"use client";
-
 import {
   SiCplusplus,
   SiCss3,

@@ -81,7 +81,7 @@ export default function Hero() {
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.8, delay: 0.5 }}
           viewport={{ once: true, amount: 0.1 }}
-          className="flex h-[280px] w-[220px] justify-center rounded-2xl border border-gray-300/30 bg-white/30 shadow-inner backdrop-blur-lg transition-all duration-300 ease-out hover:scale-105 sm:h-[300px] sm:w-[240px] md:h-[330px] md:w-[280px] dark:border-white/10 dark:bg-[#1E1E1E]"
+          className="flex h-[280px] w-[220px] justify-center rounded-2xl border border-gray-300/30 bg-white/30 shadow-inner backdrop-blur-lg transition-all duration-300 ease-out hover:scale-105 sm:h-[300px] sm:w-60 md:h-[330px] md:w-[280px] dark:border-white/10 dark:bg-[#1E1E1E]"
         >
           <div className="relative h-full w-full">
             <Image
@@ -89,7 +89,9 @@ export default function Hero() {
               alt={HERO.name}
               fill
               fetchPriority="high"
+              priority={true}
               className="rounded-2xl object-cover"
+              sizes="(max-width: 640px) 220px, (max-width: 768px) 240px, (max-width: 1024px) 280px"
             />
           </div>
         </motion.div>

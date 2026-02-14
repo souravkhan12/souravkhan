@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { SunDim, Menu, X, MoonIcon } from "lucide-react";
 import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import { useTheme } from "next-themes";
+import Image from "next/image";
 import { navLinks } from "@/config/nav-links";
 import { useMounted } from "@/hooks/use-mounted";
 import { MOTION_VARIANTS } from "@/config/theme";
@@ -53,15 +54,14 @@ export default function Navbar() {
         }}
         className="fixed inset-x-0 top-3 z-20 mx-auto flex w-[80%] max-w-6xl items-center justify-between rounded-full bg-white/80 px-4 py-1 backdrop-blur-md dark:bg-[#1E1E1E]/70"
       >
-        <motion.img
-          layout="position"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1, marginLeft: "-6px" }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
+        <Image
           src="/LogoBG.webp"
           alt="Logo"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          width={48}
+          height={48}
+          priority={true}
           className="h-10 w-10 cursor-pointer rounded-full sm:h-12 sm:w-12 dark:bg-white"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         />
 
         <motion.div
