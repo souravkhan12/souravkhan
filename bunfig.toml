@@ -1,0 +1,15 @@
+# Bun Configuration
+# This file tells Bun how to handle your project
+
+[install]
+# Use Bun's faster installer
+cache = true
+frozen = false
+
+[run]
+# Enable Bun's runtime optimizations
+bun = true
+
+[test]
+# Use Bun's test runner
+preload = ["./test/setup.ts"]

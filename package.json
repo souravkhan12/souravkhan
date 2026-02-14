@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "start": "next start",
-    "lint": "eslint .",
-    "postbuild": "next-sitemap",
-    "upgrade:next": "npx @next/codemod@latest upgrade latest",
-    "upgrade:tailwind": "npx @tailwindcss/upgrade@latest",
+    "dev": "bun run next dev --turbopack",
+    "build": "bun run next build --turbopack",
+    "start": "bun run next start",
+    "lint": "bun run eslint .",
+    "postbuild": "bun run next-sitemap",
+    "upgrade:next": "bunx @next/codemod@latest upgrade latest",
+    "upgrade:tailwind": "bunx @tailwindcss/upgrade@latest",
     "prepare": "husky"
   },
   "lint-staged": {
