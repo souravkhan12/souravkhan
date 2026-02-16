@@ -30,7 +30,6 @@ const GitHubContributionGraph = memo(
               blockSize={blockSize}
               blockMargin={blockMargin}
               fontSize={fontSize}
-              className="min-w-max"
               labels={{
                 months: [
                   "Jan",
@@ -72,7 +71,7 @@ const GitHubContributionGraph = memo(
 
               {/* Footer */}
               <ContributionGraphFooter>
-                <div className="mt-2 flex w-full items-center justify-between gap-4">
+                <div className="mt-2 flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
                   <ContributionGraphTotalCount>
                     {({ totalCount, year }) => (
                       <div className="flex items-center gap-2">

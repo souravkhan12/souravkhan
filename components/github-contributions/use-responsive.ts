@@ -19,14 +19,15 @@ export function useResponsiveGraphSize(): GraphSize {
     const w = window.innerWidth;
 
     if (w >= 1280) {
-      // xl
       setSize({ blockSize: 16, blockMargin: 3, fontSize: 13 });
     } else if (w >= 1024) {
-      // lg
       setSize({ blockSize: 14, blockMargin: 3, fontSize: 12 });
-    } else {
-      // md tablets
+    } else if (w >= 768) {
       setSize({ blockSize: 12, blockMargin: 2, fontSize: 10 });
+    } else if (w >= 480) {
+      setSize({ blockSize: 10, blockMargin: 2, fontSize: 9 });
+    } else {
+      setSize({ blockSize: 8, blockMargin: 1, fontSize: 8 });
     }
   }, []);
 

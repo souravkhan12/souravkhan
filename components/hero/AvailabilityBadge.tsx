@@ -20,7 +20,6 @@ export function AvailabilityBadge({ text }: AvailabilityBadgeProps) {
             initial={{ opacity: 0, scale: 1 }}
             animate={{
               scale: [1, 2.5],
-              // Fade IN (0->0.6) then OUT (0.6->0) to remove the "blink" at the start
               opacity: [0, 0.6, 0],
             }}
             transition={{
@@ -28,7 +27,6 @@ export function AvailabilityBadge({ text }: AvailabilityBadgeProps) {
               repeat: Infinity,
               delay: delay,
               ease: "easeOut",
-              // times helps control the curve: fade in quickly (0-20%), then fade out slowly
               times: [0, 0.2, 1],
             }}
             style={{ willChange: "transform, opacity" }}

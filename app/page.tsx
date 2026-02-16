@@ -17,7 +17,6 @@ export default function Page() {
       <ProjectSchemaMarkup />
       <div className="flex [--pattern-fg:var(--color-gray-950)]/5 dark:bg-[#1E1E1E] dark:[--pattern-fg:var(--color-white)]/10">
         <PatternDivider position="left" />
-
         <div className={`${LAYOUT.container} dark:bg-[#1E1E1E]`}>
           <Navbar />
           <Hero />
