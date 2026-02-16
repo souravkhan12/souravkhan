@@ -3,7 +3,7 @@
 import { motion } from "motion/react";
 
 interface MotionWrapperProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   className?: string;
   variants?: any;
   initial?: any;

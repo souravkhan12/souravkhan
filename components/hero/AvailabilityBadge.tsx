@@ -1,5 +1,4 @@
 import { MotionSpan } from "@/components/ui/motion-wrapper";
-import { Dot } from "lucide-react";
 import { Badge } from "@/components/ui";
 
 interface AvailabilityBadgeProps {
@@ -12,18 +11,33 @@ export function AvailabilityBadge({ text }: AvailabilityBadgeProps) {
       variant="outline"
       className="flex items-center gap-1.5 border-emerald-500/30 bg-emerald-500/10 px-2 py-1.5 text-[11px] font-medium text-emerald-700 dark:text-emerald-400"
     >
-      {/* live indicator */}
-      <MotionSpan
-        animate={{ scale: [1, 1.2, 1] }}
-        transition={{
-          duration: 1.6,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="flex items-center justify-center text-emerald-500"
-      >
-        <Dot size={8} strokeWidth={5} />
-      </MotionSpan>
+      <span className="relative flex h-3 w-3 shrink-0 items-center justify-center">
+        {/* We use 3s duration with 1s delay steps for perfect synchronization */}
+        {[0, 1, 2].map((delay) => (
+          <MotionSpan
+            key={delay}
+            className="absolute h-full w-full rounded-full bg-emerald-400/60"
+            initial={{ opacity: 0, scale: 1 }}
+            animate={{
+              scale: [1, 2.5],
+              // Fade IN (0->0.6) then OUT (0.6->0) to remove the "blink" at the start
+              opacity: [0, 0.6, 0],
+            }}
+            transition={{
+              duration: 3, // Slower duration for smoother ripple
+              repeat: Infinity,
+              delay: delay,
+              ease: "easeOut",
+              // times helps control the curve: fade in quickly (0-20%), then fade out slowly
+              times: [0, 0.2, 1],
+            }}
+            style={{ willChange: "transform, opacity" }}
+          />
+        ))}
+
+        {/* Center fixed dot */}
+        <span className="relative z-10 h-2 w-2 rounded-full bg-emerald-500" />
+      </span>
 
       <span className="leading-none">{text}</span>
     </Badge>
