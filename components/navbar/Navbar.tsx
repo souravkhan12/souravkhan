@@ -12,6 +12,8 @@ import { MOTION_VARIANTS } from "@/config/theme";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 import { RemoveScroll } from "react-remove-scroll";
 import { useInitialAnimation } from "@/hooks/use-initial-animation";
+import { usePathname } from "next/navigation";
+import { redirect } from "next/navigation";
 
 export default function Navbar() {
   const { scrollY } = useScroll();
@@ -19,6 +21,8 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const isDarkMode = theme === "dark";
+
+  const pathname = usePathname();
 
   const shouldAnimate = useInitialAnimation();
   const navRef = useRef<HTMLDivElement | null>(null);
@@ -36,16 +40,27 @@ export default function Navbar() {
     return null;
   }
 
-  const handleSmoothScroll = (
+  const handleSectionNavigation = (
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string,
   ) => {
-    e.preventDefault();
-    const targetId = href.replace("#", "");
-    const element = document.getElementById(targetId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    const id = href.replace("#", "");
+
+    if (pathname === "/") {
+      e.preventDefault();
+
+      const el = document.getElementById(id);
+      if (!el) return;
+
+      el.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+      return;
     }
+
+    e.preventDefault();
+    redirect(`/#${id}`);
   };
 
   return (
@@ -55,7 +70,7 @@ export default function Navbar() {
         style={{
           boxShadow: scrolled ? "var(--shadow-navbar)" : "none",
         }}
-        className="fixed inset-x-0 top-3 z-20 mx-auto flex w-[80%] max-w-6xl items-center justify-between rounded-full bg-white/80 px-1 py-1 backdrop-blur-md dark:bg-[#1E1E1E]/70"
+        className="fixed inset-x-0 top-3 z-20 mx-auto flex w-[90%] items-center justify-between rounded-full bg-white/80 px-2 py-1 backdrop-blur-md sm:w-[85%] md:w-[80%] lg:w-[75%] xl:max-w-6xl dark:bg-[#1E1E1E]/70"
       >
         <Image
           src="/LogoBG.webp"
@@ -78,7 +93,7 @@ export default function Navbar() {
               <motion.a
                 key={i}
                 href={href}
-                onClick={(e) => handleSmoothScroll(e, href)}
+                onClick={(e) => handleSectionNavigation(e, href)}
                 variants={MOTION_VARIANTS.staggerItem}
                 whileHover={{
                   scale: 1.05,
@@ -143,7 +158,7 @@ export default function Navbar() {
                   key={i}
                   href={href}
                   onClick={(e) => {
-                    handleSmoothScroll(e, href);
+                    handleSectionNavigation(e, href);
                     setIsOpen(false);
                   }}
                   className="text-base font-medium text-gray-700 dark:text-gray-200"

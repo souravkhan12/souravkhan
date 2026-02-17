@@ -40,7 +40,7 @@ export default async function BlogPostPage({
   if (!post) notFound();
 
   return (
-    <article className="prose prose-gray dark:prose-invert mx-auto max-w-3xl py-12">
+    <article className="prose prose-gray dark:prose-invert mx-auto max-w-3xl px-4 py-12">
       <header className="mt-10">
         <h1 className="text-3xl font-bold tracking-tight">{post.title}</h1>
         <div className="mt-2 flex items-center gap-3 text-sm text-gray-500">
