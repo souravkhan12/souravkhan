@@ -5,6 +5,7 @@ import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/footer";
 import { PatternDivider } from "@/components/ui/pattern-divider";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import Image from "next/image";
 
 // Generate static paths for all posts
 export async function generateStaticParams() {
@@ -49,7 +50,7 @@ export default async function BlogPostPage({
       <div className={`${LAYOUT.container} dark:bg-[#1E1E1E]`}>
         <Navbar />
         <article className="prose prose-gray dark:prose-invert mx-auto max-w-3xl py-12">
-          <header className="mb-8">
+          <header className="mt-10">
             <h1 className="text-3xl font-bold tracking-tight">{post.title}</h1>
             <div className="mt-2 flex items-center gap-3 text-sm text-gray-500">
               <time dateTime={post.date}>
@@ -63,6 +64,16 @@ export default async function BlogPostPage({
               <span>{post.readingTime}</span>
             </div>
           </header>
+          {post.image && (
+            <div className="relative mb-10 h-64 w-full overflow-hidden rounded-lg sm:h-80">
+              <Image
+                src={post.image}
+                alt={post.title}
+                fill
+                className="object-cover"
+              />
+            </div>
+          )}
           <MDXRemote source={post.content} />
         </article>
         <Footer />

@@ -1,0 +1,58 @@
+---
+title: "System Design Principles for Frontend Engineers"
+date: "2026-02-10"
+description: "Essential system design concepts every frontend engineer should know for building scalable applications."
+tags: ["system-design", "architecture", "frontend", "scalability"]
+published: true
+image: "/blog/system-design.png"
+---
+
+Frontend isn't just components—it's about building systems that scale. Here's what I've learned from building apps that serve millions.
+
+## 🏗️ Component Architecture
+
+Think in systems, not components:
+
+```jsx
+// Bad - Tightly coupled
+function UserProfile() {
+  const [user, setUser] = useState(null);
+  // Fetch logic mixed with UI
+  useEffect(() => {
+    fetchUser().then(setUser);
+  }, []);
+  return <Avatar user={user} />;
+}
+
+// Good - Separated concerns
+function UserProfile() {
+  return (
+    <UserProvider>
+      <UserAvatar />
+      <UserDetails />
+    </UserProvider>
+  );
+}
+```
+
+## 🔄 State Management Patterns
+
+Choose the right tool for the job:
+
+- **Local state**: `useState` for component-specific data
+- **Shared state**: Context for cross-component data
+- **Server state**: React Query/TanStack for API data
+- **Global state**: Zustand for app-wide state
+
+## 📈 Scalability Patterns
+
+Build for growth from day one:
+
+1. **Component composition** over inheritance
+2. **Data fetching abstraction** for easy backend changes
+3. **Error boundaries** for graceful degradation
+4. **Lazy loading** for performance
+
+These principles helped scale a startup app from **1K** to **1M** users without major rewrites.
+
+Good systems don't just work—they evolve.

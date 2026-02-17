@@ -8,12 +8,15 @@ import { Card, Button } from "@/components/ui";
 import TechStack from "@/components/tech-stack/Techstack";
 import { motion } from "motion/react";
 import React from "react";
+import { useInitialAnimation } from "@/hooks/use-initial-animation";
 
 interface ProjectCardProps {
   project: Project;
 }
 
 export default function ProjectCard({ project }: ProjectCardProps) {
+  const shouldAnimate = useInitialAnimation();
+
   return (
     <Card
       variant="default"
@@ -35,7 +38,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       {/* Project Info */}
       <motion.div
         className="flex-1"
-        initial={{ opacity: 0, x: 20 }}
+        initial={shouldAnimate ? { opacity: 0, x: 20 } : false}
         whileInView={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
         viewport={{ once: true, amount: 0.1 }}

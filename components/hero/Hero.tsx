@@ -6,8 +6,11 @@ import { HERO, CONTACT_INFO } from "@/config/data";
 import { LAYOUT } from "@/config/styles";
 import { Button } from "@/components/ui";
 import { AvailabilityBadge } from "@/components/hero/AvailabilityBadge";
+import { useInitialAnimation } from "@/hooks/use-initial-animation";
 
 export default function Hero() {
+  const shouldAnimate = useInitialAnimation();
+
   return (
     <section id="about" className={LAYOUT.section}>
       <div className="mx-auto flex flex-col-reverse items-center justify-between gap-8 px-4 py-12 sm:px-6 lg:flex-row lg:gap-20 lg:py-16">
@@ -15,7 +18,11 @@ export default function Hero() {
           <AvailabilityBadge text="Available for Work" />
 
           <motion.h1
-            initial={{ opacity: 0, y: 10, filter: "blur(10px)" }}
+            initial={
+              shouldAnimate
+                ? { opacity: 0, y: 10, filter: "blur(10px)" }
+                : false
+            }
             whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ duration: 0.7, delay: 0.15 }}
             viewport={{ once: true, amount: 0.1 }}
@@ -27,7 +34,7 @@ export default function Hero() {
 
           {/* Bio */}
           <motion.p
-            initial={{ opacity: 0, y: 10 }}
+            initial={shouldAnimate ? { opacity: 0, y: 10 } : false}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
             viewport={{ once: true, amount: 0.1 }}
@@ -76,7 +83,7 @@ export default function Hero() {
 
         {/* Hero Image */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={shouldAnimate ? { opacity: 0, scale: 0.9 } : false}
           whileInView={{ opacity: 1, scale: 1 }}
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.8, delay: 0.5 }}

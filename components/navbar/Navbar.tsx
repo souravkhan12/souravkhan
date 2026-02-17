@@ -11,6 +11,7 @@ import { useMounted } from "@/hooks/use-mounted";
 import { MOTION_VARIANTS } from "@/config/theme";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 import { RemoveScroll } from "react-remove-scroll";
+import { useInitialAnimation } from "@/hooks/use-initial-animation";
 
 export default function Navbar() {
   const { scrollY } = useScroll();
@@ -19,6 +20,7 @@ export default function Navbar() {
   const { theme, setTheme } = useTheme();
   const isDarkMode = theme === "dark";
 
+  const shouldAnimate = useInitialAnimation();
   const navRef = useRef<HTMLDivElement | null>(null);
   useOutsideClick({
     ref: navRef,
@@ -67,7 +69,7 @@ export default function Navbar() {
 
         <motion.div
           variants={MOTION_VARIANTS.containerStagger}
-          initial="hidden"
+          initial={shouldAnimate ? "hidden" : false}
           animate="visible"
           className="hidden flex-row items-center justify-center gap-6 md:flex"
         >

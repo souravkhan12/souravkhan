@@ -6,6 +6,7 @@ import { LAYOUT } from "@/config/styles";
 import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/footer";
 import { PatternDivider } from "@/components/ui/pattern-divider";
+import Image from "next/image";
 
 export const metadata = {
   title: "Blog",
@@ -26,35 +27,47 @@ export default function BlogPage() {
               <Link key={post.slug} href={`/blog/${post.slug}`}>
                 <Card
                   variant="default"
-                  padding="md"
-                  className="h-full transition-shadow hover:shadow-md"
+                  padding="sm"
+                  className="group h-full overflow-hidden transition-shadow hover:shadow-md"
                 >
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    {post.title}
-                  </h3>
-                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                    {post.description}
-                  </p>
-                  <div className="mt-4 flex items-center gap-3 text-xs text-gray-500 dark:text-gray-500">
-                    <time dateTime={post.date}>
-                      {new Date(post.date).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </time>
-                    <span>·</span>
-                    <span>{post.readingTime}</span>
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {post.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600 dark:bg-gray-800 dark:text-gray-400"
-                      >
-                        {tag}
-                      </span>
-                    ))}
+                  {post.image && (
+                    <div className="relative h-48 w-full overflow-hidden">
+                      <Image
+                        src={post.image}
+                        alt={post.title}
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </div>
+                  )}
+                  <div className="p-4">
+                    <h3 className="text-lg font-semibold text-gray-900 transition-colors group-hover:text-gray-700 dark:text-white dark:group-hover:text-gray-300">
+                      {post.title}
+                    </h3>
+                    <p className="mt-2 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">
+                      {post.description}
+                    </p>
+                    <div className="mt-3 flex items-center gap-3 text-xs text-gray-500 dark:text-gray-500">
+                      <time dateTime={post.date}>
+                        {new Date(post.date).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </time>
+                      <span>·</span>
+                      <span>{post.readingTime}</span>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {post.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600 dark:bg-gray-800 dark:text-gray-400"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </Card>
               </Link>
