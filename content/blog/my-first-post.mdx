@@ -1,0 +1,130 @@
+---
+title: "Hello World — Starting My Engineering Blog"
+date: "2026-02-17"
+description: "Why I’m starting this blog and what I’ll be writing about — frontend architecture, performance, and real production lessons."
+tags: ["engineering", "frontend", "react", "system-design"]
+---
+
+---
+
+# Hello World 👋
+
+After spending a lot of time solving problems in production systems, debugging weird UI behavior at 2 AM, and learning things the _hard way_, I finally decided to start writing.
+
+This blog is not a tutorial collection.
+
+It is a **thinking log of a working engineer**.
+
+I’ll document:
+
+- mistakes
+- tradeoffs
+- performance bottlenecks
+- architectural decisions
+- and why simple solutions sometimes fail at scale
+
+---
+
+## Why this blog exists
+
+Most tutorials teach _how to make something work_.
+
+Production engineering is about:
+
+> Making it work consistently under bad network, real users, large data, and time pressure.
+
+The difference between demo code and production code is enormous.
+
+Example:
+
+A dropdown working locally:
+
+```js
+setOpen(!open);
+```
+
+A dropdown working in production:
+
+- keyboard accessible
+- screen reader friendly
+- closes on outside click
+- closes on scroll
+- closes on route change
+- survives React Strict Mode
+- survives concurrent rendering
+- handles race conditions
+
+Same feature.
+Different engineering.
+
+---
+
+## What I work on
+
+I primarily work around:
+
+### Frontend Architecture
+
+- component isolation
+- predictable state
+- rendering performance
+- scalable folder structures
+
+### Data Heavy UI
+
+Dashboards, filters, pagination, streaming data.
+
+### Performance
+
+- avoiding unnecessary renders
+- memoization strategies
+- virtualization
+- network behavior awareness
+
+### System Thinking (Frontend System Design)
+
+Not backend distributed systems —
+but _UI behaving correctly with distributed data_.
+
+---
+
+## What you can expect
+
+Posts here will be practical and honest.
+
+You’ll see topics like:
+
+- Why cursor pagination beats offset pagination in real dashboards
+- Why loading spinners are UX bugs
+- Why most custom hooks are wrong
+- The cost of useEffect
+- Building components that don’t break after 6 months
+
+No hype. No over-engineering. No cargo cult patterns.
+
+---
+
+## Who this is for
+
+If you:
+
+- know React basics
+- want to become a strong engineer (not just framework user)
+- prepare for frontend interviews
+- or build real products
+
+You’ll benefit from this blog.
+
+---
+
+## Next post
+
+I’ll start with a topic that caused multiple production bugs:
+
+> **Outside Click Detection — The deceptively simple problem**
+
+Because almost every implementation online is subtly broken.
+
+---
+
+Thanks for reading ✨

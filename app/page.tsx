@@ -10,6 +10,7 @@ import { Section } from "@/components/ui";
 import { GitHubContributions } from "@/components/github-contributions/github-section";
 import Footer from "@/components/footer/footer";
 import HeroTechStack from "@/components/hero/HeroTechStack";
+import { RecentPosts } from "@/components/blog/recent-posts";
 
 export default function Page() {
   return (
@@ -19,6 +20,7 @@ export default function Page() {
         <PatternDivider position="left" />
         <div className={`${LAYOUT.container} dark:bg-[#1E1E1E]`}>
           <Navbar />
+
           <Hero />
           <Section title="Tech Stack">
             <HeroTechStack />
@@ -32,10 +34,13 @@ export default function Page() {
           >
             <GitHubContributions />
           </Section>
+
+          <Section title="Recent Posts" id="blog">
+            <RecentPosts />
+          </Section>
           <Contact />
           <Footer />
         </div>
-
         <PatternDivider position="right" />
       </div>
     </>

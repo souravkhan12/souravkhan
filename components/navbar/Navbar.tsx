@@ -5,6 +5,7 @@ import { SunDim, Menu, X, MoonIcon } from "lucide-react";
 import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
+import Link from "next/link";
 import { navLinks } from "@/config/nav-links";
 import { useMounted } from "@/hooks/use-mounted";
 import { MOTION_VARIANTS } from "@/config/theme";
@@ -70,21 +71,39 @@ export default function Navbar() {
           animate="visible"
           className="hidden flex-row items-center justify-center gap-6 md:flex"
         >
-          {navLinks.map(({ name, href }, i) => (
-            <motion.a
-              key={i}
-              href={href}
-              onClick={(e) => handleSmoothScroll(e, href)}
-              variants={MOTION_VARIANTS.staggerItem}
-              whileHover={{
-                scale: 1.05,
-              }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="cursor-pointer text-[15px] font-medium text-gray-700 transition-colors hover:text-blue-600 dark:text-gray-200 dark:hover:text-blue-400"
-            >
-              {name}
-            </motion.a>
-          ))}
+          {navLinks.map(({ name, href }, i) =>
+            href.startsWith("#") ? (
+              <motion.a
+                key={i}
+                href={href}
+                onClick={(e) => handleSmoothScroll(e, href)}
+                variants={MOTION_VARIANTS.staggerItem}
+                whileHover={{
+                  scale: 1.05,
+                }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="cursor-pointer text-[15px] font-medium text-gray-700 transition-colors hover:text-blue-600 dark:text-gray-200 dark:hover:text-blue-400"
+              >
+                {name}
+              </motion.a>
+            ) : (
+              <motion.div
+                key={i}
+                variants={MOTION_VARIANTS.staggerItem}
+                whileHover={{
+                  scale: 1.05,
+                }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
+                <Link
+                  href={href}
+                  className="cursor-pointer text-[15px] font-medium text-gray-700 transition-colors hover:text-blue-600 dark:text-gray-200 dark:hover:text-blue-400"
+                >
+                  {name}
+                </Link>
+              </motion.div>
+            ),
+          )}
 
           <motion.span
             onClick={setTheme.bind(null, isDarkMode ? "light" : "dark")}
@@ -116,19 +135,30 @@ export default function Navbar() {
             transition={{ duration: 0.3 }}
             className="fixed top-20 right-4 left-4 z-30 flex flex-col gap-4 rounded-xl bg-white p-4 shadow-lg md:hidden dark:bg-neutral-900"
           >
-            {navLinks.map(({ name, href }, i) => (
-              <a
-                key={i}
-                href={href}
-                onClick={(e) => {
-                  handleSmoothScroll(e, href);
-                  setIsOpen(false);
-                }}
-                className="text-base font-medium text-gray-700 dark:text-gray-200"
-              >
-                {name}
-              </a>
-            ))}
+            {navLinks.map(({ name, href }, i) =>
+              href.startsWith("#") ? (
+                <a
+                  key={i}
+                  href={href}
+                  onClick={(e) => {
+                    handleSmoothScroll(e, href);
+                    setIsOpen(false);
+                  }}
+                  className="text-base font-medium text-gray-700 dark:text-gray-200"
+                >
+                  {name}
+                </a>
+              ) : (
+                <Link
+                  key={i}
+                  href={href}
+                  onClick={() => setIsOpen(false)}
+                  className="text-base font-medium text-gray-700 dark:text-gray-200"
+                >
+                  {name}
+                </Link>
+              ),
+            )}
             <motion.span
               onClick={setTheme.bind(null, isDarkMode ? "light" : "dark")}
               whileHover={{ rotate: 20, scale: 1.15 }}
