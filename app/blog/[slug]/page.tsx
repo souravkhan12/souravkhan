@@ -1,13 +1,8 @@
 import { notFound } from "next/navigation";
 import { getAllPosts, getPostBySlug } from "@/lib/blog";
-import { LAYOUT } from "@/config/styles";
-import Navbar from "@/components/navbar/Navbar";
-import Footer from "@/components/footer/footer";
-import { PatternDivider } from "@/components/ui/pattern-divider";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import Image from "next/image";
 
-// Generate static paths for all posts
 export async function generateStaticParams() {
   const posts = getAllPosts();
   return posts.map((post) => ({ slug: post.slug }));
@@ -45,40 +40,32 @@ export default async function BlogPostPage({
   if (!post) notFound();
 
   return (
-    <div className="flex [--pattern-fg:var(--color-gray-950)]/5 dark:bg-[#1E1E1E] dark:[--pattern-fg:var(--color-white)]/10">
-      <PatternDivider position="left" />
-      <div className={`${LAYOUT.container} dark:bg-[#1E1E1E]`}>
-        <Navbar />
-        <article className="prose prose-gray dark:prose-invert mx-auto max-w-3xl py-12">
-          <header className="mt-10">
-            <h1 className="text-3xl font-bold tracking-tight">{post.title}</h1>
-            <div className="mt-2 flex items-center gap-3 text-sm text-gray-500">
-              <time dateTime={post.date}>
-                {new Date(post.date).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </time>
-              <span>·</span>
-              <span>{post.readingTime}</span>
-            </div>
-          </header>
-          {post.image && (
-            <div className="relative mb-10 h-64 w-full overflow-hidden rounded-lg sm:h-80">
-              <Image
-                src={post.image}
-                alt={post.title}
-                fill
-                className="object-cover"
-              />
-            </div>
-          )}
-          <MDXRemote source={post.content} />
-        </article>
-        <Footer />
-      </div>
-      <PatternDivider position="right" />
-    </div>
+    <article className="prose prose-gray dark:prose-invert mx-auto max-w-3xl py-12">
+      <header className="mt-10">
+        <h1 className="text-3xl font-bold tracking-tight">{post.title}</h1>
+        <div className="mt-2 flex items-center gap-3 text-sm text-gray-500">
+          <time dateTime={post.date}>
+            {new Date(post.date).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </time>
+          <span>·</span>
+          <span>{post.readingTime}</span>
+        </div>
+      </header>
+      {post.image && (
+        <div className="relative mb-10 h-64 w-full overflow-hidden rounded-lg sm:h-80">
+          <Image
+            src={post.image}
+            alt={post.title}
+            fill
+            className="object-cover"
+          />
+        </div>
+      )}
+      <MDXRemote source={post.content} />
+    </article>
   );
 }

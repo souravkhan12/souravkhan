@@ -49,25 +49,9 @@ export const ANIMATIONS = {
 
 // Common animation variants
 export const MOTION_VARIANTS = {
-  fadeIn: {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 },
-  },
   slideUp: {
     hidden: { opacity: 0, y: 8 },
     visible: { opacity: 1, y: 0 },
-  },
-  blurSlideUp: {
-    hidden: { opacity: 0, y: 10, filter: "blur(10px)" },
-    visible: { opacity: 1, y: 0, filter: "blur(0px)" },
-  },
-  slideInScale: {
-    hidden: { opacity: 0, scale: 0.9 },
-    visible: { opacity: 1, scale: 1 },
-  },
-  blurFadeOut: {
-    hidden: { filter: "blur(10px)" },
-    visible: { filter: "blur(0px)" },
   },
   containerStagger: {
     hidden: { opacity: 0 },

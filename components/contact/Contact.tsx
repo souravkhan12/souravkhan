@@ -12,9 +12,7 @@ import Link from "next/link";
 import { CONTACT_INFO } from "@/config/data";
 import { LAYOUT } from "@/config/styles";
 import { FormData } from "@/types";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Textarea } from "@/components/ui/Textarea";
+import { Button, Input, Textarea } from "@/components/ui";
 
 export default function Contact() {
   const [formData, setFormData] = useState<FormData>({

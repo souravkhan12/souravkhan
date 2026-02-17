@@ -1,7 +1,6 @@
 import { MotionDiv } from "@/components/ui/motion-wrapper";
 import { HERO_TECH_STACK } from "@/config/data";
 import TextIcon from "@/components/tech-stack/TextIcon";
-import { motion } from "motion/react";
 
 export default function HeroTechStack() {
   return (

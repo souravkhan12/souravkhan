@@ -13,7 +13,6 @@ import type { Activity } from "@/components/kibo-ui/contribution-graph";
 import { useResponsiveGraphSize } from "@/components/github-contributions/use-responsive";
 import { cn } from "@/lib/utils";
 import { Pill } from "../kibo-ui/pill";
-import { LoaderIcon } from "lucide-react";
 import { Card } from "@/components/ui";
 import { Skeleton } from "@/components/ui/skeleton";
 
