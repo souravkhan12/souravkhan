@@ -55,7 +55,7 @@ export default function Navbar() {
         style={{
           boxShadow: scrolled ? "var(--shadow-navbar)" : "none",
         }}
-        className="fixed inset-x-0 top-3 z-20 mx-auto flex w-[80%] max-w-6xl items-center justify-between rounded-full bg-white/80 px-4 py-1 backdrop-blur-md dark:bg-[#1E1E1E]/70"
+        className="fixed inset-x-0 top-3 z-20 mx-auto flex w-[80%] max-w-6xl items-center justify-between rounded-full bg-white/80 px-1 py-1 backdrop-blur-md dark:bg-[#1E1E1E]/70"
       >
         <Image
           src="/LogoBG.webp"
@@ -71,7 +71,7 @@ export default function Navbar() {
           variants={MOTION_VARIANTS.containerStagger}
           initial={shouldAnimate ? "hidden" : false}
           animate="visible"
-          className="hidden flex-row items-center justify-center gap-6 md:flex"
+          className="hidden flex-row items-center justify-center gap-6 px-2 md:flex"
         >
           {navLinks.map(({ name, href }, i) =>
             href.startsWith("#") ? (
