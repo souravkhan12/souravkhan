@@ -24,12 +24,8 @@ export function useResponsiveGraphSize(): GraphSize {
       setSize({ blockSize: 16, blockMargin: 3, fontSize: 13, ready: true });
     } else if (w >= 1024) {
       setSize({ blockSize: 14, blockMargin: 3, fontSize: 12, ready: true });
-    } else if (w >= 768) {
-      setSize({ blockSize: 12, blockMargin: 2, fontSize: 10, ready: true });
-    } else if (w >= 480) {
-      setSize({ blockSize: 10, blockMargin: 2, fontSize: 9, ready: true });
     } else {
-      setSize({ blockSize: 8, blockMargin: 1, fontSize: 8, ready: true });
+      setSize({ blockSize: 12, blockMargin: 2, fontSize: 10, ready: true });
     }
   }, []);
 

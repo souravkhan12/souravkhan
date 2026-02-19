@@ -1,7 +1,7 @@
 import ProjectCard from "./ProjectCard";
 import { getAllProjects } from "@/lib/projects";
 import { Section } from "@/components/ui";
-import { MOTION_VARIANTS } from "@/config/theme";
+import { MOTION, MOTION_VARIANTS } from "@/config/theme";
 import { MotionDiv } from "@/components/ui/motion-wrapper";
 
 export default function Projects() {
@@ -13,13 +13,13 @@ export default function Projects() {
         {projects.map((project, index) => (
           <MotionDiv
             key={project.slug}
-            variants={MOTION_VARIANTS.slideUp}
+            variants={MOTION_VARIANTS.rise}
             initial="hidden"
             whileInView="visible"
             transition={{
-              duration: 0.6,
+              duration: MOTION.duration.slow,
               delay: index * 0.1,
-              ease: "easeOut",
+              ease: MOTION.ease,
             }}
             viewport={{ once: true, amount: 0.1 }}
           >

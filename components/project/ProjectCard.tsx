@@ -8,9 +8,10 @@ import { Project } from "@/types";
 import { Card, Button } from "@/components/ui";
 import TechStack from "@/components/tech-stack/Techstack";
 import { motion } from "motion/react";
-import React from "react";
 import { useInitialAnimation } from "@/hooks/use-initial-animation";
+import { MOTION, INTERACTIONS } from "@/config/theme";
 import { Expand } from "lucide-react";
+import React from "react";
 
 interface ProjectCardProps {
   project: Project;
@@ -28,7 +29,9 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         href={project.slug ? `/project/${project.slug}` : "#"}
         className="group relative h-60 w-full self-stretch overflow-hidden rounded-[12px] border border-gray-200/20 lg:w-[400px] dark:border-gray-700/20"
       >
-        <motion.div transition={{ duration: 0.3, ease: "easeOut" }}>
+        <motion.div
+          transition={{ duration: MOTION.duration.normal, ease: MOTION.ease }}
+        >
           <Image
             src={project.image}
             alt={`${project.title} screenshot`}
@@ -44,7 +47,11 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         className="flex-1"
         initial={shouldAnimate ? { opacity: 0, x: 20 } : false}
         whileInView={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
+        transition={{
+          duration: MOTION.duration.normal,
+          delay: 0.2,
+          ease: MOTION.ease,
+        }}
         viewport={{ once: true, amount: 0.1 }}
       >
         <div className="mb-8 flex items-center justify-between">
@@ -67,11 +74,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
               label={`${project.title} source code`}
               variant="secondary"
             />
-            <motion.div
-              whileHover={{ scale: 1.1, rotate: -5 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 300, damping: 10 }}
-            >
+            <motion.div {...INTERACTIONS.icon}>
               <Link href={project.slug ? `/project/${project.slug}` : "#"}>
                 <Button asChild size="icon" variant="outline">
                   <span className="flex items-center justify-center">
@@ -110,11 +113,7 @@ function OpenLinkButton({
   variant = "secondary",
 }: OpenLinkButtonProps) {
   return (
-    <motion.div
-      whileHover={{ scale: 1.1, rotate: -5 }}
-      whileTap={{ scale: 0.95 }}
-      transition={{ type: "spring", stiffness: 300, damping: 10 }}
-    >
+    <motion.div {...INTERACTIONS.icon}>
       <Button asChild size="icon" variant={variant}>
         <a
           href={href}

@@ -80,15 +80,10 @@ const GitHubContributionGraph = memo(
                   <ContributionGraphTotalCount>
                     {({ totalCount, year }) => (
                       <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground text-xs sm:text-sm">
-                          Year {year}:
+                        <span className="text-xs text-gray-500 sm:text-sm">
+                          {totalCount.toLocaleString() + " "} contributions in
+                          2025 on GitHub.
                         </span>
-                        <Pill
-                          variant="secondary"
-                          className="text-xs sm:text-sm"
-                        >
-                          {totalCount.toLocaleString()} contributions
-                        </Pill>
                       </div>
                     )}
                   </ContributionGraphTotalCount>

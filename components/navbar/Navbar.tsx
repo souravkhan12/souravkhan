@@ -8,7 +8,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { navLinks } from "@/config/nav-links";
 import { useMounted } from "@/hooks/use-mounted";
-import { MOTION_VARIANTS } from "@/config/theme";
+import {
+  MOTION_VARIANTS,
+  INTERACTIONS,
+  NAVBAR_ANIMATION,
+  MOBILE_MENU_ANIMATION,
+} from "@/config/theme";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 import { RemoveScroll } from "react-remove-scroll";
 import { useInitialAnimation } from "@/hooks/use-initial-animation";
@@ -66,6 +71,8 @@ export default function Navbar() {
   return (
     <>
       <motion.nav
+        initial={NAVBAR_ANIMATION.initial}
+        animate={NAVBAR_ANIMATION.animate}
         layout={true}
         style={{
           boxShadow: scrolled ? "var(--shadow-navbar)" : "none",
@@ -99,10 +106,7 @@ export default function Navbar() {
                 href={href}
                 onClick={(e) => handleSectionNavigation(e, href)}
                 variants={MOTION_VARIANTS.staggerItem}
-                whileHover={{
-                  scale: 1.05,
-                }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                {...INTERACTIONS.button}
                 className="cursor-pointer text-[15px] font-medium text-gray-700 transition-colors hover:text-blue-600 dark:text-gray-200 dark:hover:text-blue-400"
               >
                 {name}
@@ -111,10 +115,7 @@ export default function Navbar() {
               <motion.div
                 key={i}
                 variants={MOTION_VARIANTS.staggerItem}
-                whileHover={{
-                  scale: 1.05,
-                }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                {...INTERACTIONS.button}
               >
                 <Link
                   href={href}
@@ -129,8 +130,7 @@ export default function Navbar() {
           <motion.span
             onClick={setTheme.bind(null, isDarkMode ? "light" : "dark")}
             variants={MOTION_VARIANTS.staggerItem}
-            whileHover={{ rotate: 20, scale: 1.15 }}
-            transition={{ type: "spring", stiffness: 250 }}
+            {...INTERACTIONS.themeToggle}
             className="cursor-pointer text-gray-700 dark:text-gray-200"
           >
             {isDarkMode ? <SunDim /> : <MoonIcon />}
@@ -140,7 +140,7 @@ export default function Navbar() {
         <motion.div
           ref={navRef}
           onClick={() => setIsOpen(!isOpen)}
-          whileTap={{ scale: 0.9 }}
+          {...INTERACTIONS.menuToggle}
           className="cursor-pointer text-gray-800 md:hidden dark:text-gray-100"
         >
           {isOpen ? <X size={26} /> : <Menu size={26} />}
@@ -151,9 +151,8 @@ export default function Navbar() {
       {isOpen && (
         <RemoveScroll>
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
+            initial={MOBILE_MENU_ANIMATION.initial}
+            animate={MOBILE_MENU_ANIMATION.animate}
             className="fixed top-20 right-4 left-4 z-30 flex flex-col gap-4 rounded-xl bg-white p-4 shadow-lg md:hidden dark:bg-neutral-900"
           >
             {navLinks.map(({ name, href }, i) =>
@@ -182,8 +181,7 @@ export default function Navbar() {
             )}
             <motion.span
               onClick={setTheme.bind(null, isDarkMode ? "light" : "dark")}
-              whileHover={{ rotate: 20, scale: 1.15 }}
-              transition={{ type: "spring", stiffness: 250 }}
+              {...INTERACTIONS.themeToggle}
               className="cursor-pointer text-gray-700 dark:text-gray-200"
             >
               {isDarkMode ? <SunDim /> : <MoonIcon />}

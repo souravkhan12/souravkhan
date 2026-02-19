@@ -1,5 +1,6 @@
 import { MotionSpan } from "@/components/ui/motion-wrapper";
 import { Badge } from "@/components/ui";
+import { MOTION } from "@/config/theme";
 
 interface AvailabilityBadgeProps {
   text: string;
@@ -23,10 +24,10 @@ export function AvailabilityBadge({ text }: AvailabilityBadgeProps) {
               opacity: [0, 0.6, 0],
             }}
             transition={{
-              duration: 3, // Slower duration for smoother ripple
+              duration: MOTION.duration.slow * 10, // Slower duration for smoother ripple
               repeat: Infinity,
               delay: delay,
-              ease: "easeOut",
+              ease: MOTION.ease,
               times: [0, 0.2, 1],
             }}
             style={{ willChange: "transform, opacity" }}

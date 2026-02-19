@@ -2,7 +2,7 @@ import { MotionDiv } from "@/components/ui/motion-wrapper";
 import TechStack from "../tech-stack/Techstack";
 import { WORK_EXPERIENCE } from "@/config/data";
 import { Section, Card } from "@/components/ui";
-import { MOTION_VARIANTS } from "@/config/theme";
+import { MOTION, MOTION_VARIANTS } from "@/config/theme";
 
 export default function WorkExperience() {
   return (
@@ -11,13 +11,13 @@ export default function WorkExperience() {
         {WORK_EXPERIENCE.map((experience, index) => (
           <MotionDiv
             key={index}
-            variants={MOTION_VARIANTS.slideUp}
+            variants={MOTION_VARIANTS.rise}
             initial="hidden"
             whileInView="visible"
             transition={{
-              duration: 0.6,
+              duration: MOTION.duration.slow,
               delay: index * 0.1,
-              ease: "easeOut",
+              ease: MOTION.ease,
             }}
             viewport={{ once: true, amount: 0.1 }}
           >

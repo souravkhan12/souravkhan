@@ -14,7 +14,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ) => {
     const variantClasses: Record<string, string> = {
       default:
-        "bg-white dark:bg-[#1E1E1E] rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm",
+        "bg-white dark:bg-[#1E1E1E] rounded-2xl border border-gray-200 dark:border-gray-700 ",
       elevated:
         "bg-white/80 dark:bg-neutral-800/70 rounded-2xl border border-gray-200 dark:border-neutral-700 shadow-lg backdrop-blur-md",
       outline:
