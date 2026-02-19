@@ -1,5 +1,4 @@
 import TextIcon from "@/components/tech-stack/TextIcon";
-import { useState } from "react";
 
 interface TechStackProps {
   technologies: string[];
