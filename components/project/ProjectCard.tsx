@@ -83,7 +83,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           </div>
         </div>
 
-        <p className="mb-4 line-clamp-2 text-gray-600 md:line-clamp-none dark:text-gray-300">
+        <p className="line-clamp-2 text-sm leading-relaxed text-gray-600 sm:text-base md:mb-5 dark:text-gray-300">
           {project.description}
         </p>
 
