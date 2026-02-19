@@ -13,18 +13,22 @@ import type { Activity } from "@/components/kibo-ui/contribution-graph";
 import { useResponsiveGraphSize } from "@/components/github-contributions/use-responsive";
 import { cn } from "@/lib/utils";
 import { Pill } from "../kibo-ui/pill";
-import { LoaderIcon } from "lucide-react";
 import { Card } from "@/components/ui";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const GitHubContributionGraph = memo(
   ({ contributions }: { contributions: Activity[] }) => {
-    const { blockSize, blockMargin, fontSize } = useResponsiveGraphSize();
+    const { blockSize, blockMargin, fontSize, ready } =
+      useResponsiveGraphSize();
+
+    if (!ready) {
+      return <GitHubContributionFallback />;
+    }
 
     return (
-      <Card variant="default">
-        <div className="relative w-full max-w-full overflow-hidden p-3">
-          <div className="overflow-x-auto overflow-y-hidden">
+      <Card variant="default" className="w-full">
+        <div className="relative w-full overflow-hidden px-2 pt-2">
+          <div className="min-w-0 overflow-x-auto overflow-y-hidden">
             <ContributionGraph
               data={contributions}
               blockSize={blockSize}
@@ -64,6 +68,7 @@ const GitHubContributionGraph = memo(
                       'data-[level="4"]:fill-[#216e39] dark:data-[level="4"]:fill-[#39d353]',
                       "hover:stroke-[#1f2328] dark:hover:stroke-[#c9d1d9]",
                       "hover:stroke-2",
+                      "transition-all duration-200",
                     )}
                   />
                 )}
@@ -71,14 +76,17 @@ const GitHubContributionGraph = memo(
 
               {/* Footer */}
               <ContributionGraphFooter>
-                <div className="mt-2 flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                <div className="mt-3 flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
                   <ContributionGraphTotalCount>
                     {({ totalCount, year }) => (
                       <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground text-sm">
+                        <span className="text-muted-foreground text-xs sm:text-sm">
                           Year {year}:
                         </span>
-                        <Pill variant="secondary">
+                        <Pill
+                          variant="secondary"
+                          className="text-xs sm:text-sm"
+                        >
                           {totalCount.toLocaleString()} contributions
                         </Pill>
                       </div>
@@ -87,7 +95,7 @@ const GitHubContributionGraph = memo(
 
                   <ContributionGraphLegend>
                     {({ level }) => (
-                      <div className="group relative h-3 w-3">
+                      <div className="group relative h-3 w-3 sm:h-4 sm:w-4">
                         <div
                           data-level={level}
                           className={cn(
@@ -120,8 +128,12 @@ export default GitHubContributionGraph;
 
 export function GitHubContributionFallback() {
   return (
-    <div className="flex h-40.5 w-full items-center justify-center">
-      <Skeleton className="h-full w-full" />
-    </div>
+    <Card variant="default" className="w-full">
+      <div className="relative w-full overflow-hidden p-4 sm:p-6">
+        <div className="h-40 w-full">
+          <Skeleton className="h-full w-full" />
+        </div>
+      </div>
+    </Card>
   );
 }

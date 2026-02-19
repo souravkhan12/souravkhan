@@ -7,12 +7,16 @@ import { Project } from "@/types";
 import { Card, Button } from "@/components/ui";
 import TechStack from "@/components/tech-stack/Techstack";
 import { motion } from "motion/react";
+import React from "react";
+import { useInitialAnimation } from "@/hooks/use-initial-animation";
 
 interface ProjectCardProps {
   project: Project;
 }
 
 export default function ProjectCard({ project }: ProjectCardProps) {
+  const shouldAnimate = useInitialAnimation();
+
   return (
     <Card
       variant="default"
@@ -34,14 +38,22 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       {/* Project Info */}
       <motion.div
         className="flex-1"
-        initial={{ opacity: 0, x: 20 }}
+        initial={shouldAnimate ? { opacity: 0, x: 20 } : false}
         whileInView={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
         viewport={{ once: true, amount: 0.1 }}
       >
-        <h2 className="mb-5 text-xl font-semibold tracking-tight dark:text-gray-100">
-          {project.title}
-        </h2>
+        <div className="mb-8 flex items-center justify-between">
+          <h2 className="text-xl font-semibold tracking-tight dark:text-gray-100">
+            {project.title}
+          </h2>
+
+          <div className="flex gap-4">
+            <OpenLinkButton project={project} buttonText={<LuExternalLink />} />
+            <OpenLinkButton project={project} buttonText={<SiGithub />} />
+          </div>
+        </div>
+
         <p className="mb-5 leading-relaxed text-gray-600 dark:text-gray-300">
           {project.description}
         </p>
@@ -49,43 +61,33 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         {/* Tech Stack and Links */}
         <div className="flex flex-col justify-between gap-10 md:flex-row">
           <TechStack technologies={project.technologies} colorful={true} />
-          <div className="flex items-end gap-4">
-            <motion.div
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 300, damping: 10 }}
-            >
-              <Button asChild size="icon" variant="secondary">
-                <a
-                  href={project.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`${project.title} live link`}
-                >
-                  <LuExternalLink />
-                </a>
-              </Button>
-            </motion.div>
-
-            <motion.div
-              whileHover={{ scale: 1.1, rotate: -5 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 300, damping: 10 }}
-            >
-              <Button asChild size="icon" variant="secondary">
-                <a
-                  href={project.code}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`${project.title} source code`}
-                >
-                  <SiGithub />
-                </a>
-              </Button>
-            </motion.div>
-          </div>
         </div>
       </motion.div>
     </Card>
+  );
+}
+
+interface OpenLinkButtonProps extends ProjectCardProps {
+  buttonText: React.ReactElement;
+}
+
+function OpenLinkButton({ project, buttonText }: OpenLinkButtonProps) {
+  return (
+    <motion.div
+      whileHover={{ scale: 1.1, rotate: -5 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ type: "spring", stiffness: 300, damping: 10 }}
+    >
+      <Button asChild size="icon" variant="secondary">
+        <a
+          href={project.code}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`${project.title} source code`}
+        >
+          {buttonText}
+        </a>
+      </Button>
+    </motion.div>
   );
 }

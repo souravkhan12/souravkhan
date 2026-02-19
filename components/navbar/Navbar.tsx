@@ -5,11 +5,15 @@ import { SunDim, Menu, X, MoonIcon } from "lucide-react";
 import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
+import Link from "next/link";
 import { navLinks } from "@/config/nav-links";
 import { useMounted } from "@/hooks/use-mounted";
 import { MOTION_VARIANTS } from "@/config/theme";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 import { RemoveScroll } from "react-remove-scroll";
+import { useInitialAnimation } from "@/hooks/use-initial-animation";
+import { usePathname } from "next/navigation";
+import { redirect } from "next/navigation";
 
 export default function Navbar() {
   const { scrollY } = useScroll();
@@ -18,6 +22,9 @@ export default function Navbar() {
   const { theme, setTheme } = useTheme();
   const isDarkMode = theme === "dark";
 
+  const pathname = usePathname();
+
+  const shouldAnimate = useInitialAnimation();
   const navRef = useRef<HTMLDivElement | null>(null);
   useOutsideClick({
     ref: navRef,
@@ -33,16 +40,27 @@ export default function Navbar() {
     return null;
   }
 
-  const handleSmoothScroll = (
+  const handleSectionNavigation = (
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string,
   ) => {
-    e.preventDefault();
-    const targetId = href.replace("#", "");
-    const element = document.getElementById(targetId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    const id = href.replace("#", "");
+
+    if (pathname === "/") {
+      e.preventDefault();
+
+      const el = document.getElementById(id);
+      if (!el) return;
+
+      el.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+      return;
     }
+
+    e.preventDefault();
+    redirect(`/#${id}`);
   };
 
   return (
@@ -52,7 +70,7 @@ export default function Navbar() {
         style={{
           boxShadow: scrolled ? "var(--shadow-navbar)" : "none",
         }}
-        className="fixed inset-x-0 top-3 z-20 mx-auto flex w-[80%] max-w-6xl items-center justify-between rounded-full bg-white/80 px-4 py-1 backdrop-blur-md dark:bg-[#1E1E1E]/70"
+        className="fixed inset-x-0 top-3 z-20 mx-auto flex w-[90%] items-center justify-between rounded-full bg-white/80 px-2 py-1 backdrop-blur-md sm:w-[85%] md:w-[80%] lg:w-[75%] xl:max-w-6xl dark:bg-[#1E1E1E]/70"
       >
         <Image
           src="/LogoBG.webp"
@@ -66,25 +84,43 @@ export default function Navbar() {
 
         <motion.div
           variants={MOTION_VARIANTS.containerStagger}
-          initial="hidden"
+          initial={shouldAnimate ? "hidden" : false}
           animate="visible"
-          className="hidden flex-row items-center justify-center gap-6 md:flex"
+          className="hidden flex-row items-center justify-center gap-6 px-2 md:flex"
         >
-          {navLinks.map(({ name, href }, i) => (
-            <motion.a
-              key={i}
-              href={href}
-              onClick={(e) => handleSmoothScroll(e, href)}
-              variants={MOTION_VARIANTS.staggerItem}
-              whileHover={{
-                scale: 1.05,
-              }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="cursor-pointer text-[15px] font-medium text-gray-700 transition-colors hover:text-blue-600 dark:text-gray-200 dark:hover:text-blue-400"
-            >
-              {name}
-            </motion.a>
-          ))}
+          {navLinks.map(({ name, href }, i) =>
+            href.startsWith("#") ? (
+              <motion.a
+                key={i}
+                href={href}
+                onClick={(e) => handleSectionNavigation(e, href)}
+                variants={MOTION_VARIANTS.staggerItem}
+                whileHover={{
+                  scale: 1.05,
+                }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="cursor-pointer text-[15px] font-medium text-gray-700 transition-colors hover:text-blue-600 dark:text-gray-200 dark:hover:text-blue-400"
+              >
+                {name}
+              </motion.a>
+            ) : (
+              <motion.div
+                key={i}
+                variants={MOTION_VARIANTS.staggerItem}
+                whileHover={{
+                  scale: 1.05,
+                }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
+                <Link
+                  href={href}
+                  className="cursor-pointer text-[15px] font-medium text-gray-700 transition-colors hover:text-blue-600 dark:text-gray-200 dark:hover:text-blue-400"
+                >
+                  {name}
+                </Link>
+              </motion.div>
+            ),
+          )}
 
           <motion.span
             onClick={setTheme.bind(null, isDarkMode ? "light" : "dark")}
@@ -116,19 +152,30 @@ export default function Navbar() {
             transition={{ duration: 0.3 }}
             className="fixed top-20 right-4 left-4 z-30 flex flex-col gap-4 rounded-xl bg-white p-4 shadow-lg md:hidden dark:bg-neutral-900"
           >
-            {navLinks.map(({ name, href }, i) => (
-              <a
-                key={i}
-                href={href}
-                onClick={(e) => {
-                  handleSmoothScroll(e, href);
-                  setIsOpen(false);
-                }}
-                className="text-base font-medium text-gray-700 dark:text-gray-200"
-              >
-                {name}
-              </a>
-            ))}
+            {navLinks.map(({ name, href }, i) =>
+              href.startsWith("#") ? (
+                <a
+                  key={i}
+                  href={href}
+                  onClick={(e) => {
+                    handleSectionNavigation(e, href);
+                    setIsOpen(false);
+                  }}
+                  className="text-base font-medium text-gray-700 dark:text-gray-200"
+                >
+                  {name}
+                </a>
+              ) : (
+                <Link
+                  key={i}
+                  href={href}
+                  onClick={() => setIsOpen(false)}
+                  className="text-base font-medium text-gray-700 dark:text-gray-200"
+                >
+                  {name}
+                </Link>
+              ),
+            )}
             <motion.span
               onClick={setTheme.bind(null, isDarkMode ? "light" : "dark")}
               whileHover={{ rotate: 20, scale: 1.15 }}

@@ -1,0 +1,56 @@
+---
+title: "React Performance Tips That Actually Work"
+date: "2026-02-15"
+description: "Practical React performance optimizations I've used in production to make apps 10x faster."
+tags: ["react", "performance", "frontend", "optimization"]
+published: true
+image: "/blog/react-performance.png"
+---
+
+Performance isn't about premature optimization—it's about smart optimization. Here are battle-tested tips I've used in production.
+
+## 🚀 Bundle Size Optimization
+
+Split your code smartly:
+
+```jsx
+// Bad - Everything in one bundle
+import { HeavyComponent, AnotherHeavy } from "./components";
+
+// Good - Lazy load what you need
+const HeavyComponent = lazy(() => import("./components/HeavyComponent"));
+```
+
+## 🎯 Render Optimization
+
+Stop unnecessary re-renders dead in their tracks:
+
+```jsx
+// Bad - Re-renders on every parent update
+function BadComponent({ data }) {
+  return (
+    <div>
+      {data.map((item) => (
+        <Item key={item.id} {...item} />
+      ))}
+    </div>
+  );
+}
+
+// Good - Only re-renders when data actually changes
+const GoodComponent = memo(({ data }) => {
+  return (
+    <div>
+      {data.map((item) => (
+        <Item key={item.id} {...item} />
+      ))}
+    </div>
+  );
+});
+```
+
+## 📊 Real Results
+
+These optimizations took a client's e-commerce site from **8.2s** to **1.1s** initial load time. That's not theory—that's production impact.
+
+Performance is about removing what doesn't matter, so users get what does matter.

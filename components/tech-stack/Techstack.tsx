@@ -3,6 +3,7 @@
 import TextIcon from "@/components/tech-stack/TextIcon";
 import { motion } from "motion/react";
 import { useState } from "react";
+import { useInitialAnimation } from "@/hooks/use-initial-animation";
 
 interface TechStackProps {
   technologies: string[];
@@ -14,10 +15,11 @@ export default function TechStack({
   colorful = false,
 }: TechStackProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const shouldAnimate = useInitialAnimation();
 
   return (
     <motion.ul
-      initial={{ opacity: 0 }}
+      initial={shouldAnimate ? { opacity: 0 } : false}
       whileInView={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.2 }}
       viewport={{ once: true, amount: 0.1 }}

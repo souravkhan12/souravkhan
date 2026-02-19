@@ -5,20 +5,11 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: "default" | "elevated" | "outline";
   /** Internal padding amount */
   padding?: "sm" | "md" | "lg";
-  /** Add gradient background */
-  gradient?: boolean;
 }
 
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
   (
-    {
-      className = "",
-      variant = "default",
-      padding = "sm",
-      gradient = false,
-      children,
-      ...props
-    },
+    { className = "", variant = "default", padding = "sm", children, ...props },
     ref,
   ) => {
     const variantClasses: Record<string, string> = {
@@ -36,14 +27,9 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
       lg: "p-6 sm:p-8",
     };
 
-    const gradientClass = gradient
-      ? "bg-gradient-to-br from-indigo-500/10 to-pink-500/10"
-      : "";
-
     const combinedClasses = [
       variantClasses[variant] || variantClasses.default,
       paddingClasses[padding] || paddingClasses.md,
-      gradientClass,
       className,
     ]
       .filter(Boolean)

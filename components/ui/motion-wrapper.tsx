@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import { useInitialAnimation } from "@/hooks/use-initial-animation";
 
 interface MotionWrapperProps {
   children?: React.ReactNode;
@@ -35,11 +36,14 @@ export function MotionDiv({
   onHoverStart,
   onHoverEnd,
 }: MotionWrapperProps) {
+  const shouldAnimate = useInitialAnimation();
+  const resolvedInitial = !shouldAnimate && whileInView ? false : initial;
+
   return (
     <motion.div
       className={className}
       variants={variants}
-      initial={initial}
+      initial={resolvedInitial}
       whileInView={whileInView}
       transition={transition}
       viewport={viewport}
@@ -70,11 +74,14 @@ export function MotionSpan({
   style,
   animate,
 }: MotionWrapperProps) {
+  const shouldAnimate = useInitialAnimation();
+  const resolvedInitial = !shouldAnimate && whileInView ? false : initial;
+
   return (
     <motion.span
       className={className}
       variants={variants}
-      initial={initial}
+      initial={resolvedInitial}
       whileInView={whileInView}
       transition={transition}
       viewport={viewport}

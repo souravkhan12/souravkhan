@@ -6,6 +6,7 @@ type GraphSize = {
   blockSize: number;
   blockMargin: number;
   fontSize: number;
+  ready: boolean;
 };
 
 export function useResponsiveGraphSize(): GraphSize {
@@ -13,21 +14,22 @@ export function useResponsiveGraphSize(): GraphSize {
     blockSize: 12,
     blockMargin: 2,
     fontSize: 10,
+    ready: false,
   });
 
   const update = useCallback(() => {
     const w = window.innerWidth;
 
     if (w >= 1280) {
-      setSize({ blockSize: 16, blockMargin: 3, fontSize: 13 });
+      setSize({ blockSize: 16, blockMargin: 3, fontSize: 13, ready: true });
     } else if (w >= 1024) {
-      setSize({ blockSize: 14, blockMargin: 3, fontSize: 12 });
+      setSize({ blockSize: 14, blockMargin: 3, fontSize: 12, ready: true });
     } else if (w >= 768) {
-      setSize({ blockSize: 12, blockMargin: 2, fontSize: 10 });
+      setSize({ blockSize: 12, blockMargin: 2, fontSize: 10, ready: true });
     } else if (w >= 480) {
-      setSize({ blockSize: 10, blockMargin: 2, fontSize: 9 });
+      setSize({ blockSize: 10, blockMargin: 2, fontSize: 9, ready: true });
     } else {
-      setSize({ blockSize: 8, blockMargin: 1, fontSize: 8 });
+      setSize({ blockSize: 8, blockMargin: 1, fontSize: 8, ready: true });
     }
   }, []);
 

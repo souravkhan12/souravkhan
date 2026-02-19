@@ -426,10 +426,7 @@ export const ContributionGraphFooter = ({
   ...props
 }: ContributionGraphFooterProps) => (
   <div
-    className={cn(
-      "flex flex-wrap gap-1 whitespace-nowrap sm:gap-x-4",
-      className,
-    )}
+    className={cn("flex gap-1 whitespace-nowrap sm:gap-x-4", className)}
     {...props}
   />
 );
