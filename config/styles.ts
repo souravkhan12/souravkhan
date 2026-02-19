@@ -2,7 +2,7 @@
 export const LAYOUT = {
   // Container classes
   container:
-    "mx-auto max-w-[650px] flex-1 px-4 md:max-w-[800px] lg:max-w-[1200px] overflow-x-hidden",
+    "mx-auto max-w-[650px] flex-1 md:max-w-[800px] lg:max-w-[1200px] overflow-x-hidden",
 
   // Section classes
   section: "relative py-12 sm:py-16 transition-colors duration-300",

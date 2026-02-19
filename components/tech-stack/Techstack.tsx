@@ -35,7 +35,7 @@ export default function TechStack({
         >
           <motion.div
             transition={{ type: "spring", stiffness: 200, damping: 10 }}
-            className="bg-card inline-flex items-center gap-2 rounded-full border px-3 py-1.5 shadow-sm"
+            className="bg-card inline-flex items-center gap-2 rounded-full border px-2 py-1"
           >
             <TextIcon label={tech} colorful={colorful} />
             <motion.span

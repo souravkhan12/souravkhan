@@ -72,15 +72,19 @@ export default function Navbar() {
         }}
         className="fixed inset-x-0 top-3 z-20 mx-auto flex w-[90%] items-center justify-between rounded-full bg-white/80 px-2 py-1 backdrop-blur-md sm:w-[85%] md:w-[80%] lg:w-[75%] xl:max-w-6xl dark:bg-[#1E1E1E]/70"
       >
-        <Image
-          src="/LogoBG.webp"
-          alt="Logo"
-          width={48}
-          height={48}
-          priority={true}
-          className="h-10 w-10 cursor-pointer rounded-full sm:h-12 sm:w-12 dark:bg-white"
+        <Link
+          href="/"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        />
+        >
+          <Image
+            src="/LogoBG.webp"
+            alt="Logo"
+            width={48}
+            height={48}
+            priority={true}
+            className="h-10 w-10 cursor-pointer rounded-full sm:h-12 sm:w-12 dark:bg-white"
+          />
+        </Link>
 
         <motion.div
           variants={MOTION_VARIANTS.containerStagger}

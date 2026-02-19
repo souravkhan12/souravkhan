@@ -1,16 +1,18 @@
 import ProjectCard from "./ProjectCard";
-import { PROJECTS } from "@/config/data";
+import { getAllProjects } from "@/lib/projects";
 import { Section } from "@/components/ui";
 import { MOTION_VARIANTS } from "@/config/theme";
 import { MotionDiv } from "@/components/ui/motion-wrapper";
 
 export default function Projects() {
+  const projects = getAllProjects();
+
   return (
     <Section title="Projects" id="projects">
       <div className="flex flex-col justify-center gap-12 sm:gap-16 lg:gap-20">
-        {PROJECTS.map((project, index) => (
+        {projects.map((project, index) => (
           <MotionDiv
-            key={index}
+            key={project.slug}
             variants={MOTION_VARIANTS.slideUp}
             initial="hidden"
             whileInView="visible"
