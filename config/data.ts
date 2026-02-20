@@ -41,20 +41,20 @@ export const PROJECTS = [
 
 // Work experience data
 export const WORK_EXPERIENCE = [
-  {
-    company: "The unmarketing Agency",
-    position: "Frontend Developer",
-    duration: "Aug 2025 - Present",
-    location: "Goa, Remote",
-    achievements: [
-      "Developed and maintained responsive web applications using React, Redux, and Tailwind CSS, enhancing user experience and performance. Collaborated with cross-functional teams to implement new features and optimize existing functionalities, resulting in a 20% increase in user engagement.",
-    ],
-    technologies: ["next", "react", "redux", "tailwind", "aws", "thirdweb"],
-  },
+  // {
+  //   company: "The unmarketing Agency",
+  //   position: "Frontend Developer",
+  //   duration: "Aug 2025 - Present",
+  //   location: "Goa, Remote",
+  //   achievements: [
+  //     "Developed and maintained responsive web applications using React, Redux, and Tailwind CSS, enhancing user experience and performance. Collaborated with cross-functional teams to implement new features and optimize existing functionalities, resulting in a 20% increase in user engagement.",
+  //   ],
+  //   technologies: ["next", "react", "redux", "tailwind", "aws", "thirdweb"],
+  // },
   {
     company: "Samsung",
     position: "Software Engineer",
-    duration: "Sep 2024 - Sep 2025",
+    duration: "Sep 2023 - Present",
     location: "Noida, Onsite",
     achievements: [
       "Built a real-time monitoring system for 100K+ TV models and 50+ languages, improving system efficiency by 30%. Developed Pvod DevTool for profiling 3 streaming apps, cutting manual effort by 80%.",
