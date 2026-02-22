@@ -45,8 +45,12 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       {/* Project Info */}
       <motion.div
         className="flex-1"
-        initial={shouldAnimate ? { opacity: 0, x: 20 } : false}
-        whileInView={{ opacity: 1, x: 0 }}
+        initial={
+          shouldAnimate
+            ? { opacity: 0, filter: "blur(10px)", y: 10 }
+            : { opacity: 1, filter: "blur(0px)", y: 0 }
+        }
+        whileInView={{ opacity: 1, filter: "blur(0px)", y: 0 }}
         transition={{
           duration: MOTION.duration.normal,
           delay: 0.2,
