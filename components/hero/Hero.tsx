@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import Image from "next/image";
-import { HERO, CONTACT_INFO } from "@/config/data";
+import { HERO, CONTACT_INFO, SOCIAL_LINKS } from "@/config/data";
 import { LAYOUT } from "@/config/styles";
 import { MOTION, MOTION_VARIANTS, INTERACTIONS } from "@/config/theme";
 import { Button } from "@/components/ui";

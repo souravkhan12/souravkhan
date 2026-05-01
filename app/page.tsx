@@ -11,6 +11,7 @@ import { GitHubContributions } from "@/components/github-contributions/github-se
 import Footer from "@/components/footer/footer";
 import HeroTechStack from "@/components/hero/HeroTechStack";
 import { RecentPosts } from "@/components/blog/recent-posts";
+import Setup from "@/components/setup/Setup";
 
 export default function Page() {
   return (
@@ -38,6 +39,8 @@ export default function Page() {
           <Section title="Recent Posts" id="blog">
             <RecentPosts />
           </Section>
+
+          <Setup />
           <Contact />
           <Footer />
         </div>

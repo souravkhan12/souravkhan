@@ -25,8 +25,10 @@ export default function WorkExperience() {
               {/* Company & Position */}
               <div className="flex flex-col items-start md:flex-row md:items-center md:justify-between">
                 <div>
-                  <h3 className="mb-2 text-lg font-semibold tracking-tight sm:mb-3 sm:text-xl dark:text-gray-100">
-                    {experience.company}
+                  <h3
+                    className={`mb-2 text-lg font-semibold tracking-tight sm:mb-3 sm:text-xl dark:text-gray-100 ${index === 0 ? "blur-sm select-none" : ""}`}
+                  >
+                    {index === 0 ? "Current Company" : experience.company}
                   </h3>
 
                   <div className="flex flex-col pb-2 sm:flex-row sm:items-center sm:gap-2">

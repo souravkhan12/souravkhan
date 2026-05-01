@@ -42,9 +42,20 @@ export const PROJECTS = [
 // Work experience data
 export const WORK_EXPERIENCE = [
   {
+    company: "Thinkify.io",
+    position: "SDE-UI",
+    duration: "Feb 2026 - Present",
+    location: "Bangalore, Remote",
+    achievements: [
+      "Working on creating a smooth user experience from creating journies to get leads for their products.",
+      "Built Amplitude read-flow integration end-to-end — frontend connection setup, org/user property mapping, sync activity monitoring, and backend API key generation for secure event ingestion.",
+    ],
+    technologies: ["React", "Redux", "tailwind", "aws", "claude"],
+  },
+  {
     company: "The unmarketing Agency",
     position: "Frontend Developer",
-    duration: "Aug 2025 - Present",
+    duration: "Aug 2025 - Feb 2026",
     location: "Goa, Remote",
     achievements: [
       "Developed and maintained responsive web applications using React, Redux, and Tailwind CSS, enhancing user experience and performance. Collaborated with cross-functional teams to implement new features and optimize existing functionalities, resulting in a 20% increase in user engagement.",
@@ -103,7 +114,7 @@ export const SOCIAL_LINKS = {
 // Hero section
 export const HERO = {
   name: "Sourav Khan",
-  title: "Full Stack Developer",
+  title: "Software Engineer",
   available: "Available for work",
   bio: "Building scalable web applications with clean architecture and exceptional user experiences. I transform complex requirements into production-ready solutions that deliver real-world impact.",
 };
