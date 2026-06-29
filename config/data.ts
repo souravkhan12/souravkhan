@@ -42,7 +42,7 @@ export const PROJECTS = [
 // Work experience data
 export const WORK_EXPERIENCE = [
   {
-    company: "Thinkify.io",
+    company: "Inflection.io",
     position: "SDE-UI",
     duration: "Feb 2026 - Present",
     location: "Bangalore, Remote",
