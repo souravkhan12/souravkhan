@@ -2,9 +2,9 @@ import { notFound } from "next/navigation";
 import { getAllProjects, getProjectBySlug } from "@/lib/projects";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import Image from "next/image";
-import Link from "next/link";
 import { LuExternalLink } from "react-icons/lu";
 import { SiGithub } from "react-icons/si";
+import { Button } from "@/components/ui";
 
 export async function generateStaticParams() {
   const projects = getAllProjects();
@@ -42,47 +42,42 @@ export default async function ProjectPage({
   if (!project) notFound();
 
   return (
-    <article className="prose prose-gray dark:prose-invert mx-auto max-w-3xl px-4 py-12">
-      <header className="mt-10">
-        <h1 className="text-3xl font-bold tracking-tight">{project.title}</h1>
+    <article className="prose prose-gray dark:prose-invert prose-headings:font-serif prose-headings:tracking-tight prose-p:leading-relaxed prose-lg mx-auto max-w-3xl px-4 pt-28 pb-12 sm:pt-32">
+      <header>
+        <h1 className="font-serif text-4xl font-semibold tracking-tight sm:text-5xl">
+          {project.title}
+        </h1>
       </header>
       {project.image && (
-        <div className="relative mb-10 h-64 w-full overflow-hidden rounded-lg sm:h-80">
+        <div className="animate-hero-image relative mb-10 h-64 w-full overflow-hidden rounded-lg sm:h-80">
           <Image
             src={project.image}
             alt={project.title}
             fill
+            priority
             className="object-cover"
           />
         </div>
       )}
       <div className="mb-8 flex flex-wrap gap-4">
         {project.link && (
-          <Link
-            href={project.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200"
-          >
-            <LuExternalLink className="h-4 w-4" />
-            Live Demo
-          </Link>
+          <Button asChild variant="default">
+            <a href={project.link} target="_blank" rel="noopener noreferrer">
+              <LuExternalLink className="h-4 w-4" />
+              Live Demo
+            </a>
+          </Button>
         )}
         {project.code && (
-          <Link
-            href={project.code}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800"
-          >
-            <SiGithub className="h-4 w-4" />
-            Source Code
-          </Link>
+          <Button asChild variant="outline">
+            <a href={project.code} target="_blank" rel="noopener noreferrer">
+              <SiGithub className="h-4 w-4" />
+              Source Code
+            </a>
+          </Button>
         )}
       </div>
-      <p className="text-lg text-gray-600 dark:text-gray-400">
-        {project.description}
-      </p>
+      <p className="text-muted-foreground">{project.description}</p>
       <div className="mt-6">
         <h3 className="mb-3 text-sm font-semibold">Technologies</h3>
         <div className="flex flex-wrap gap-2">

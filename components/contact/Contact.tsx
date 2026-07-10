@@ -10,9 +10,8 @@ import {
 import { useState } from "react";
 import Link from "next/link";
 import { CONTACT_INFO } from "@/config/data";
-import { LAYOUT } from "@/config/styles";
 import { FormData } from "@/types";
-import { Button, Input, Textarea } from "@/components/ui";
+import { Button, Input, Textarea, Section } from "@/components/ui";
 
 export default function Contact() {
   const [formData, setFormData] = useState<FormData>({
@@ -67,11 +66,13 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="my-16 sm:my-20 md:my-24">
-      <div className="grid grid-cols-1 items-center gap-8 px-4 sm:px-6 md:grid-cols-2 md:gap-12">
+    <Section id="contact" spacing="lg">
+      <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-12">
         {/* Contact Information */}
         <div className="space-y-8 sm:space-y-10">
-          <h2 className={LAYOUT.heading}>Get in Touch</h2>
+          <h2 className="text-xl font-semibold tracking-tight text-gray-900 sm:text-2xl dark:text-white">
+            Get in Touch
+          </h2>
           <p className="text-sm text-gray-600 sm:text-base dark:text-gray-300">
             I&apos;d love to hear from you — feel free to reach out via email,
             phone, or connect on LinkedIn.
@@ -83,7 +84,7 @@ export default function Contact() {
               <LucideMail className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               <Link
                 href={`mailto:${CONTACT_INFO.email}`}
-                className="hover:text-indigo-600 dark:hover:text-indigo-400"
+                className="hover:text-foreground"
               >
                 {CONTACT_INFO.email}
               </Link>
@@ -110,7 +111,7 @@ export default function Contact() {
                 href={CONTACT_INFO.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-indigo-600 dark:hover:text-indigo-400"
+                className="hover:text-foreground"
               >
                 LinkedIn Profile
               </a>
@@ -120,7 +121,9 @@ export default function Contact() {
 
         {/* Contact Form */}
         <div className="space-y-6 sm:space-y-8">
-          <h2 className={LAYOUT.heading}>Send Me a Message</h2>
+          <h2 className="text-xl font-semibold tracking-tight text-gray-900 sm:text-2xl dark:text-white">
+            Send Me a Message
+          </h2>
 
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             <Input
@@ -180,6 +183,6 @@ export default function Contact() {
           )}
         </div>
       </div>
-    </section>
+    </Section>
   );
 }

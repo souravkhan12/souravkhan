@@ -50,7 +50,7 @@ const Section = React.forwardRef<HTMLDivElement, SectionProps>(
 
     const variantClasses: Record<string, string> = {
       default: "bg-transparent",
-      accent: "bg-gray-50 dark:bg-neutral-900/50",
+      accent: "bg-gray-50 dark:bg-gray-900/50",
     };
 
     const containerClasses = [

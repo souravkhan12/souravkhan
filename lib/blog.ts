@@ -2,6 +2,9 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import readingTime from "reading-time";
+import { extractHeadings, type Heading } from "@/lib/content";
+
+export type { Heading };
 
 const BLOG_DIR = path.join(process.cwd(), "content/blog");
 
@@ -45,4 +48,8 @@ export function getAllPosts(): BlogPost[] {
 export function getPostBySlug(slug: string): BlogPost | undefined {
   const posts = getAllPosts();
   return posts.find((post) => post.slug === slug);
+}
+
+export function getPostHeadings(post: BlogPost): Heading[] {
+  return extractHeadings(post.content);
 }

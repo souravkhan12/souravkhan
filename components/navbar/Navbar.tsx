@@ -77,7 +77,7 @@ export default function Navbar() {
         style={{
           boxShadow: scrolled ? "var(--shadow-navbar)" : "none",
         }}
-        className="fixed inset-x-0 top-3 z-20 mx-auto flex w-[90%] items-center justify-between rounded-full bg-white/80 px-2 py-1 backdrop-blur-md sm:w-[85%] md:w-[80%] lg:w-[75%] xl:max-w-6xl dark:bg-[#1E1E1E]/70"
+        className="bg-background/80 dark:bg-card/70 fixed inset-x-0 top-3 z-20 mx-auto flex w-[90%] items-center justify-between rounded-full px-2 py-1 backdrop-blur-md sm:w-[85%] md:w-[80%] lg:w-[75%] xl:max-w-6xl"
       >
         <Link
           href="/"
@@ -107,7 +107,7 @@ export default function Navbar() {
                 onClick={(e) => handleSectionNavigation(e, href)}
                 variants={MOTION_VARIANTS.staggerItem}
                 {...INTERACTIONS.button}
-                className="cursor-pointer text-[15px] font-medium text-gray-700 transition-colors hover:text-blue-600 dark:text-gray-200 dark:hover:text-blue-400"
+                className="hover:text-foreground cursor-pointer text-sm font-medium text-gray-700 transition-colors dark:text-gray-200"
               >
                 {name}
               </motion.a>
@@ -119,7 +119,7 @@ export default function Navbar() {
               >
                 <Link
                   href={href}
-                  className="cursor-pointer text-[15px] font-medium text-gray-700 transition-colors hover:text-blue-600 dark:text-gray-200 dark:hover:text-blue-400"
+                  className="hover:text-foreground cursor-pointer text-sm font-medium text-gray-700 transition-colors dark:text-gray-200"
                 >
                   {name}
                 </Link>
@@ -153,7 +153,7 @@ export default function Navbar() {
           <motion.div
             initial={MOBILE_MENU_ANIMATION.initial}
             animate={MOBILE_MENU_ANIMATION.animate}
-            className="fixed top-20 right-4 left-4 z-30 flex flex-col gap-4 rounded-xl bg-white p-4 shadow-lg md:hidden dark:bg-neutral-900"
+            className="bg-card fixed top-20 right-4 left-4 z-30 flex flex-col gap-4 rounded-xl p-4 shadow-lg md:hidden"
           >
             {navLinks.map(({ name, href }, i) =>
               href.startsWith("#") ? (

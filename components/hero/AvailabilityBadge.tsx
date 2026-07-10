@@ -38,7 +38,7 @@ export function AvailabilityBadge({ text }: AvailabilityBadgeProps) {
         <span className="relative z-10 h-2 w-2 rounded-full bg-emerald-500" />
       </span>
 
-      <span className="leading-none">{text}</span>
+      <span className="font-pixel leading-none tracking-wide">{text}</span>
     </Badge>
   );
 }

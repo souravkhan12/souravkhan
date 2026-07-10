@@ -1,0 +1,107 @@
+---
+title: "Terminal Setup"
+description: "Zsh, Oh My Zsh, Starship, and Ghostty — my shell configuration end to end."
+order: 2
+---
+
+## Prerequisites
+
+- **Zsh** — pre-installed on macOS; on Linux install via your package manager.
+- **Git** — version control, required by Oh My Zsh's install script.
+- **A Nerd Font** — for prompt icons to render correctly (e.g. [FiraCode Nerd Font](https://www.nerdfonts.com/)).
+
+## Install Oh My Zsh
+
+```bash
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+```
+
+## Install Plugins
+
+```bash
+git clone https://github.com/zsh-users/zsh-autosuggestions \
+  ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git \
+  ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+```
+
+Then enable them in `~/.zshrc`:
+
+```bash
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
+```
+
+## Install Starship Prompt
+
+```bash
+curl -sS https://starship.rs/install.sh | sh
+```
+
+Add it to the end of `~/.zshrc`:
+
+```bash
+eval "$(starship init zsh)"
+```
+
+## Starship Config
+
+A minimal `~/.config/starship.toml` — shows directory, git status, and language versions only when relevant:
+
+```toml
+add_newline = false
+
+[git_branch]
+symbol = " "
+
+[git_status]
+style = "yellow"
+
+[nodejs]
+symbol = " "
+
+[package]
+disabled = true
+```
+
+## Ghostty Config
+
+I use [Ghostty](https://ghostty.org/) as the terminal emulator itself. My `~/.config/ghostty/config`:
+
+```ini
+# The syntax is "key = value". The whitespace around the
+# equals doesn't matter.
+# Color theme — palettes live in ~/.config/ghostty/themes/
+#   nord              (active) — arctic bluish, transparent
+#   claude-linen                — warm linen, WCAG-AA verified palette
+#   claude-parchment            — refined, low-glare warm paper
+#   claude-cream                — original near-white cream
+# Switch back any time: theme = claude-cream  (or claude-parchment)
+theme = nord
+
+# Transparency — lower opacity = more see-through. Blur softens the desktop
+# behind it (macOS). Tune background-opacity to taste (0.80–0.95).
+background-opacity = 0.95
+background-blur = 40
+
+cursor-style = block
+cursor-style-blink = false
+cursor-opacity = 0.85
+adjust-cursor-thickness = 4
+
+# Font rendering
+adjust-cell-height = 8%
+
+# Comments start with a `#` and are only valid on their own line.
+# Blank lines are ignored!
+
+keybind = ctrl+z=close_surface
+keybind = ctrl+d=new_split:right
+
+# Empty values reset the configuration to the default value
+font-family = "Geist Mono"
+font-family = "Noto Sans Mono"
+font-size = 14
+```
+
+Restart your terminal and you're done.

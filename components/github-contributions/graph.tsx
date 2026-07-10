@@ -16,6 +16,22 @@ import { Pill } from "../kibo-ui/pill";
 import { Card } from "@/components/ui";
 import { Skeleton } from "@/components/ui/skeleton";
 
+const LEVEL_COLORS = [
+  'data-[level="0"]:fill-[#ebedf0] dark:data-[level="0"]:fill-[#161b22]',
+  'data-[level="1"]:fill-[#9be9a8] dark:data-[level="1"]:fill-[#0e4429]',
+  'data-[level="2"]:fill-[#40c463] dark:data-[level="2"]:fill-[#006d32]',
+  'data-[level="3"]:fill-[#30a14e] dark:data-[level="3"]:fill-[#26a641]',
+  'data-[level="4"]:fill-[#216e39] dark:data-[level="4"]:fill-[#39d353]',
+];
+
+const LEVEL_BG_COLORS = [
+  "bg-[#ebedf0] dark:bg-[#161b22]",
+  "bg-[#9be9a8] dark:bg-[#0e4429]",
+  "bg-[#40c463] dark:bg-[#006d32]",
+  "bg-[#30a14e] dark:bg-[#26a641]",
+  "bg-[#216e39] dark:bg-[#39d353]",
+];
+
 const GitHubContributionGraph = memo(
   ({ contributions }: { contributions: Activity[] }) => {
     const { blockSize, blockMargin, fontSize, ready } =
@@ -61,11 +77,7 @@ const GitHubContributionGraph = memo(
                     dayIndex={dayIndex}
                     weekIndex={weekIndex}
                     className={cn(
-                      'data-[level="0"]:fill-[#ebedf0] dark:data-[level="0"]:fill-[#161b22]',
-                      'data-[level="1"]:fill-[#9be9a8] dark:data-[level="1"]:fill-[#0e4429]',
-                      'data-[level="2"]:fill-[#40c463] dark:data-[level="2"]:fill-[#006d32]',
-                      'data-[level="3"]:fill-[#30a14e] dark:data-[level="3"]:fill-[#26a641]',
-                      'data-[level="4"]:fill-[#216e39] dark:data-[level="4"]:fill-[#39d353]',
+                      ...LEVEL_COLORS,
                       "hover:stroke-[#1f2328] dark:hover:stroke-[#c9d1d9]",
                       "hover:stroke-2",
                       "transition-all duration-200",
@@ -81,8 +93,8 @@ const GitHubContributionGraph = memo(
                     {({ totalCount, year }) => (
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-gray-500 sm:text-sm">
-                          {totalCount.toLocaleString() + " "} contributions in
-                          2025 on GitHub.
+                          {totalCount.toLocaleString() + " "} contributions in{" "}
+                          {year} on GitHub.
                         </span>
                       </div>
                     )}
@@ -95,11 +107,7 @@ const GitHubContributionGraph = memo(
                           data-level={level}
                           className={cn(
                             "border-border h-full w-full border",
-                            level === 0 && "bg-muted",
-                            level === 1 && "bg-emerald-200 dark:bg-emerald-900",
-                            level === 2 && "bg-emerald-400 dark:bg-emerald-700",
-                            level === 3 && "bg-emerald-600 dark:bg-emerald-500",
-                            level === 4 && "bg-emerald-800 dark:bg-emerald-300",
+                            LEVEL_BG_COLORS[level],
                           )}
                         />
                         <span className="bg-popover absolute -top-8 hidden rounded px-2 py-1 text-xs shadow group-hover:block">

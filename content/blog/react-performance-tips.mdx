@@ -1,56 +1,59 @@
 ---
 title: "React Performance Tips That Actually Work"
 date: "2026-02-15"
-description: "Practical React performance optimizations I've used in production to make apps 10x faster."
+description: "Where React performance problems actually come from, and the handful of techniques worth reaching for before you profile."
 tags: ["react", "performance", "frontend", "optimization"]
 published: true
 image: "/blog/react-performance.png"
 ---
 
-Performance isn't about premature optimization—it's about smart optimization. Here are battle-tested tips I've used in production.
+Most React performance advice skips straight to `memo` and `useCallback` without explaining when they help and when they're just extra code. Here's the version I'd give a teammate.
 
-## 🚀 Bundle Size Optimization
+## Start with what's actually slow
 
-Split your code smartly:
+There are two completely different performance problems that get lumped together:
+
+- **Load performance** — how long until the app is usable (bundle size, network waterfalls, hydration).
+- **Runtime performance** — how the app feels once it's running (re-renders, expensive computations, layout thrash).
+
+Fixing one doesn't fix the other, and the tools are different — a Lighthouse run tells you about load performance, React DevTools' Profiler tells you about runtime performance. Profile before optimizing either one; guessing wastes time on the wrong problem.
+
+## Bundle size: ship less, load lazily
+
+The single highest-leverage load-performance fix is usually not shipping code the user doesn't need yet.
 
 ```jsx
-// Bad - Everything in one bundle
-import { HeavyComponent, AnotherHeavy } from "./components";
+// Bad — the heavy component loads even if the user never opens it
+import { HeavyComponent } from "./components";
 
-// Good - Lazy load what you need
+// Good — only fetched when it's actually rendered
 const HeavyComponent = lazy(() => import("./components/HeavyComponent"));
 ```
 
-## 🎯 Render Optimization
+Wrap the lazy component in `<Suspense>` with a lightweight fallback, and check your bundle analyzer output before assuming a dependency is "too heavy" — sometimes it's a transitive import, not the library itself.
 
-Stop unnecessary re-renders dead in their tracks:
+## Re-renders: memoize the expensive path, not everything
+
+`memo` isn't free — it adds a props comparison on every render. Reaching for it on cheap components (a `<span>` with some text) can cost more than it saves. It earns its keep on components that are either expensive to render or that re-render often with identical props.
 
 ```jsx
-// Bad - Re-renders on every parent update
-function BadComponent({ data }) {
+// A list item that's expensive to render and receives stable props
+const ListItem = memo(function ListItem({ item }) {
   return (
     <div>
-      {data.map((item) => (
-        <Item key={item.id} {...item} />
-      ))}
-    </div>
-  );
-}
-
-// Good - Only re-renders when data actually changes
-const GoodComponent = memo(({ data }) => {
-  return (
-    <div>
-      {data.map((item) => (
-        <Item key={item.id} {...item} />
-      ))}
+      <ExpensiveChart data={item.chartData} />
+      <span>{item.label}</span>
     </div>
   );
 });
 ```
 
-## 📊 Real Results
+Two things make `memo` silently useless: passing a new inline object or arrow function as a prop every render (`onClick={() => ...}`), and passing children as JSX that gets recreated each time. `useCallback`/`useMemo` exist specifically to keep those references stable — but only add them where you've already put `memo` on the receiving component; otherwise they're doing nothing.
 
-These optimizations took a client's e-commerce site from **8.2s** to **1.1s** initial load time. That's not theory—that's production impact.
+## Long lists: don't render what isn't visible
 
-Performance is about removing what doesn't matter, so users get what does matter.
+Rendering a few hundred DOM nodes for a scrollable list is invisible until it isn't — then the whole page stutters on scroll. Virtualization (`react-window`, `@tanstack/react-virtual`) renders only the rows near the viewport and keeps the rest as empty space, so list length stops being a performance variable.
+
+## The actual takeaway
+
+Profile first, memoize second. A component that re-renders 50 times but does almost nothing on each render is not your bottleneck — a component that renders twice but recalculates something expensive is. Chase the flame graph, not the intuition.

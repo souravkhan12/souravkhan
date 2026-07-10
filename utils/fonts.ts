@@ -1,10 +1,10 @@
-import { Bitter, Plus_Jakarta_Sans, Roboto_Mono } from "next/font/google";
+import { Bitter, Plus_Jakarta_Sans } from "next/font/google";
+import { GeistPixelSquare } from "geist/font/pixel";
+import { GeistMono } from "geist/font/mono";
 
-export const mono = Roboto_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-  weight: ["400", "700"],
-});
+export const pixel = GeistPixelSquare;
+export const mono = GeistMono;
+
 export const sans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-sans",

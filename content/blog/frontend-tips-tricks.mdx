@@ -1,27 +1,27 @@
 ---
 title: "Frontend Tips I Wish I Knew Earlier"
 date: "2026-02-05"
-description: "Quick frontend tricks that save hours of debugging and make your code more maintainable."
+description: "Small, boring habits that quietly prevent most frontend bugs — CSS structure, async patterns, and debugging that actually saves time."
 tags: ["frontend", "css", "javascript", "tips"]
 published: true
 image: "/blog/frontend-tips.png"
 ---
 
-These aren't just tricks—they're patterns that prevent common bugs and make code more readable.
+None of this is clever. That's the point — the tricks that actually save time in production are boring, repeatable habits, not one-off hacks you saw in a tweet.
 
-## 🎨 CSS That Scales
+## CSS that scales instead of accumulating
 
-Stop fighting the cascade:
+Magic numbers are the first thing that rots a stylesheet. Every `8px`, `16px`, `4px` scattered across components is a decision nobody remembers making, and nobody can safely change.
 
 ```css
-/* Bad - Magic numbers everywhere */
+/* Bad — every value is a one-off decision */
 .card {
   margin-top: 8px;
   padding: 16px;
   border-radius: 4px;
 }
 
-/* Good - Systematic approach */
+/* Good — values reference a system */
 .card {
   margin-top: var(--spacing-sm);
   padding: var(--spacing-md);
@@ -29,21 +29,23 @@ Stop fighting the cascade:
 }
 ```
 
-## ⚡ JavaScript Patterns
+The win isn't aesthetic — it's that changing the whole app's spacing rhythm becomes a one-line edit instead of a find-and-replace across forty files. If you're on Tailwind, the same principle applies: reach for your theme's spacing/radius scale instead of arbitrary values (`p-[13px]`) unless there's a real reason.
 
-Write code that your future self will thank you for:
+## Async code that reads top to bottom
+
+Callback nesting doesn't just look bad — it hides control flow, making errors easy to swallow and hard to trace.
 
 ```js
-// Bad - Callback hell
+// Bad — nested callbacks, error handling is an afterthought
 fetchUser(id, (user) => {
   fetchPosts(user.id, (posts) => {
     fetchComments(posts[0].id, (comments) => {
-      // Nested callbacks...
+      // three levels deep before anything happens
     });
   });
 });
 
-// Good - Clean async/await
+// Good — linear, and errors propagate naturally
 async function getUserData(id) {
   const user = await fetchUser(id);
   const posts = await fetchPosts(user.id);
@@ -52,28 +54,30 @@ async function getUserData(id) {
 }
 ```
 
-## 🔧 Debugging Tricks
+The `async/await` version isn't just prettier — it's a stack trace you can actually read when something throws, and a diff you can actually review.
 
-Save hours with these console tricks:
+## Debugging tricks that beat `console.log` spam
+
+Most of the console API past `console.log` goes unused, but a few methods pay for themselves immediately:
 
 ```js
-// Log objects clearly
+// Pretty-print nested objects instead of "[Object object]"
 console.log("User data:", JSON.stringify(user, null, 2));
 
-// Time your functions
+// Measure exactly how long a slow function actually takes
 console.time("fetchData");
 const data = await fetchData();
 console.timeEnd("fetchData");
 
-// Group related logs
+// Group related logs so a busy console stays readable
 console.group("User interaction");
 console.log("Click detected");
 console.log("State updated:", newState);
 console.groupEnd();
 ```
 
-## 🎯 The Real Impact
+`console.table(arrayOfObjects)` is also worth knowing — it turns a wall of nested objects into an actual table, which is often the fastest way to spot the one row with bad data.
 
-These patterns reduced my bug count by **60%** and made onboarding new developers **3x faster**.
+## The habit that matters more than any trick
 
-Good code isn't just clever—it's kind to the next person who reads it.
+None of these save much time individually. What compounds is consistency: the same spacing scale everywhere, the same async style everywhere, the same debugging approach everywhere. Code that's predictable is code the next person — often you, in six months — can change without re-reading the whole file first.

@@ -10,7 +10,7 @@ export const LAYOUT = {
 
   // Text
   heading:
-    "text-2xl font-semibold tracking-tight text-gray-800 dark:text-gray-100",
+    "text-xl font-semibold tracking-tight text-gray-900 sm:text-2xl dark:text-white",
   subheading: "leading-relaxed font-medium text-gray-600 dark:text-gray-400",
 };
 

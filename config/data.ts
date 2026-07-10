@@ -72,26 +72,6 @@ export const WORK_EXPERIENCE = [
     ],
     technologies: ["cpp", "react", "node", "html", "tailwind", "sql", "next"],
   },
-  {
-    company: "OriginCore",
-    position: "Frontend Developer",
-    duration: "Feb 2023 - July 2023",
-    location: "Remote",
-    achievements: [
-      "Created dynamic, responsive UIs using React, Redux, and React Query. Optimized frontend performance with code splitting and lazy loading.",
-    ],
-    technologies: ["react", "redux", "css", "html"],
-  },
-  {
-    company: "Chegg",
-    position: "Subject Matter Expert (SME)",
-    duration: "",
-    location: "Remote",
-    achievements: [
-      "Solved 100+ advanced academic problems in DSA, DBMS, and OS with a 98% approval rating.",
-    ],
-    technologies: ["react", "cpp", "node", "mongodb", "sql"],
-  },
 ];
 
 // Contact information

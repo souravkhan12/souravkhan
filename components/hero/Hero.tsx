@@ -29,10 +29,12 @@ export default function Hero() {
               ease: MOTION.ease,
             }}
             viewport={{ once: true, amount: 0.1 }}
-            className="text-3xl leading-tight font-semibold tracking-tight text-[#3E4959] sm:text-4xl dark:text-white"
+            className="text-foreground text-3xl leading-tight font-semibold tracking-tight sm:text-4xl"
           >
-            Hi, I&apos;m <span className="">{HERO.name} -</span>
-            <span className="font-extrabold text-[#8F8F91]">{HERO.title}</span>
+            Hi, I&apos;m <span className="font-pixel">{HERO.name} -</span>
+            <span className="text-muted-foreground font-extrabold">
+              {HERO.title}
+            </span>
           </motion.h1>
 
           {/* Bio */}
@@ -89,7 +91,7 @@ export default function Hero() {
             ease: MOTION.ease,
           }}
           viewport={{ once: true, amount: 0.1 }}
-          className="flex h-[280px] w-[220px] justify-center rounded-2xl border border-gray-300/30 bg-white/30 shadow-inner backdrop-blur-lg transition-all duration-300 ease-out hover:scale-105 sm:h-[300px] sm:w-60 md:h-[330px] md:w-[280px] dark:border-white/10 dark:bg-[#1E1E1E]"
+          className="border-border bg-card/30 flex h-[280px] w-[220px] justify-center rounded-2xl border shadow-inner backdrop-blur-lg transition-all duration-300 ease-out hover:scale-105 sm:h-[300px] sm:w-60 md:h-[330px] md:w-[280px]"
         >
           <div className="relative h-full w-full">
             <Image

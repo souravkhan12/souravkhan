@@ -1,0 +1,71 @@
+---
+title: "Editor Setup"
+description: "How I configure VS Code — extensions and settings I use on every machine."
+order: 1
+---
+
+## Prerequisites
+
+- **VS Code** — [download](https://code.visualstudio.com/) and install for your OS.
+- **Node.js** — needed for most extension language servers to work.
+
+## Install Extensions
+
+Run this one-liner to install everything at once:
+
+```bash
+code --install-extension esbenp.prettier-vscode \
+  --install-extension dbaeumer.vscode-eslint \
+  --install-extension eamodio.gitlens \
+  --install-extension bradlc.vscode-tailwindcss \
+  --install-extension usernamehw.errorlens
+```
+
+| Extension | What it's for |
+| --- | --- |
+| Prettier | Consistent code formatting on save |
+| ESLint | Catches bugs and style issues while typing |
+| GitLens | Inline blame, history, and commit context |
+| Tailwind CSS IntelliSense | Class autocomplete and hover previews |
+| Error Lens | Surfaces errors/warnings inline instead of only in the Problems tab |
+
+## Settings
+
+My actual `settings.json` (`Cmd/Ctrl + Shift + P` → *Preferences: Open User Settings (JSON)*):
+
+```jsonc
+{
+  "editor.linkedEditing": false,
+  "editor.cursorSmoothCaretAnimation": "on",
+  "editor.cursorBlinking": "expand",
+  "editor.fontFamily": " 'JetBrains Mono',Adwaita Mono, Fira Code, Menlo, Monaco, 'Courier New', monospace",
+  "editor.fontLigatures": true,
+  "editor.stickyScroll.enabled": false,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.wordWrap": "wordWrapColumn",
+  "editor.quickSuggestions": { "strings": "on" },
+  "editor.fontSize": 14,
+  "editor.minimap.enabled": true,
+  "explorer.confirmDragAndDrop": false,
+  "explorer.confirmDelete": false,
+  "explorer.compactFolders": false,
+  "files.autoSave": "afterDelay",
+  "workbench.iconTheme": "symbols",
+  "workbench.productIconTheme": "fluent-icons",
+  "workbench.statusBar.visible": true,
+  "breadcrumbs.enabled": false,
+  "workbench.startupEditor": "none",
+  "workbench.editor.enablePreviewFromQuickOpen": false,
+  "emmet.triggerExpansionOnTab": true,
+  "emmet.useInlineCompletions": true,
+  "tailwindCSS.emmetCompletions": true,
+  "workbench.colorTheme": "Anthropic Mist",
+  "window.zoomLevel": 1.4,
+  "gitlens.ai.model": "vscode",
+  "gitlens.ai.vscode.model": "copilot:gpt-4o-mini",
+  "claudeCode.preferredLocation": "panel"
+}
+```
+
+Nothing exotic — formatting and linting that gets out of the way, a quieter UI (no breadcrumbs, no sticky scroll), and ligature-friendly fonts for reading code longer than I'd like to admit.
