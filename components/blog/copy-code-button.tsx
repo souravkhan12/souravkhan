@@ -24,7 +24,7 @@ export function CodeBlock({
       <pre
         ref={preRef}
         className={cn(
-          "font-mono! text-[13px]! leading-relaxed sm:text-sm!",
+          "font-code text-[13px]! leading-relaxed sm:text-sm!",
           className,
         )}
         {...props}
