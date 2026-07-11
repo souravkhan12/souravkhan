@@ -11,7 +11,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { CONTACT_INFO } from "@/config/data";
 import { FormData } from "@/types";
-import { Button, Input, Textarea, Section } from "@/components/ui";
+import {
+  Button,
+  Input,
+  Textarea,
+  Section,
+  GridBand,
+  GridCell,
+} from "@/components/ui";
 
 export default function Contact() {
   const [formData, setFormData] = useState<FormData>({
@@ -66,73 +73,65 @@ export default function Contact() {
   };
 
   return (
-    <Section id="contact" spacing="lg">
-      <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-12">
+    <Section id="contact" title="get in touch">
+      <GridBand cols="grid-cols-1 md:grid-cols-2">
         {/* Contact Information */}
-        <div className="space-y-8 sm:space-y-10">
-          <h2 className="text-xl font-semibold tracking-tight text-gray-900 sm:text-2xl dark:text-white">
-            Get in Touch
-          </h2>
-          <p className="text-sm text-gray-600 sm:text-base dark:text-gray-300">
+        <GridCell className="flex flex-col gap-6">
+          <p className="text-base text-pretty text-gray-600 dark:text-gray-400">
             I&apos;d love to hear from you — feel free to reach out via email,
             phone, or connect on LinkedIn.
           </p>
 
-          <div className="space-y-3 sm:space-y-4">
-            {/* Email */}
-            <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-              <LucideMail className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+          <div className="flex flex-col gap-3 text-sm">
+            <div className="flex items-center gap-3">
+              <LucideMail className="h-4 w-4 shrink-0 text-gray-400" />
               <Link
                 href={`mailto:${CONTACT_INFO.email}`}
-                className="hover:text-foreground"
+                className="hover:text-blue transition-colors"
               >
                 {CONTACT_INFO.email}
               </Link>
             </div>
 
-            {/* Phone */}
-            <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-              <LucidePhone className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-              <Link href={`tel:${CONTACT_INFO.phone}`}>
+            <div className="flex items-center gap-3">
+              <LucidePhone className="h-4 w-4 shrink-0 text-gray-400" />
+              <Link
+                href={`tel:${CONTACT_INFO.phone}`}
+                className="hover:text-blue transition-colors"
+              >
                 {CONTACT_INFO.phone}
               </Link>
             </div>
 
-            {/* Location */}
-            <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-              <LucideMapPin className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <div className="flex items-center gap-3">
+              <LucideMapPin className="h-4 w-4 shrink-0 text-gray-400" />
               <span>{CONTACT_INFO.location}</span>
             </div>
 
-            {/* LinkedIn */}
-            <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-              <LucideLinkedin className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <div className="flex items-center gap-3">
+              <LucideLinkedin className="h-4 w-4 shrink-0 text-gray-400" />
               <a
                 href={CONTACT_INFO.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-foreground"
+                className="hover:text-blue transition-colors"
               >
                 LinkedIn Profile
               </a>
             </div>
           </div>
-        </div>
+        </GridCell>
 
         {/* Contact Form */}
-        <div className="space-y-6 sm:space-y-8">
-          <h2 className="text-xl font-semibold tracking-tight text-gray-900 sm:text-2xl dark:text-white">
-            Send Me a Message
-          </h2>
-
-          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+        <GridCell tinted>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <Input
               id="name"
               type="text"
               value={formData.name}
               onChange={handleChange}
               placeholder="Your Name"
-              label="Name"
+              label="name"
               fullWidth
               required
             />
@@ -142,8 +141,8 @@ export default function Contact() {
               value={formData.email}
               onChange={handleChange}
               placeholder="your@email.com"
-              label="Email"
-              icon={<LucideMail size={18} />}
+              label="email"
+              icon={<LucideMail size={16} />}
               fullWidth
               required
             />
@@ -153,7 +152,7 @@ export default function Contact() {
               value={formData.message}
               onChange={handleChange}
               placeholder="Your Message"
-              label="Message"
+              label="message"
               charCountMax={1000}
               fullWidth
               required
@@ -161,28 +160,25 @@ export default function Contact() {
             <Button
               type="submit"
               variant="default"
-              size="lg"
               className="w-full"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Sending..." : "Send Message"}
+              {isSubmitting ? "sending..." : "send message"}
             </Button>
           </form>
 
-          {/* Success message */}
           {isSuccess && (
-            <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
-              <CheckCircle className="h-5 w-5" />
+            <div className="mt-4 flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400">
+              <CheckCircle className="h-4 w-4" />
               Message sent successfully!
             </div>
           )}
 
-          {/* Error message */}
           {errorMsg && (
-            <p className="text-red-600 dark:text-red-400">Error: {errorMsg}</p>
+            <p className="text-destructive mt-4 text-sm">Error: {errorMsg}</p>
           )}
-        </div>
-      </div>
+        </GridCell>
+      </GridBand>
     </Section>
   );
 }

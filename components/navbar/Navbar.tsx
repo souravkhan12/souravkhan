@@ -2,42 +2,28 @@
 
 import { useRef, useState } from "react";
 import { SunDim, Menu, X, MoonIcon } from "lucide-react";
-import { motion, useMotionValueEvent, useScroll } from "motion/react";
+import { motion } from "motion/react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import { navLinks } from "@/config/nav-links";
 import { useMounted } from "@/hooks/use-mounted";
-import {
-  MOTION_VARIANTS,
-  INTERACTIONS,
-  NAVBAR_ANIMATION,
-  MOBILE_MENU_ANIMATION,
-} from "@/config/theme";
+import { INTERACTIONS, NAVBAR_ANIMATION } from "@/config/theme";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 import { RemoveScroll } from "react-remove-scroll";
-import { useInitialAnimation } from "@/hooks/use-initial-animation";
-import { usePathname } from "next/navigation";
-import { redirect } from "next/navigation";
+import { usePathname, redirect } from "next/navigation";
 
 export default function Navbar() {
-  const { scrollY } = useScroll();
-  const [scrolled, setScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const isDarkMode = theme === "dark";
 
   const pathname = usePathname();
 
-  const shouldAnimate = useInitialAnimation();
   const navRef = useRef<HTMLDivElement | null>(null);
   useOutsideClick({
     ref: navRef,
     callback: () => setIsOpen(false),
-  });
-
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    setScrolled(latest > 20);
   });
 
   const mounted = useMounted();
@@ -69,92 +55,75 @@ export default function Navbar() {
   };
 
   return (
-    <>
-      <motion.nav
-        initial={NAVBAR_ANIMATION.initial}
-        animate={NAVBAR_ANIMATION.animate}
-        layout={true}
-        style={{
-          boxShadow: scrolled ? "var(--shadow-navbar)" : "none",
-        }}
-        className="bg-background/80 dark:bg-card/70 fixed inset-x-0 top-3 z-20 mx-auto flex w-[90%] items-center justify-between rounded-full px-2 py-1 backdrop-blur-md sm:w-[85%] md:w-[80%] lg:w-[75%] xl:max-w-6xl"
-      >
+    <motion.nav
+      initial={NAVBAR_ANIMATION.initial}
+      animate={NAVBAR_ANIMATION.animate}
+      className="border-border bg-background/90 sticky top-0 z-30 border-b backdrop-blur-sm"
+    >
+      <div className="border-border mx-auto flex max-w-[1200px] items-center justify-between border-x px-6 py-3 sm:px-8">
         <Link
           href="/"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="flex items-center gap-3"
         >
           <Image
             src="/LogoBG.webp"
             alt="Logo"
-            width={48}
-            height={48}
+            width={32}
+            height={32}
             priority={true}
-            className="h-10 w-10 cursor-pointer rounded-full sm:h-12 sm:w-12 dark:bg-white"
+            className="size-8 cursor-pointer dark:bg-white"
           />
+          <span className="ss01 text-sm font-semibold">sourav khan</span>
         </Link>
 
-        <motion.div
-          variants={MOTION_VARIANTS.containerStagger}
-          initial={shouldAnimate ? "hidden" : false}
-          animate="visible"
-          className="hidden flex-row items-center justify-center gap-6 px-2 md:flex"
-        >
+        <div className="hidden flex-row items-center gap-8 md:flex">
           {navLinks.map(({ name, href }, i) =>
             href.startsWith("#") ? (
-              <motion.a
+              <a
                 key={i}
                 href={href}
                 onClick={(e) => handleSectionNavigation(e, href)}
-                variants={MOTION_VARIANTS.staggerItem}
-                {...INTERACTIONS.button}
-                className="hover:text-foreground cursor-pointer text-sm font-medium text-gray-700 transition-colors dark:text-gray-200"
+                className="hover:text-blue cursor-pointer text-sm font-normal text-gray-600 lowercase transition-colors dark:text-gray-400"
               >
                 {name}
-              </motion.a>
+              </a>
             ) : (
-              <motion.div
+              <Link
                 key={i}
-                variants={MOTION_VARIANTS.staggerItem}
-                {...INTERACTIONS.button}
+                href={href}
+                className="hover:text-blue cursor-pointer text-sm font-normal text-gray-600 lowercase transition-colors dark:text-gray-400"
               >
-                <Link
-                  href={href}
-                  className="hover:text-foreground cursor-pointer text-sm font-medium text-gray-700 transition-colors dark:text-gray-200"
-                >
-                  {name}
-                </Link>
-              </motion.div>
+                {name}
+              </Link>
             ),
           )}
 
-          <motion.span
+          <motion.button
+            type="button"
+            aria-label="Toggle theme"
             onClick={setTheme.bind(null, isDarkMode ? "light" : "dark")}
-            variants={MOTION_VARIANTS.staggerItem}
             {...INTERACTIONS.themeToggle}
-            className="cursor-pointer text-gray-700 dark:text-gray-200"
+            className="hover:text-blue cursor-pointer text-gray-600 dark:text-gray-400"
           >
-            {isDarkMode ? <SunDim /> : <MoonIcon />}
-          </motion.span>
-        </motion.div>
+            {isDarkMode ? <SunDim size={18} /> : <MoonIcon size={18} />}
+          </motion.button>
+        </div>
 
         <motion.div
           ref={navRef}
           onClick={() => setIsOpen(!isOpen)}
           {...INTERACTIONS.menuToggle}
-          className="cursor-pointer text-gray-800 md:hidden dark:text-gray-100"
+          className="cursor-pointer md:hidden"
         >
-          {isOpen ? <X size={26} /> : <Menu size={26} />}
+          {isOpen ? <X size={22} /> : <Menu size={22} />}
         </motion.div>
-      </motion.nav>
+      </div>
 
       {/* Mobile Menu */}
       {isOpen && (
         <RemoveScroll>
-          <motion.div
-            initial={MOBILE_MENU_ANIMATION.initial}
-            animate={MOBILE_MENU_ANIMATION.animate}
-            className="bg-card fixed top-20 right-4 left-4 z-30 flex flex-col gap-4 rounded-xl p-4 shadow-lg md:hidden"
-          >
+          <div className="border-border bg-background flex flex-col border-t md:hidden">
             {navLinks.map(({ name, href }, i) =>
               href.startsWith("#") ? (
                 <a
@@ -164,7 +133,7 @@ export default function Navbar() {
                     handleSectionNavigation(e, href);
                     setIsOpen(false);
                   }}
-                  className="text-base font-medium text-gray-700 dark:text-gray-200"
+                  className="border-border border-b px-6 py-4 text-sm lowercase"
                 >
                   {name}
                 </a>
@@ -173,22 +142,24 @@ export default function Navbar() {
                   key={i}
                   href={href}
                   onClick={() => setIsOpen(false)}
-                  className="text-base font-medium text-gray-700 dark:text-gray-200"
+                  className="border-border border-b px-6 py-4 text-sm lowercase"
                 >
                   {name}
                 </Link>
               ),
             )}
-            <motion.span
+            <button
+              type="button"
+              aria-label="Toggle theme"
               onClick={setTheme.bind(null, isDarkMode ? "light" : "dark")}
-              {...INTERACTIONS.themeToggle}
-              className="cursor-pointer text-gray-700 dark:text-gray-200"
+              className="flex items-center gap-2 px-6 py-4 text-left text-sm lowercase"
             >
-              {isDarkMode ? <SunDim /> : <MoonIcon />}
-            </motion.span>
-          </motion.div>
+              {isDarkMode ? <SunDim size={18} /> : <MoonIcon size={18} />}
+              {isDarkMode ? "light mode" : "dark mode"}
+            </button>
+          </div>
         </RemoveScroll>
       )}
-    </>
+    </motion.nav>
   );
 }

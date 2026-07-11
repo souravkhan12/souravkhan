@@ -7,3 +7,10 @@ export { Badge } from "./Badge";
 export { Input, type InputProps } from "./Input";
 export { Textarea, type TextareaProps } from "./Textarea";
 export { Section, type SectionProps } from "./Section";
+export {
+  GridBand,
+  GridCell,
+  VertexSquare,
+  DiagonalLine,
+  GridRules,
+} from "./grid";

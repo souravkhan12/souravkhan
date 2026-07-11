@@ -1,5 +1,4 @@
 import { MotionSpan } from "@/components/ui/motion-wrapper";
-import { Badge } from "@/components/ui";
 import { MOTION } from "@/config/theme";
 
 interface AvailabilityBadgeProps {
@@ -8,12 +7,9 @@ interface AvailabilityBadgeProps {
 
 export function AvailabilityBadge({ text }: AvailabilityBadgeProps) {
   return (
-    <Badge
-      variant="outline"
-      className="flex items-center gap-1.5 border-emerald-500/30 bg-emerald-500/10 px-2 py-1.5 text-[11px] font-medium text-emerald-700 dark:text-emerald-400"
-    >
-      <span className="relative flex h-3 w-3 shrink-0 items-center justify-center">
-        {/* We use 3s duration with 1s delay steps for perfect synchronization */}
+    <span className="border-border inline-flex w-fit items-center gap-2 border px-3 py-1.5 text-xs font-medium lowercase">
+      <span className="relative flex h-2.5 w-2.5 shrink-0 items-center justify-center">
+        {/* 3s duration with 1s delay steps keeps the three ripples evenly spaced */}
         {[0, 1, 2].map((delay) => (
           <MotionSpan
             key={delay}
@@ -24,7 +20,7 @@ export function AvailabilityBadge({ text }: AvailabilityBadgeProps) {
               opacity: [0, 0.6, 0],
             }}
             transition={{
-              duration: MOTION.duration.slow * 10, // Slower duration for smoother ripple
+              duration: MOTION.duration.slow * 10,
               repeat: Infinity,
               delay: delay,
               ease: MOTION.ease,
@@ -34,11 +30,10 @@ export function AvailabilityBadge({ text }: AvailabilityBadgeProps) {
           />
         ))}
 
-        {/* Center fixed dot */}
-        <span className="relative z-10 h-2 w-2 rounded-full bg-emerald-500" />
+        <span className="relative z-10 h-1.5 w-1.5 rounded-full bg-emerald-500" />
       </span>
 
-      <span className="font-pixel leading-none tracking-wide">{text}</span>
-    </Badge>
+      <span className="leading-none">{text}</span>
+    </span>
   );
 }

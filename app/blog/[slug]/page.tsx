@@ -51,10 +51,10 @@ export default async function BlogPostPage({
       <BlogProgress headings={headings} />
       <article
         id="blog-post-content"
-        className="prose prose-gray dark:prose-invert prose-headings:font-serif prose-headings:tracking-tight prose-p:leading-relaxed prose-lg mx-auto max-w-3xl px-4 pt-28 pb-20 sm:pt-32 xl:pb-12"
+        className="prose prose-gray dark:prose-invert prose-p:leading-relaxed prose-lg mx-auto max-w-3xl px-6 pt-16 pb-20 sm:px-8 xl:pb-12"
       >
         <header>
-          <h1 className="font-serif text-4xl font-semibold tracking-tight sm:text-5xl">
+          <h1 className="ss01 text-xl font-semibold tracking-[-0.02em] sm:text-2xl">
             {post.title}
           </h1>
           <div className="mt-3 flex items-center gap-3 text-sm text-gray-500">
@@ -70,7 +70,7 @@ export default async function BlogPostPage({
           </div>
         </header>
         {post.image && (
-          <div className="animate-hero-image relative mb-10 h-64 w-full overflow-hidden rounded-lg sm:h-80">
+          <div className="border-border relative mb-10 h-64 w-full overflow-hidden border sm:h-80">
             <Image
               src={post.image}
               alt={post.title}

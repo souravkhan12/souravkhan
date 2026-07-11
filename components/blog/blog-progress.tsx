@@ -128,7 +128,7 @@ export function BlogProgress({ headings }: { headings: Heading[] }) {
             transition={{ duration: MOTION.duration.fast, ease: MOTION.ease }}
             className="mb-2 max-h-[60vh] overflow-y-auto rounded-2xl bg-neutral-900 p-2 shadow-xl"
           >
-            <div className="font-pixel px-3 pt-2 pb-1.5 text-[11px] tracking-wide text-neutral-500 uppercase">
+            <div className="px-3 pt-2 pb-1.5 text-[11px] tracking-wide text-neutral-500 uppercase">
               Table of Contents
             </div>
             <div className="flex flex-col gap-0.5">
@@ -170,7 +170,7 @@ export function BlogProgress({ headings }: { headings: Heading[] }) {
         <span className="min-w-0 flex-1 truncate text-sm font-medium text-white">
           {activeHeading?.text}
         </span>
-        <span className="font-pixel shrink-0 text-xs text-neutral-500 tabular-nums">
+        <span className="shrink-0 text-xs text-neutral-500 tabular-nums">
           {Math.round(progress)}%
         </span>
       </motion.button>

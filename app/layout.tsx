@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import "@/styles/globals.css";
 import { SEO_CONFIG } from "@/config/seo";
 import { CONTACT_INFO, SOCIAL_LINKS } from "@/config/data";
-import { mono, pixel, sans, serif } from "@/utils/fonts";
+import { mono, sans } from "@/utils/fonts";
 import Providers from "@/components/ui/provider";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 
@@ -135,7 +135,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${sans.variable} ${mono.variable} ${serif.variable} ${pixel.variable} font-sans antialiased`}
+        className={`${sans.variable} ${mono.variable} font-sans antialiased`}
       >
         <ScrollToTop />
         <Providers>{children}</Providers>

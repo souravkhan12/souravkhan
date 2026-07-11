@@ -3,10 +3,8 @@ import Navbar from "@/components/navbar/Navbar";
 import WorkExperience from "@/components/work/WorkExperience";
 import Projects from "@/components/project/Projects";
 import Contact from "@/components/contact/Contact";
-import { PatternDivider } from "@/components/ui/pattern-divider";
 import { ProjectSchemaMarkup } from "@/components/project/ProjectSchemaMarkup";
-import { LAYOUT } from "@/config/styles";
-import { Section } from "@/components/ui";
+import { Section, GridBand, GridCell } from "@/components/ui";
 import { GitHubContributions } from "@/components/github-contributions/github-section";
 import Footer from "@/components/footer/footer";
 import HeroTechStack from "@/components/hero/HeroTechStack";
@@ -17,35 +15,37 @@ export default function Page() {
   return (
     <>
       <ProjectSchemaMarkup />
-      <div className="bg-background flex [--pattern-fg:var(--color-gray-950)]/5 dark:[--pattern-fg:var(--color-white)]/10">
-        <PatternDivider position="left" />
-        <div className={`${LAYOUT.container} bg-background`}>
-          <Navbar />
+      <Navbar />
 
-          <Hero />
-          <Section title="Tech Stack">
-            <HeroTechStack />
-          </Section>
-          <WorkExperience />
-          <Projects />
-          <Section
-            title="GitHub Contributions"
-            id="github"
-            className="mx-auto flex"
-          >
-            <GitHubContributions />
-          </Section>
+      <main className="mx-auto max-w-[1200px] px-0">
+        <Hero />
 
-          <Section title="Recent Posts" id="blog">
-            <RecentPosts />
-          </Section>
+        <Section title="tech stack">
+          <HeroTechStack />
+        </Section>
 
-          <Setup />
-          <Contact />
-          <Footer />
-        </div>
-        <PatternDivider position="right" />
-      </div>
+        <WorkExperience />
+        <Projects />
+
+        {/* Activity: contributions graph beside the writing feed */}
+        <Section title="activity" id="github">
+          <GridBand cols="grid-cols-1 lg:grid-cols-[2fr_1fr]">
+            <GridCell className="overflow-x-auto">
+              <GitHubContributions />
+            </GridCell>
+            <GridCell tinted id="blog" className="flex flex-col">
+              <h3 className="ss01 mb-3 text-base font-semibold">
+                latest from the blog
+              </h3>
+              <RecentPosts />
+            </GridCell>
+          </GridBand>
+        </Section>
+
+        <Setup />
+        <Contact />
+        <Footer />
+      </main>
     </>
   );
 }

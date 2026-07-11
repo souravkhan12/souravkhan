@@ -4,94 +4,95 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-@layer base {
-  * {
-    font-family: var(--font-sans);
-  }
+/* ============================================================
+   PALETTE — paper.design
+   Static tokens live in @theme so Tailwind emits utilities for them
+   (bg-paper-50, text-gray-600, …) and so this warm gray ramp *replaces*
+   Tailwind's default cool one rather than racing it in the cascade.
+   ============================================================ */
+@theme {
+  --color-paper-50: #fcfcf9;
+  --color-paper-100: #efefe4;
+  --color-paper: #fcfcf9;
+  --color-cream: #efefe4;
+  --color-off-black: #010101;
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: var(--font-sans);
-    font-weight: 600;
-    letter-spacing: -0.025em;
-  }
+  --color-gray-50: #f5f5f2;
+  --color-gray-100: #eaeae7;
+  --color-gray-200: #d7d7d6;
+  --color-gray-300: #c1c1c0;
+  --color-gray-400: #a8a8a8;
+  --color-gray-500: #909090;
+  --color-gray-600: #666666;
+  --color-gray-700: #5b5b5b;
+  --color-gray-800: #424242;
+  --color-gray-900: #222222;
+  --color-gray-950: #181818;
 
-  body {
-    font-family: var(--font-sans);
-    font-size: 16px;
-    line-height: 1.6;
-    font-weight: 400;
-  }
-
-  p {
-    font-family: var(--font-sans);
-    font-size: 16px;
-    line-height: 1.6;
-    font-weight: 400;
-  }
-
-  code,
-  pre {
-    font-family: var(--font-geist-mono);
-  }
-}
-
-/* Plain, unlayered rule — guaranteed to win over Tailwind's built-in
-   .font-mono utility (which maps to the system monospace stack, not our
-   loaded webfont) regardless of cascade-layer ordering or !important use. */
-.font-code {
-  font-family:
-    var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco,
-    Consolas, monospace;
+  --color-blue-300: #a4c6f7;
+  --color-blue-400: #81adec;
+  --color-blue-500: #5d8cd7;
+  --color-amber: #ffcf3f;
 }
 
 :root {
-  --shadow-navbar:
-    0px 2px 3px -1px rgba(0, 0, 0, 0.1), 0px 1px 0px 0px rgba(25, 28, 33, 0.02),
-    0px 0px 0px 1px rgba(25, 28, 33, 0.08);
+  /* Semantic — light. Swapped wholesale by .dark below. */
+  --background: var(--color-paper);
+  --foreground: var(--color-off-black);
+  --card: var(--color-paper);
+  --card-foreground: var(--color-off-black);
+  --popover: var(--color-paper);
+  --popover-foreground: var(--color-off-black);
+  --primary: var(--color-off-black);
+  --primary-foreground: var(--color-paper);
+  --secondary: var(--color-gray-50);
+  --secondary-foreground: var(--color-off-black);
+  --muted: var(--color-gray-50);
+  --muted-foreground: var(--color-gray-600);
+  --accent: var(--color-gray-50);
+  --accent-foreground: var(--color-off-black);
+  --destructive: #c2544d;
+  --border: var(--color-gray-200);
+  --input: var(--color-gray-200);
 
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  /* Accent + focus shift one step lighter on dark so they stay legible. */
+  --blue: var(--color-blue-500);
+  --focus: var(--color-blue-400);
+  --ring: var(--color-blue-400);
+
+  /* Sharp edges — paper uses hairline borders, not rounding */
+  --radius: 0px;
 }
 
-html {
-  transition:
-    background-color 0.3s,
-    color 0.3s;
+.dark {
+  --background: var(--color-gray-950);
+  --foreground: var(--color-cream);
+  --card: var(--color-gray-950);
+  --card-foreground: var(--color-cream);
+  --popover: var(--color-gray-950);
+  --popover-foreground: var(--color-cream);
+  --primary: var(--color-cream);
+  --primary-foreground: var(--color-gray-950);
+  --secondary: #000000;
+  --secondary-foreground: var(--color-cream);
+  --muted: #000000;
+  --muted-foreground: var(--color-gray-400);
+  --accent: #000000;
+  --accent-foreground: var(--color-cream);
+  --destructive: #e08b85;
+  --border: var(--color-gray-900);
+  --input: var(--color-gray-900);
+
+  --blue: var(--color-blue-400);
+  --focus: var(--color-blue-400);
+  --ring: var(--color-blue-400);
 }
 
 @theme inline {
-  --font-pixel: var(--font-geist-pixel-square);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
+  /* Theme-reactive tokens: `inline` makes the utility reference the var, so
+     these follow .dark without regenerating classes. */
+  --color-blue: var(--blue);
+  --color-focus: var(--focus);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -110,36 +111,92 @@ html {
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-}
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  /* Sharp: every radius token collapses to 0 */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-4xl: 0px;
+
+  /* paper.design type scale */
+  --text-xs: 14px;
+  --text-sm: 16px;
+  --text-base: 18px;
+  --text-lg: 24px;
+  --text-xl: 30px;
+  --text-2xl: 40px;
+  --text-3xl: 48px;
+  --text-4xl: 64px;
+
+  /* paper.design weight ladder (Inter variable axis) */
+  --font-weight-light: 270;
+  --font-weight-semilight: 360;
+  --font-weight-normal: 400;
+  --font-weight-caption: 430;
+  --font-weight-medium: 480;
+  --font-weight-semibold: 550;
+  --font-weight-bold: 670;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+    font-size: 18px;
+    line-height: 1.5;
+    font-weight: 400;
+    font-feature-settings: "ss01";
   }
+
+  /* paper.design's signature: lowercase headings, tight tracking */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-sans);
+    font-weight: 550;
+    letter-spacing: -0.02em;
+    text-transform: lowercase;
+    font-feature-settings: "ss01";
+  }
+
+  code,
+  pre {
+    font-family: var(--font-geist-mono);
+    text-transform: none;
+  }
+}
+
+/* Opt out of the global lowercase (proper nouns, code, user content) */
+.normal-case-force {
+  text-transform: none;
+}
+
+.ss01 {
+  font-feature-settings: "ss01";
+}
+
+/* Guaranteed to win over Tailwind's .font-mono utility (which maps to the
+   system stack, not our loaded webfont) regardless of cascade-layer order. */
+.font-code {
+  font-family:
+    var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, monospace;
+}
+
+html {
+  transition:
+    background-color 0.3s,
+    color 0.3s;
 }
 
 /* View Transitions (Next.js experimental.viewTransition) */
@@ -179,23 +236,6 @@ html {
   }
 }
 
-@keyframes hero-image-in {
-  from {
-    opacity: 0;
-    transform: scale(1.03);
-    filter: blur(6px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-    filter: blur(0);
-  }
-}
-
-.animate-hero-image {
-  animation: hero-image-in 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
-}
-
 /* Keep table text the same size as surrounding prose — the typography
    plugin shrinks tables to a smaller em-scale by default, which reads as
    an arbitrary font-size drop from the paragraph/list text right above it. */
@@ -203,8 +243,13 @@ html {
   font-size: 1em;
 }
 
+/* Prose headings keep the site's lowercase treatment but not its tracking,
+   which is too tight at body-copy sizes. */
+.prose :is(h1, h2, h3, h4) {
+  letter-spacing: -0.015em;
+}
+
 /* Hide scrollbars by default and show on hover/touch */
-/* GitHub contribution graph scrollbar styling */
 .overflow-x-auto::-webkit-scrollbar {
   height: 3px;
 }
@@ -215,7 +260,6 @@ html {
 
 .overflow-x-auto::-webkit-scrollbar-thumb {
   background-color: rgba(156, 163, 175, 0.4);
-  border-radius: 2px;
 }
 
 .overflow-x-auto::-webkit-scrollbar-thumb:hover {

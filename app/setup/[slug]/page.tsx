@@ -46,18 +46,18 @@ export default async function SetupGuidePage({
       <BlogProgress headings={headings} />
       <article
         id="blog-post-content"
-        className="prose prose-gray dark:prose-invert prose-headings:font-serif prose-headings:tracking-tight prose-p:leading-relaxed prose-lg mx-auto max-w-3xl px-4 pt-28 pb-20 sm:pt-32 xl:pb-12"
+        className="prose prose-gray dark:prose-invert prose-p:leading-relaxed prose-lg mx-auto max-w-3xl px-6 pt-16 pb-20 sm:px-8 xl:pb-12"
       >
         <Link
           href="/#setup"
-          className="text-muted-foreground hover:text-foreground mb-6 inline-flex items-center gap-1.5 text-sm no-underline! transition-colors"
+          className="hover:text-blue mb-6 inline-flex items-center gap-1.5 text-sm text-gray-500 no-underline! transition-colors"
         >
           <ArrowLeft size={14} />
           Back to Setup
         </Link>
 
         <header>
-          <h1 className="font-serif text-4xl font-semibold tracking-tight sm:text-5xl">
+          <h1 className="ss01 text-xl font-semibold tracking-[-0.02em] sm:text-2xl">
             {guide.title}
           </h1>
           <p className="text-muted-foreground mt-2 text-base">

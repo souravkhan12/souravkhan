@@ -2,10 +2,15 @@
 
 import { motion } from "motion/react";
 import Image from "next/image";
-import { HERO, CONTACT_INFO, SOCIAL_LINKS } from "@/config/data";
-import { LAYOUT } from "@/config/styles";
-import { MOTION, MOTION_VARIANTS, INTERACTIONS } from "@/config/theme";
-import { Button } from "@/components/ui";
+import { HERO, CONTACT_INFO } from "@/config/data";
+import { MOTION, INTERACTIONS } from "@/config/theme";
+import {
+  Button,
+  GridBand,
+  GridCell,
+  DiagonalLine,
+  VertexSquare,
+} from "@/components/ui";
 import { AvailabilityBadge } from "@/components/hero/AvailabilityBadge";
 import { useInitialAnimation } from "@/hooks/use-initial-animation";
 
@@ -13,99 +18,102 @@ export default function Hero() {
   const shouldAnimate = useInitialAnimation();
 
   return (
-    <section id="about" className={LAYOUT.section}>
-      <div className="mx-auto flex flex-col-reverse items-center justify-between gap-8 px-4 py-12 sm:px-6 lg:flex-row lg:gap-20 lg:py-16">
-        <div className="max-w-xl space-y-6">
-          <AvailabilityBadge text="Available for Work" />
+    <GridBand
+      id="about"
+      cols="grid-cols-1 lg:grid-cols-[1.6fr_1fr]"
+      className="border-t-0"
+    >
+      <GridCell className="order-2 flex flex-col justify-center gap-6 py-12 sm:py-16 lg:order-1">
+        <AvailabilityBadge text="available for work" />
 
-          <motion.h1
-            initial={
-              shouldAnimate ? { opacity: 0, y: 6, filter: "blur(10px)" } : false
-            }
-            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{
-              duration: MOTION.duration.slow,
-              delay: 0.15,
-              ease: MOTION.ease,
-            }}
-            viewport={{ once: true, amount: 0.1 }}
-            className="text-foreground text-3xl leading-tight font-semibold tracking-tight sm:text-4xl"
-          >
-            Hi, I&apos;m <span className="font-pixel">{HERO.name} -</span>
-            <span className="text-muted-foreground font-extrabold">
-              {HERO.title}
-            </span>
-          </motion.h1>
-
-          {/* Bio */}
-          <motion.p
-            initial={shouldAnimate ? { opacity: 0, y: 3 } : false}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: MOTION.duration.slow,
-              delay: 0.3,
-              ease: MOTION.ease,
-            }}
-            viewport={{ once: true, amount: 0.1 }}
-            className={LAYOUT.subheading}
-          >
-            {HERO.bio}
-          </motion.p>
-
-          {/* CTA Buttons */}
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:gap-4">
-            <motion.div {...INTERACTIONS.button} className="w-full sm:w-auto">
-              <Button asChild variant="default" size="default">
-                <a
-                  href={`mailto:${CONTACT_INFO.email}`}
-                  className="w-full sm:w-auto"
-                >
-                  Get In Touch
-                </a>
-              </Button>
-            </motion.div>
-
-            <motion.div {...INTERACTIONS.button} className="w-full sm:w-auto">
-              <Button asChild variant="outline" className="w-full sm:w-auto">
-                <a
-                  href={CONTACT_INFO.resume}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full sm:w-auto"
-                >
-                  Resume
-                </a>
-              </Button>
-            </motion.div>
-          </div>
-        </div>
-
-        {/* Hero Image */}
-        <motion.div
-          initial={shouldAnimate ? { opacity: 0, scale: 0.95 } : false}
-          whileInView={{ opacity: 1, scale: 1 }}
-          {...INTERACTIONS.card}
+        <motion.h1
+          initial={
+            shouldAnimate ? { opacity: 0, y: 6, filter: "blur(10px)" } : false
+          }
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           transition={{
             duration: MOTION.duration.slow,
-            delay: 0.5,
+            delay: 0.15,
             ease: MOTION.ease,
           }}
-          viewport={{ once: true, amount: 0.1 }}
-          className="border-border bg-card/30 flex h-[280px] w-[220px] justify-center rounded-2xl border shadow-inner backdrop-blur-lg transition-all duration-300 ease-out hover:scale-105 sm:h-[300px] sm:w-60 md:h-[330px] md:w-[280px]"
+          className="ss01 font-semilight text-2xl leading-[1.05] tracking-[-0.02em] sm:text-3xl lg:text-4xl"
         >
-          <div className="relative h-full w-full">
+          {HERO.name}
+          <br />
+          <span className="text-gray-500 dark:text-gray-500">{HERO.title}</span>
+        </motion.h1>
+
+        <motion.p
+          initial={shouldAnimate ? { opacity: 0, y: 3 } : false}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: MOTION.duration.slow,
+            delay: 0.3,
+            ease: MOTION.ease,
+          }}
+          className="max-w-xl text-base text-pretty text-gray-600 dark:text-gray-400"
+        >
+          {HERO.bio}
+        </motion.p>
+
+        <div className="mt-2 flex flex-col gap-3 sm:flex-row">
+          <motion.div {...INTERACTIONS.button} className="w-full sm:w-auto">
+            <Button asChild variant="default">
+              <a
+                href={`mailto:${CONTACT_INFO.email}`}
+                className="w-full sm:w-auto"
+              >
+                get in touch
+              </a>
+            </Button>
+          </motion.div>
+
+          <motion.div {...INTERACTIONS.button} className="w-full sm:w-auto">
+            <Button asChild variant="outline">
+              <a
+                href={CONTACT_INFO.resume}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto"
+              >
+                resume
+              </a>
+            </Button>
+          </motion.div>
+        </div>
+      </GridCell>
+
+      <GridCell
+        padded={false}
+        tinted
+        className="relative order-1 min-h-[320px] lg:order-2"
+      >
+        <DiagonalLine direction="tl-br" />
+        <DiagonalLine direction="tr-bl" />
+        <VertexSquare corner="top-left" />
+        <motion.div
+          initial={shouldAnimate ? { opacity: 0, scale: 0.98 } : false}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{
+            duration: MOTION.duration.slow,
+            delay: 0.45,
+            ease: MOTION.ease,
+          }}
+          className="absolute inset-0 flex items-center justify-center p-8"
+        >
+          <div className="border-border relative h-[260px] w-[210px] border sm:h-[300px] sm:w-[240px]">
             <Image
               src="/sourav.webp"
               alt={HERO.name}
               fill
               fetchPriority="high"
               priority={true}
-              className="rounded-2xl object-cover"
-              sizes="(max-width: 640px) 220px, (max-width: 768px) 240px, (max-width: 1024px) 280px"
+              className="object-cover"
+              sizes="(max-width: 640px) 210px, 240px"
             />
           </div>
         </motion.div>
-      </div>
-    </section>
+      </GridCell>
+    </GridBand>
   );
 }

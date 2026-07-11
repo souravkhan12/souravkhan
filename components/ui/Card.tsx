@@ -7,22 +7,25 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   padding?: "sm" | "md" | "lg";
 }
 
+/**
+ * A flat, hairline-bordered panel. paper.design has no rounding and no
+ * elevation — depth comes from the grid rules and tinted fills instead.
+ */
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
   (
     { className = "", variant = "default", padding = "sm", children, ...props },
     ref,
   ) => {
     const variantClasses: Record<string, string> = {
-      default: "bg-card rounded-2xl border border-border",
-      elevated:
-        "bg-card/80 rounded-2xl border border-border shadow-lg backdrop-blur-md",
-      outline: "bg-transparent rounded-2xl border border-border",
+      default: "bg-background border border-border",
+      elevated: "bg-gray-50 dark:bg-black border border-border",
+      outline: "bg-transparent border border-border",
     };
 
     const paddingClasses: Record<string, string> = {
-      sm: "p-3 sm:p-4",
-      md: "p-4 sm:p-6",
-      lg: "p-6 sm:p-8",
+      sm: "p-4 sm:p-5",
+      md: "p-6 sm:p-8",
+      lg: "p-8 sm:p-10",
     };
 
     const combinedClasses = [

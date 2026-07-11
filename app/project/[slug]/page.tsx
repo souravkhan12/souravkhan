@@ -42,14 +42,14 @@ export default async function ProjectPage({
   if (!project) notFound();
 
   return (
-    <article className="prose prose-gray dark:prose-invert prose-headings:font-serif prose-headings:tracking-tight prose-p:leading-relaxed prose-lg mx-auto max-w-3xl px-4 pt-28 pb-12 sm:pt-32">
+    <article className="prose prose-gray dark:prose-invert prose-p:leading-relaxed prose-lg mx-auto max-w-3xl px-6 pt-16 pb-12 sm:px-8">
       <header>
-        <h1 className="font-serif text-4xl font-semibold tracking-tight sm:text-5xl">
+        <h1 className="ss01 text-xl font-semibold tracking-[-0.02em] sm:text-2xl">
           {project.title}
         </h1>
       </header>
       {project.image && (
-        <div className="animate-hero-image relative mb-10 h-64 w-full overflow-hidden rounded-lg sm:h-80">
+        <div className="border-border relative mb-10 h-64 w-full overflow-hidden border sm:h-80">
           <Image
             src={project.image}
             alt={project.title}
