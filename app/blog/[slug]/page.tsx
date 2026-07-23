@@ -54,7 +54,7 @@ export default async function BlogPostPage({
         className="prose prose-gray dark:prose-invert prose-p:leading-relaxed prose-lg mx-auto max-w-3xl px-6 pt-16 pb-20 sm:px-8 xl:pb-12"
       >
         <header>
-          <h1 className="ss01 text-xl font-semibold tracking-[-0.02em] sm:text-2xl">
+          <h1 className="ss01 normal-case-force text-xl font-semibold tracking-[-0.02em] sm:text-2xl">
             {post.title}
           </h1>
           <div className="mt-3 flex items-center gap-3 text-sm text-gray-500">

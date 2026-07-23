@@ -25,7 +25,7 @@ export default function BlogPage() {
               className="flex flex-col justify-between gap-3 p-6 sm:flex-row sm:items-start sm:p-8"
             >
               <div className="min-w-0">
-                <h3 className="ss01 group-hover:text-blue text-base font-semibold transition-colors">
+                <h3 className="ss01 normal-case-force group-hover:text-blue text-base font-semibold transition-colors">
                   {post.title}
                 </h3>
                 <p className="mt-1 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">

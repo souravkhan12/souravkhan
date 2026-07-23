@@ -36,7 +36,7 @@ export default function Hero() {
             delay: 0.15,
             ease: MOTION.ease,
           }}
-          className="ss01 font-semilight text-2xl leading-[1.05] tracking-[-0.02em] sm:text-3xl lg:text-4xl"
+          className="ss01 normal-case-force font-semilight text-2xl leading-[1.05] tracking-[-0.02em] sm:text-3xl lg:text-4xl"
         >
           {HERO.name}
           <br />

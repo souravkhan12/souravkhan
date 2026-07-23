@@ -33,10 +33,10 @@ export default function ProjectCard({
         />
       </Link>
 
-      <div className="flex flex-1 flex-col gap-4 p-8 sm:p-10">
+      <div className="flex flex-1 flex-col gap-5 p-8 sm:p-10">
         <div className="flex items-start justify-between gap-4">
           <Link href={href}>
-            <h3 className="ss01 hover:text-blue text-lg font-semibold transition-colors">
+            <h3 className="ss01 normal-case-force hover:text-blue text-lg font-semibold transition-colors">
               {project.title}
             </h3>
           </Link>
@@ -67,7 +67,7 @@ export default function ProjectCard({
           {project.description}
         </p>
 
-        <div className="mt-auto pt-2">
+        <div className="border-border mt-auto border-t pt-5 [&_ul]:mt-0">
           <TechStack technologies={project.technologies} colorful={true} />
         </div>
       </div>
