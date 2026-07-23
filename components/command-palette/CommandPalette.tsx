@@ -12,6 +12,7 @@ import {
   LuMail,
   LuMoon,
   LuSearch,
+  LuSparkles,
   LuSun,
 } from "react-icons/lu";
 import { SiGithub } from "react-icons/si";
@@ -24,6 +25,8 @@ type Cmd = {
   keywords?: string;
   icon: React.ReactNode;
   run: () => void;
+  /** Hidden until the query matches — used for easter eggs. */
+  hidden?: boolean;
 };
 
 const GROUPS: Cmd["group"][] = ["navigate", "projects", "actions"];
@@ -138,6 +141,21 @@ export default function CommandPalette({
           resolvedTheme === "dark" ? <LuSun size={15} /> : <LuMoon size={15} />,
         run: () => setTheme(resolvedTheme === "dark" ? "light" : "dark"),
       },
+      {
+        id: "hire-me",
+        label: "sudo hire-me",
+        group: "actions",
+        keywords: "sudo hire secret party easter egg fun",
+        hidden: true,
+        icon: <LuSparkles size={15} />,
+        run: () => {
+          close();
+          window.dispatchEvent(new Event("party-mode"));
+          setTimeout(() => {
+            window.location.href = `mailto:${CONTACT_INFO.email}?subject=let's work together`;
+          }, 900);
+        },
+      },
     ];
 
     return [...nav, ...projCmds, ...actions];
@@ -145,7 +163,7 @@ export default function CommandPalette({
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return commands;
+    if (!q) return commands.filter((c) => !c.hidden);
     return commands.filter((c) =>
       `${c.label} ${c.group} ${c.keywords ?? ""}`.toLowerCase().includes(q),
     );
@@ -176,19 +194,36 @@ export default function CommandPalette({
     return () => clearTimeout(t);
   }, [open]);
 
-  // Lock background scroll while the palette is open. Locking the root element
-  // (not just body) is what actually stops the page behind from scrolling here.
+  // Lock background scroll while the palette is open. Pinning the body with
+  // position:fixed at its current offset freezes the page no matter which
+  // element is the scroll container (overflow:hidden proved unreliable here).
   useEffect(() => {
     if (!open) return;
-    const root = document.documentElement;
-    const scrollbar = window.innerWidth - root.clientWidth;
-    const prevOverflow = root.style.overflow;
-    const prevPad = document.body.style.paddingRight;
-    root.style.overflow = "hidden";
-    if (scrollbar > 0) document.body.style.paddingRight = `${scrollbar}px`;
+    const body = document.body;
+    const scrollY = window.scrollY;
+    const scrollbar = window.innerWidth - document.documentElement.clientWidth;
+    const prev = {
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      width: body.style.width,
+      paddingRight: body.style.paddingRight,
+    };
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.width = "100%";
+    if (scrollbar > 0) body.style.paddingRight = `${scrollbar}px`;
     return () => {
-      root.style.overflow = prevOverflow;
-      document.body.style.paddingRight = prevPad;
+      body.style.position = prev.position;
+      body.style.top = prev.top;
+      body.style.left = prev.left;
+      body.style.right = prev.right;
+      body.style.width = prev.width;
+      body.style.paddingRight = prev.paddingRight;
+      window.scrollTo(0, scrollY);
     };
   }, [open]);
 

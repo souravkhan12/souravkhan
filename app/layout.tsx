@@ -6,6 +6,7 @@ import { mono, sans } from "@/utils/fonts";
 import Providers from "@/components/ui/provider";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import CommandPalette from "@/components/command-palette/CommandPalette";
+import EasterEggs from "@/components/easter-eggs/EasterEggs";
 import { getAllProjects } from "@/lib/projects";
 
 export const metadata: Metadata = {
@@ -148,6 +149,7 @@ export default function RootLayout({
         <Providers>
           {children}
           <CommandPalette projects={projectLinks} />
+          <EasterEggs />
         </Providers>
       </body>
     </html>

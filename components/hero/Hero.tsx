@@ -40,7 +40,9 @@ export default function Hero() {
         >
           {HERO.name}
           <br />
-          <span className="text-gray-500 dark:text-gray-500">{HERO.title}</span>
+          <span className="bg-gradient-to-r from-[#5d8cd7] via-[#8b5cf6] to-[#10b981] bg-clip-text text-transparent">
+            {HERO.title}
+          </span>
         </motion.h1>
 
         <motion.p
