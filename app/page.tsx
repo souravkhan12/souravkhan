@@ -10,6 +10,7 @@ import Footer from "@/components/footer/footer";
 import HeroTechStack from "@/components/hero/HeroTechStack";
 import { RecentPosts } from "@/components/blog/recent-posts";
 import Setup from "@/components/setup/Setup";
+import Guestbook from "@/components/guestbook/Guestbook";
 
 export default function Page() {
   return (
@@ -43,6 +44,7 @@ export default function Page() {
         </Section>
 
         <Setup />
+        <Guestbook />
         <Contact />
         <Footer />
       </main>

@@ -60,7 +60,7 @@ export default function Hero() {
 
         <div className="mt-2 flex flex-col gap-3 sm:flex-row">
           <motion.div {...INTERACTIONS.button} className="w-full sm:w-auto">
-            <Button asChild variant="default">
+            <Button asChild variant="gradient">
               <a
                 href={`mailto:${CONTACT_INFO.email}`}
                 className="w-full sm:w-auto"
