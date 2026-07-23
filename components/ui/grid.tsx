@@ -94,6 +94,29 @@ export function VertexSquare({
 }
 
 /**
+ * paper.design's halftone signature: a faint monochrome dot grid used as a
+ * background texture in otherwise-empty cells. Purely decorative.
+ */
+export function DotGrid({ className = "" }: { className?: string }) {
+  return (
+    <div
+      aria-hidden="true"
+      className={`pointer-events-none absolute inset-0 ${className}`}
+      style={{
+        backgroundImage:
+          "radial-gradient(var(--color-border) 1.1px, transparent 1.1px)",
+        backgroundSize: "16px 16px",
+        backgroundPosition: "center",
+        maskImage:
+          "radial-gradient(ellipse at center, black 55%, transparent 100%)",
+        WebkitMaskImage:
+          "radial-gradient(ellipse at center, black 55%, transparent 100%)",
+      }}
+    />
+  );
+}
+
+/**
  * Corner-to-corner hairline drawn across a cell. `non-scaling-stroke` keeps it
  * exactly 1px however the cell is sized.
  */

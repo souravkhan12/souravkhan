@@ -271,13 +271,13 @@ export default function CommandPalette({
             onClick={close}
           />
           <motion.div
-            className="border-border bg-background relative z-10 w-full max-w-xl overflow-hidden border shadow-2xl"
+            className="border-border bg-background relative z-10 flex max-h-[70vh] w-full max-w-xl flex-col overflow-hidden border shadow-2xl"
             initial={{ y: -14, scale: 0.96 }}
             animate={{ y: 0, scale: 1 }}
             exit={{ y: -10, scale: 0.98 }}
             transition={{ type: "spring", duration: 0.32, bounce: 0.22 }}
           >
-            <div className="border-border flex items-center gap-3 border-b px-4 py-3">
+            <div className="border-border flex shrink-0 items-center gap-3 border-b px-4 py-3">
               <LuSearch className="shrink-0 text-gray-400" size={16} />
               <input
                 ref={inputRef}
@@ -291,7 +291,10 @@ export default function CommandPalette({
               </kbd>
             </div>
 
-            <div ref={listRef} className="max-h-[52vh] overflow-y-auto py-2">
+            <div
+              ref={listRef}
+              className="min-h-0 flex-1 overflow-y-auto overscroll-contain py-2"
+            >
               {filtered.length === 0 && (
                 <p className="px-4 py-6 text-center text-sm text-gray-400">
                   no results
@@ -335,7 +338,7 @@ export default function CommandPalette({
               })}
             </div>
 
-            <div className="border-border font-code flex items-center gap-4 border-t px-4 py-2 text-[10px] text-gray-400">
+            <div className="border-border font-code flex shrink-0 items-center gap-4 border-t px-4 py-2 text-[10px] text-gray-400">
               <span>↑↓ navigate</span>
               <span>↵ select</span>
               <span>esc close</span>

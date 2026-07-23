@@ -27,7 +27,7 @@ const Section = React.forwardRef<HTMLDivElement, SectionProps>(
     return (
       <section className={`relative ${className}`} id={id} ref={ref} {...props}>
         {title && (
-          <div className="border-border flex flex-col gap-1 border-t border-r border-l px-6 py-5 sm:px-8">
+          <div className="border-border flex flex-col gap-1.5 border-t border-r border-l px-6 py-6 sm:px-8 sm:py-7">
             <h2 className="ss01 text-base font-semibold">{title}</h2>
             {subtitle && (
               <p className="text-sm text-gray-600 dark:text-gray-400">

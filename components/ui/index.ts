@@ -12,5 +12,6 @@ export {
   GridCell,
   VertexSquare,
   DiagonalLine,
+  DotGrid,
   GridRules,
 } from "./grid";

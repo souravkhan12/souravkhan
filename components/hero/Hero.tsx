@@ -9,6 +9,7 @@ import {
   GridBand,
   GridCell,
   DiagonalLine,
+  DotGrid,
   VertexSquare,
 } from "@/components/ui";
 import { AvailabilityBadge } from "@/components/hero/AvailabilityBadge";
@@ -23,7 +24,7 @@ export default function Hero() {
       cols="grid-cols-1 lg:grid-cols-[1.6fr_1fr]"
       className="border-t-0"
     >
-      <GridCell className="order-2 flex flex-col justify-center gap-6 py-12 sm:py-16 lg:order-1">
+      <GridCell className="order-2 flex flex-col justify-center gap-7 py-16 sm:py-20 lg:order-1">
         <AvailabilityBadge text="available for work" />
 
         <motion.h1
@@ -86,8 +87,9 @@ export default function Hero() {
       <GridCell
         padded={false}
         tinted
-        className="relative order-1 min-h-[320px] lg:order-2"
+        className="relative order-1 min-h-[360px] lg:order-2"
       >
+        <DotGrid />
         <DiagonalLine direction="tl-br" />
         <DiagonalLine direction="tr-bl" />
         <VertexSquare corner="top-left" />
