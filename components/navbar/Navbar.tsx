@@ -99,6 +99,17 @@ export default function Navbar() {
             ),
           )}
 
+          <button
+            type="button"
+            aria-label="Open command menu"
+            onClick={() =>
+              window.dispatchEvent(new Event("open-command-palette"))
+            }
+            className="border-border hover:border-blue hover:text-blue font-code flex cursor-pointer items-center gap-1 border px-2 py-1 text-xs text-gray-500 transition-colors"
+          >
+            <span className="text-sm leading-none">⌘</span>k
+          </button>
+
           <motion.button
             type="button"
             aria-label="Toggle theme"

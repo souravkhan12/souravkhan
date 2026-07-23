@@ -5,6 +5,8 @@ import { CONTACT_INFO, SOCIAL_LINKS } from "@/config/data";
 import { mono, sans } from "@/utils/fonts";
 import Providers from "@/components/ui/provider";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
+import CommandPalette from "@/components/command-palette/CommandPalette";
+import { getAllProjects } from "@/lib/projects";
 
 export const metadata: Metadata = {
   title: {
@@ -87,6 +89,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const projectLinks = getAllProjects().map((p) => ({
+    slug: p.slug,
+    title: p.title,
+  }));
+
   // Structured Data (JSON-LD) for SEO
   const jsonLd = {
     "@context": "https://schema.org",
@@ -138,7 +145,10 @@ export default function RootLayout({
         className={`${sans.variable} ${mono.variable} font-sans antialiased`}
       >
         <ScrollToTop />
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <CommandPalette projects={projectLinks} />
+        </Providers>
       </body>
     </html>
   );
