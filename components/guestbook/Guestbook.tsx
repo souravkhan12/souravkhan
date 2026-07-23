@@ -6,18 +6,6 @@ import { Section, GridBand, GridCell, Button, Input } from "@/components/ui";
 
 type Entry = { id: number; name: string; message: string; date: string };
 
-// Deterministic accent per entry so the wall reads as colourful, not random.
-const ACCENTS = [
-  "#10b981",
-  "#5d8cd7",
-  "#8b5cf6",
-  "#f59e0b",
-  "#f43f5e",
-  "#06b6d4",
-];
-const accentFor = (s: string) =>
-  ACCENTS[[...s].reduce((a, c) => a + c.charCodeAt(0), 0) % ACCENTS.length];
-
 function initials(name: string) {
   return name
     .split(/\s+/)
@@ -133,7 +121,7 @@ export default function Guestbook() {
             <div className="flex items-center gap-3">
               <Button
                 type="submit"
-                variant="gradient"
+                variant="default"
                 disabled={status === "sending"}
               >
                 {status === "sending" ? "signing..." : "sign guestbook"}
@@ -159,7 +147,6 @@ export default function Guestbook() {
           </GridCell>
         )}
         {entries.map((entry, i) => {
-          const accent = accentFor(entry.name);
           return (
             <GridCell key={entry.id} tinted={i % 2 === 1}>
               <motion.div
@@ -168,10 +155,7 @@ export default function Guestbook() {
                 className="flex flex-col gap-3"
               >
                 <div className="flex items-center gap-3">
-                  <span
-                    className="flex size-8 shrink-0 items-center justify-center text-xs font-semibold text-white"
-                    style={{ backgroundColor: accent }}
-                  >
+                  <span className="border-border bg-background ss01 flex size-8 shrink-0 items-center justify-center border text-xs font-semibold">
                     {initials(entry.name) || "?"}
                   </span>
                   <div className="min-w-0">

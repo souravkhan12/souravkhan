@@ -28,7 +28,7 @@ export default function BlogPage() {
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
                   {index === 0 && (
-                    <span className="inline-flex shrink-0 items-center bg-gradient-to-r from-[#5d8cd7] to-[#8b5cf6] px-1.5 py-0.5 text-[10px] font-medium tracking-wide text-white uppercase">
+                    <span className="border-blue text-blue inline-flex shrink-0 items-center border px-1.5 py-0.5 text-[10px] font-medium tracking-wide uppercase">
                       latest
                     </span>
                   )}
