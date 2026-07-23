@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { SunDim, Menu, X, MoonIcon } from "lucide-react";
+import { SunDim, Menu, X, MoonIcon, Search } from "lucide-react";
 import { motion } from "motion/react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
@@ -99,16 +99,25 @@ export default function Navbar() {
             ),
           )}
 
-          <button
+          <motion.button
             type="button"
-            aria-label="Open command menu"
+            aria-label="Search"
             onClick={() =>
               window.dispatchEvent(new Event("open-command-palette"))
             }
-            className="border-border hover:border-blue hover:text-blue font-code flex cursor-pointer items-center gap-1 border px-2 py-1 text-xs text-gray-500 transition-colors"
+            whileHover={{ scale: 1.015 }}
+            whileTap={{ scale: 0.985 }}
+            className="border-border hover:border-blue group flex w-52 cursor-pointer items-center gap-2 border px-3 py-1.5 text-left text-gray-500 transition-colors"
           >
-            <span className="text-sm leading-none">⌘</span>k
-          </button>
+            <Search
+              size={14}
+              className="group-hover:text-blue shrink-0 transition-colors"
+            />
+            <span className="flex-1 text-xs">search...</span>
+            <kbd className="border-border font-code shrink-0 border px-1.5 py-0.5 text-[10px] leading-none">
+              ⌘k
+            </kbd>
+          </motion.button>
 
           <motion.button
             type="button"
@@ -135,6 +144,17 @@ export default function Navbar() {
       {isOpen && (
         <RemoveScroll>
           <div className="border-border bg-background flex flex-col border-t md:hidden">
+            <button
+              type="button"
+              onClick={() => {
+                setIsOpen(false);
+                window.dispatchEvent(new Event("open-command-palette"));
+              }}
+              className="border-border flex items-center gap-2 border-b px-6 py-4 text-left text-sm lowercase"
+            >
+              <Search size={16} />
+              search
+            </button>
             {navLinks.map(({ name, href }, i) =>
               href.startsWith("#") ? (
                 <a

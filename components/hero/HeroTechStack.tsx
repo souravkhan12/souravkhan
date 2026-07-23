@@ -10,7 +10,7 @@ export default function HeroTechStack() {
           key={tech.name}
           padded={false}
           tinted={i % 2 === 1}
-          className="flex items-center gap-3 px-6 py-5 transition-colors hover:bg-gray-50 dark:hover:bg-black"
+          className="flex items-center gap-3 px-8 py-6 transition-colors hover:bg-gray-50 dark:hover:bg-black"
         >
           <TextIcon label={tech.icon} size={18} colorful />
           <span className="text-sm font-medium">{tech.name}</span>

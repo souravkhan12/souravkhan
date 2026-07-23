@@ -58,7 +58,7 @@ export function GridCell({
       // neighbouring cell's content past its borders.
       className={`border-border relative min-w-0 border-r border-b ${
         tinted ? "bg-gray-50 dark:bg-black" : "bg-background"
-      } ${padded ? "p-6 sm:p-8" : ""} ${className}`}
+      } ${padded ? "p-8 sm:p-10" : ""} ${className}`}
       {...props}
     >
       {children}

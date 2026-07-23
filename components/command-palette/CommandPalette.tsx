@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
+import { AnimatePresence, motion } from "motion/react";
 import {
   LuArrowRight,
   LuFileText,
@@ -175,14 +176,28 @@ export default function CommandPalette({
     return () => clearTimeout(t);
   }, [open]);
 
+  // Lock background scroll while the palette is open. Locking the root element
+  // (not just body) is what actually stops the page behind from scrolling here.
+  useEffect(() => {
+    if (!open) return;
+    const root = document.documentElement;
+    const scrollbar = window.innerWidth - root.clientWidth;
+    const prevOverflow = root.style.overflow;
+    const prevPad = document.body.style.paddingRight;
+    root.style.overflow = "hidden";
+    if (scrollbar > 0) document.body.style.paddingRight = `${scrollbar}px`;
+    return () => {
+      root.style.overflow = prevOverflow;
+      document.body.style.paddingRight = prevPad;
+    };
+  }, [open]);
+
   // keep the highlighted row in view
   useEffect(() => {
     listRef.current
       ?.querySelector<HTMLElement>(`[data-idx="${active}"]`)
       ?.scrollIntoView({ block: "nearest" });
   }, [active]);
-
-  if (!open) return null;
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowDown") {
@@ -201,84 +216,97 @@ export default function CommandPalette({
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-start justify-center px-4 pt-[12vh]"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Command menu"
-    >
-      <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-        onClick={close}
-      />
-      <div
-        className="border-border bg-background relative z-10 w-full max-w-xl border shadow-2xl"
-        onKeyDown={onKeyDown}
-      >
-        <div className="border-border flex items-center gap-3 border-b px-4 py-3">
-          <LuSearch className="shrink-0 text-gray-400" size={16} />
-          <input
-            ref={inputRef}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="type a command or search..."
-            className="w-full bg-transparent text-sm outline-none placeholder:text-gray-400"
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          key="command-palette"
+          className="fixed inset-0 z-50 flex items-start justify-center px-4 pt-[12vh]"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Command menu"
+          onKeyDown={onKeyDown}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.18 }}
+        >
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={close}
           />
-          <kbd className="border-border font-code shrink-0 border px-1.5 py-0.5 text-[10px] text-gray-400">
-            esc
-          </kbd>
-        </div>
+          <motion.div
+            className="border-border bg-background relative z-10 w-full max-w-xl overflow-hidden border shadow-2xl"
+            initial={{ y: -14, scale: 0.96 }}
+            animate={{ y: 0, scale: 1 }}
+            exit={{ y: -10, scale: 0.98 }}
+            transition={{ type: "spring", duration: 0.32, bounce: 0.22 }}
+          >
+            <div className="border-border flex items-center gap-3 border-b px-4 py-3">
+              <LuSearch className="shrink-0 text-gray-400" size={16} />
+              <input
+                ref={inputRef}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="type a command or search..."
+                className="w-full bg-transparent text-sm outline-none placeholder:text-gray-400"
+              />
+              <kbd className="border-border font-code shrink-0 border px-1.5 py-0.5 text-[10px] text-gray-400">
+                esc
+              </kbd>
+            </div>
 
-        <div ref={listRef} className="max-h-[52vh] overflow-y-auto py-2">
-          {filtered.length === 0 && (
-            <p className="px-4 py-6 text-center text-sm text-gray-400">
-              no results
-            </p>
-          )}
-          {GROUPS.map((g) => {
-            const items = filtered.filter((c) => c.group === g);
-            if (!items.length) return null;
-            return (
-              <div key={g} className="mb-1">
-                <p className="font-code px-4 py-1.5 text-[10px] tracking-wide text-gray-400 uppercase">
-                  {g}
+            <div ref={listRef} className="max-h-[52vh] overflow-y-auto py-2">
+              {filtered.length === 0 && (
+                <p className="px-4 py-6 text-center text-sm text-gray-400">
+                  no results
                 </p>
-                {items.map((c) => {
-                  const idx = filtered.indexOf(c);
-                  const isActive = idx === active;
-                  return (
-                    <button
-                      key={c.id}
-                      type="button"
-                      data-idx={idx}
-                      onMouseMove={() => setActive(idx)}
-                      onClick={() => c.run()}
-                      className={`flex w-full items-center gap-3 px-4 py-2 text-left text-sm transition-colors ${
-                        isActive ? "bg-gray-100 dark:bg-gray-900" : ""
-                      }`}
-                    >
-                      <span
-                        className={`shrink-0 ${isActive ? "text-blue" : "text-gray-400"}`}
-                      >
-                        {c.icon}
-                      </span>
-                      <span className="ss01 normal-case-force truncate">
-                        {c.label}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            );
-          })}
-        </div>
+              )}
+              {GROUPS.map((g) => {
+                const items = filtered.filter((c) => c.group === g);
+                if (!items.length) return null;
+                return (
+                  <div key={g} className="mb-1">
+                    <p className="font-code px-4 py-1.5 text-[10px] tracking-wide text-gray-400 uppercase">
+                      {g}
+                    </p>
+                    {items.map((c) => {
+                      const idx = filtered.indexOf(c);
+                      const isActive = idx === active;
+                      return (
+                        <button
+                          key={c.id}
+                          type="button"
+                          data-idx={idx}
+                          onMouseMove={() => setActive(idx)}
+                          onClick={() => c.run()}
+                          className={`flex w-full items-center gap-3 px-4 py-2 text-left text-sm transition-colors ${
+                            isActive ? "bg-gray-100 dark:bg-gray-900" : ""
+                          }`}
+                        >
+                          <span
+                            className={`shrink-0 ${isActive ? "text-blue" : "text-gray-400"}`}
+                          >
+                            {c.icon}
+                          </span>
+                          <span className="ss01 normal-case-force truncate">
+                            {c.label}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
 
-        <div className="border-border font-code flex items-center gap-4 border-t px-4 py-2 text-[10px] text-gray-400">
-          <span>↑↓ navigate</span>
-          <span>↵ select</span>
-          <span>esc close</span>
-        </div>
-      </div>
-    </div>
+            <div className="border-border font-code flex items-center gap-4 border-t px-4 py-2 text-[10px] text-gray-400">
+              <span>↑↓ navigate</span>
+              <span>↵ select</span>
+              <span>esc close</span>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

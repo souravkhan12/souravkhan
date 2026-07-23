@@ -114,9 +114,9 @@ export function BlogProgress({ headings }: { headings: Heading[] }) {
     <div
       ref={widgetRef}
       className={cn(
-        "fixed z-20 flex flex-col items-stretch",
-        "inset-x-4 bottom-4 sm:inset-x-6 sm:bottom-6",
-        "xl:right-6 xl:left-auto xl:w-72",
+        "fixed z-20 flex flex-col items-end",
+        "right-4 bottom-4 sm:right-6 sm:bottom-6",
+        "xl:w-72",
       )}
     >
       <AnimatePresence>
@@ -126,7 +126,7 @@ export function BlogProgress({ headings }: { headings: Heading[] }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.98 }}
             transition={{ duration: MOTION.duration.fast, ease: MOTION.ease }}
-            className="mb-2 max-h-[60vh] overflow-y-auto rounded-2xl bg-neutral-900 p-2 shadow-xl"
+            className="mb-2 max-h-[60vh] w-72 max-w-[calc(100vw-2rem)] overflow-y-auto rounded-2xl bg-neutral-900 p-2 shadow-xl"
           >
             <div className="px-3 pt-2 pb-1.5 text-[11px] tracking-wide text-neutral-500 uppercase">
               Table of Contents
@@ -162,15 +162,15 @@ export function BlogProgress({ headings }: { headings: Heading[] }) {
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         aria-expanded={open}
-        className="flex items-center gap-3 self-stretch rounded-2xl bg-neutral-900 px-4 py-3 text-left shadow-xl sm:self-auto sm:py-2.5 xl:w-full"
+        className="flex items-center gap-3 rounded-full bg-neutral-900 p-2 text-left shadow-xl sm:rounded-2xl sm:px-4 sm:py-2.5 xl:w-full"
       >
         <span className="shrink-0 text-white">
           <ProgressRing progress={progress} />
         </span>
-        <span className="min-w-0 flex-1 truncate text-sm font-medium text-white">
+        <span className="hidden min-w-0 flex-1 truncate text-sm font-medium text-white sm:block">
           {activeHeading?.text}
         </span>
-        <span className="shrink-0 text-xs text-neutral-500 tabular-nums">
+        <span className="hidden shrink-0 text-xs text-neutral-500 tabular-nums sm:block">
           {Math.round(progress)}%
         </span>
       </motion.button>

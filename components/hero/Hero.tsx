@@ -86,8 +86,30 @@ export default function Hero() {
       <GridCell
         padded={false}
         tinted
-        className="relative order-1 min-h-[320px] lg:order-2"
+        className="relative order-1 min-h-[320px] overflow-hidden lg:order-2"
       >
+        {/* animated aurora — brings colour and life behind the portrait */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-0"
+        >
+          <motion.div
+            className="absolute -top-8 -left-6 size-44 rounded-full bg-blue-400/30 blur-3xl dark:bg-blue-500/25"
+            animate={{ x: [0, 28, 0], y: [0, 22, 0] }}
+            transition={{ duration: 13, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute top-1/3 -right-6 size-48 rounded-full bg-violet-500/25 blur-3xl"
+            animate={{ x: [0, -26, 0], y: [0, 30, 0] }}
+            transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute bottom-0 left-1/4 size-44 rounded-full bg-emerald-400/25 blur-3xl"
+            animate={{ x: [0, 22, 0], y: [0, -22, 0] }}
+            transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </div>
+
         <DiagonalLine direction="tl-br" />
         <DiagonalLine direction="tr-bl" />
         <VertexSquare corner="top-left" />

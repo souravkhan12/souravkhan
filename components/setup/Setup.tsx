@@ -18,7 +18,7 @@ export default function Setup() {
           >
             <Link
               href={`/setup/${guide.slug}`}
-              className="flex h-full items-center justify-between gap-4 p-6 sm:p-8"
+              className="flex h-full items-center justify-between gap-4 p-8 sm:p-10"
             >
               <div className="min-w-0">
                 <h3 className="ss01 normal-case-force group-hover:text-blue line-clamp-1 text-base font-semibold transition-colors">
