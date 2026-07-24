@@ -10,10 +10,11 @@ export function Logo({
   className?: string;
   size?: number;
 }) {
-  const TICKS = 44;
+  const TICKS = 40;
   const ticks = Array.from({ length: TICKS }, (_, i) => {
     const a = (i / TICKS) * Math.PI * 2 - Math.PI / 2;
-    const r1 = 35;
+    const long = i % 5 === 0; // every 5th tick is longer, like a dial
+    const r1 = long ? 33 : 36;
     const r2 = 42;
     return {
       x1: 50 + Math.cos(a) * r1,
@@ -35,21 +36,30 @@ export function Logo({
     >
       {/* outer hairline ring */}
       <circle cx="50" cy="50" r="47" stroke="currentColor" strokeWidth="2" />
-      {/* radial ticks just inside the ring */}
+      {/* radial dial ticks */}
       <g stroke="currentColor" strokeWidth="2" strokeLinecap="round">
         {ticks.map((t, i) => (
           <line key={i} x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2} />
         ))}
       </g>
-      {/* monogram */}
+      {/* inner ring framing the monogram */}
+      <circle
+        cx="50"
+        cy="50"
+        r="28"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeOpacity="0.35"
+      />
+      {/* accent monogram */}
       <text
         x="50"
         y="52"
         textAnchor="middle"
         dominantBaseline="central"
-        fontSize="42"
+        fontSize="34"
         fontWeight={700}
-        fill="currentColor"
+        fill="var(--blue)"
         fontFamily="var(--font-sans), system-ui, sans-serif"
         style={{ fontFeatureSettings: '"ss01"' }}
       >

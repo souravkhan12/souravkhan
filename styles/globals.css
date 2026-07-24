@@ -56,11 +56,11 @@
   --input: var(--color-gray-200);
 
   /* Accent + focus shift one step lighter on dark so they stay legible. */
-  /* Accent is red (kept under the --blue token name so every existing
-     text-blue/border-blue utility becomes the red accent site-wide). */
-  --blue: #e5484d;
-  --focus: #e5484d;
-  --ring: #e5484d;
+  /* Single accent, kept under the --blue token name so every existing
+     text-blue/border-blue utility picks it up site-wide. */
+  --blue: #5b5bd6;
+  --focus: #5b5bd6;
+  --ring: #5b5bd6;
 
   /* Sharp edges — paper uses hairline borders, not rounding */
   --radius: 0px;
@@ -85,9 +85,9 @@
   --border: var(--color-gray-900);
   --input: var(--color-gray-900);
 
-  --blue: #ff6369;
-  --focus: #ff6369;
-  --ring: #ff6369;
+  --blue: #7c7cf0;
+  --focus: #7c7cf0;
+  --ring: #7c7cf0;
 }
 
 @theme inline {

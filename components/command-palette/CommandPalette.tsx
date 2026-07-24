@@ -68,6 +68,7 @@ export default function CommandPalette({
       { id: "projects", label: "go to projects", href: "#projects" },
       { id: "activity", label: "go to activity", href: "#github" },
       { id: "setup", label: "go to setup guides", href: "#setup" },
+      { id: "arcade", label: "play snake", href: "#arcade" },
       { id: "contact", label: "go to contact", href: "#contact" },
     ].map((n) => ({
       id: n.id,
