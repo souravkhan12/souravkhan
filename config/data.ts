@@ -50,7 +50,7 @@ export const WORK_EXPERIENCE = [
       "Working on creating a smooth user experience from creating journies to get leads for their products.",
       "Built Amplitude read-flow integration end-to-end — frontend connection setup, org/user property mapping, sync activity monitoring, and backend API key generation for secure event ingestion.",
     ],
-    technologies: ["React", "Redux", "tailwind", "aws", "claude"],
+    technologies: ["React", "Redux", "chakra", "tailwind", "aws", "claude"],
   },
   {
     company: "The unmarketing Agency",

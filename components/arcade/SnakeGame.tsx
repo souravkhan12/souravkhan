@@ -202,6 +202,11 @@ export default function SnakeGame() {
     setSubmit({ state: "idle" });
     sync();
     boardRef.current?.focus({ preventScroll: true });
+    // On a phone the board is usually half off-screen when you tap play, and
+    // once it's running you can't scroll it into view. Bring it up front.
+    if (window.matchMedia("(max-width: 640px)").matches) {
+      boardRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   }, [sync]);
 
   const steer = useCallback((x: number, y: number) => {
@@ -326,7 +331,12 @@ export default function SnakeGame() {
             tabIndex={0}
             role="application"
             aria-label="Snake game board"
-            className="border-border relative aspect-square w-full max-w-[440px] touch-none border outline-none select-none focus-visible:ring-1 focus-visible:ring-[var(--focus)]"
+            // touch-action is only locked down while a game is actually in
+            // play. Locking it always turned the board — nearly a full phone
+            // screen — into a dead zone you couldn't scroll past.
+            className={`border-border relative aspect-square w-full max-w-[440px] border outline-none select-none focus-visible:ring-1 focus-visible:ring-[var(--focus)] ${
+              running ? "touch-none" : "touch-auto"
+            }`}
           >
             <DotGrid />
             <div

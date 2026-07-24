@@ -5,6 +5,7 @@ import { CONTACT_INFO, SOCIAL_LINKS } from "@/config/data";
 import { mono, sans } from "@/utils/fonts";
 import Providers from "@/components/ui/provider";
 import { ServiceWorker } from "@/components/ui/service-worker";
+import { InstallPrompt } from "@/components/ui/install-prompt";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import CommandPalette from "@/components/command-palette/CommandPalette";
 import EasterEggs from "@/components/easter-eggs/EasterEggs";
@@ -174,6 +175,7 @@ export default function RootLayout({
           <CommandPalette projects={projectLinks} />
           <EasterEggs />
           <ServiceWorker />
+          <InstallPrompt />
         </Providers>
       </body>
     </html>
