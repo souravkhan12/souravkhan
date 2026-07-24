@@ -4,8 +4,8 @@ import { useRef, useState } from "react";
 import { SunDim, Menu, X, MoonIcon, Search } from "lucide-react";
 import { motion } from "motion/react";
 import { useTheme } from "next-themes";
-import Image from "next/image";
 import Link from "next/link";
+import { Logo } from "@/components/ui";
 import { navLinks } from "@/config/nav-links";
 import { useMounted } from "@/hooks/use-mounted";
 import { INTERACTIONS, NAVBAR_ANIMATION } from "@/config/theme";
@@ -66,14 +66,7 @@ export default function Navbar() {
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           className="flex items-center gap-3"
         >
-          <Image
-            src="/LogoBG.webp"
-            alt="Logo"
-            width={32}
-            height={32}
-            priority={true}
-            className="size-8 cursor-pointer dark:bg-white"
-          />
+          <Logo size={32} className="shrink-0 cursor-pointer" />
           <span className="ss01 text-sm font-semibold">sourav khan</span>
         </Link>
 
