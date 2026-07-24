@@ -109,6 +109,10 @@ export const HERO_TECH_STACK = [
   { name: "AWS", icon: "aws" },
   { name: "MongoDB", icon: "mongodb" },
   { name: "CPP", icon: "cpp" },
+  { name: "Redux", icon: "redux" },
+  { name: "Chakra UI", icon: "chakra" },
+  { name: "Git", icon: "git" },
+  { name: "Claude", icon: "claude" },
 ];
 
 export const GITHUB_USERNAME = "souravkhan12";

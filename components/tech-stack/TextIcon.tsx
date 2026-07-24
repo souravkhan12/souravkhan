@@ -13,6 +13,14 @@ import {
   SiThirdweb,
   SiGithubactions,
   SiAmazon,
+  SiClaude,
+  SiChakraui,
+  SiGit,
+  SiDocker,
+  SiPostgresql,
+  SiFramer,
+  SiVercel,
+  SiExpress,
 } from "react-icons/si";
 
 import { TECH_COLORS } from "@/config/tech-colors";
@@ -39,6 +47,16 @@ const ICON_MAP: Record<string, React.ReactNode> = {
   thirdweb: <SiThirdweb />,
   github: <SiGithubactions />,
   aws: <SiAmazon />,
+  claude: <SiClaude />,
+  chakra: <SiChakraui />,
+  chakraui: <SiChakraui />,
+  git: <SiGit />,
+  docker: <SiDocker />,
+  postgres: <SiPostgresql />,
+  framer: <SiFramer />,
+  motion: <SiFramer />,
+  vercel: <SiVercel />,
+  express: <SiExpress />,
 };
 
 export default function TextIcon({

@@ -6,6 +6,7 @@ import { motion } from "motion/react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { Logo } from "@/components/ui";
+import { AccentPicker } from "@/components/theme/AccentPicker";
 import { navLinks } from "@/config/nav-links";
 import { useMounted } from "@/hooks/use-mounted";
 import { INTERACTIONS, NAVBAR_ANIMATION } from "@/config/theme";
@@ -64,10 +65,13 @@ export default function Navbar() {
         <Link
           href="/"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="flex items-center gap-3"
+          className="group/logo flex items-center gap-2.5"
         >
-          <Logo size={32} className="shrink-0 cursor-pointer" />
-          <span className="ss01 text-sm font-semibold">sourav khan</span>
+          <Logo
+            size={26}
+            className="group-hover/logo:text-blue shrink-0 cursor-pointer transition-colors"
+          />
+          <span className="ss01 text-[15px] font-semibold">sourav khan</span>
         </Link>
 
         <div className="hidden flex-row items-center gap-8 md:flex">
@@ -111,6 +115,8 @@ export default function Navbar() {
               ⌘k
             </kbd>
           </motion.button>
+
+          <AccentPicker />
 
           <motion.button
             type="button"
@@ -172,6 +178,10 @@ export default function Navbar() {
                 </Link>
               ),
             )}
+            <div className="border-border flex items-center gap-3 border-b px-6 py-4 text-sm lowercase">
+              accent
+              <AccentPicker inline />
+            </div>
             <button
               type="button"
               aria-label="Toggle theme"

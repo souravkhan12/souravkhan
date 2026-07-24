@@ -10,7 +10,7 @@ export default function WorkExperience() {
           <GridCell key={index} tinted={index % 2 === 1} className="space-y-6">
             <div className="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
               <div>
-                <h3 className="ss01 normal-case-force text-base font-semibold">
+                <h3 className="ss01 normal-case-force text-base font-bold">
                   {experience.company}
                   {index === 0 && (
                     <span className="ml-2 text-sm font-normal text-gray-500">

@@ -1,26 +1,47 @@
 {
-  "theme_color": "#8936FF",
-  "background_color": "#2EC6FE",
+  "id": "/",
+  "name": "Sourav Khan — Software Engineer",
+  "short_name": "sourav khan",
+  "description": "Portfolio of Sourav Khan — software engineer. Work, writing, and a game of snake.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "dir": "auto",
+  "lang": "en",
+  "theme_color": "#fcfcf9",
+  "background_color": "#fcfcf9",
+  "categories": ["portfolio"],
   "icons": [
     {
-      "purpose": "maskable",
-      "sizes": "512x512",
-      "src": "/public/icons/icon512_maskable.png",
-      "type": "image/png"
+      "src": "/icons/icon192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "purpose": "any",
+      "src": "/icons/icon512_rounded.png",
       "sizes": "512x512",
-      "src": "/public/icons/icon512_rounded.png",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon512_maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
-  "orientation": "any",
-  "display": "standalone",
-  "dir": "auto",
-  "lang": "en-GB",
-  "name": "portfolio",
-  "short_name": "skhan",
-  "start_url": "https://portfolio-souravkhan.vercel.app/",
-  "description": "I am sourav khan and i made this portfolio"
+  "shortcuts": [
+    {
+      "name": "Play snake",
+      "short_name": "snake",
+      "url": "/#arcade"
+    },
+    {
+      "name": "Blog",
+      "short_name": "blog",
+      "url": "/blog"
+    }
+  ]
 }

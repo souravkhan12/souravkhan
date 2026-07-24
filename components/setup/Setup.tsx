@@ -21,7 +21,7 @@ export default function Setup() {
               className="flex h-full items-center justify-between gap-4 p-8 sm:p-10"
             >
               <div className="min-w-0">
-                <h3 className="ss01 normal-case-force group-hover:text-blue line-clamp-1 text-base font-semibold transition-colors">
+                <h3 className="ss01 normal-case-force group-hover:text-blue line-clamp-1 text-base font-bold transition-colors">
                   {guide.title}
                 </h3>
                 <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-gray-600 dark:text-gray-400">

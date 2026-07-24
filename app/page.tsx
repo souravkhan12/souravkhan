@@ -35,7 +35,7 @@ export default function Page() {
               <GitHubContributions />
             </GridCell>
             <GridCell tinted id="blog" className="flex flex-col">
-              <h3 className="ss01 mb-3 text-base font-semibold">
+              <h3 className="ss01 mb-3 text-base font-bold">
                 latest from the blog
               </h3>
               <RecentPosts />

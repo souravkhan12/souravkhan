@@ -1,21 +1,38 @@
-import { Metadata } from "next";
+import { Metadata, Viewport } from "next";
 import "@/styles/globals.css";
 import { SEO_CONFIG } from "@/config/seo";
 import { CONTACT_INFO, SOCIAL_LINKS } from "@/config/data";
 import { mono, sans } from "@/utils/fonts";
 import Providers from "@/components/ui/provider";
+import { ServiceWorker } from "@/components/ui/service-worker";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import CommandPalette from "@/components/command-palette/CommandPalette";
 import EasterEggs from "@/components/easter-eggs/EasterEggs";
 import { getAllProjects } from "@/lib/projects";
+
+// Chrome paints the browser/status bar with this; matches the paper background.
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fcfcf9" },
+    { media: "(prefers-color-scheme: dark)", color: "#181818" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   title: {
     default: SEO_CONFIG.title,
     template: "%s | Sourav Khan",
   },
+  manifest: "/manifest.json",
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/icons/icon192.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180" }],
   },
   description: SEO_CONFIG.description,
   authors: [
@@ -102,7 +119,7 @@ export default function RootLayout({
     name: "Sourav Khan",
     alternateName: "Sourav",
     url: SEO_CONFIG.baseUrl,
-    jobTitle: "Full Stack Software Engineer",
+    jobTitle: "Software Engineer",
     description: SEO_CONFIG.description,
     image: `${SEO_CONFIG.baseUrl}/sourav.png`,
     address: {
@@ -115,7 +132,6 @@ export default function RootLayout({
     sameAs: [SOCIAL_LINKS.linkedin, SOCIAL_LINKS.github, SOCIAL_LINKS.twitter],
     knowsAbout: [
       "Software Engineering",
-      "Full Stack Development",
       "React",
       "Next.js",
       "Node.js",
@@ -141,6 +157,13 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        {/* Restore the saved accent before first paint so the swatch colours
+            never flash indigo on the way in. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var a=localStorage.getItem("accent");if(a&&a!=="indigo")document.documentElement.setAttribute("data-accent",a)}catch(e){}`,
+          }}
+        />
       </head>
       <body
         className={`${sans.variable} ${mono.variable} font-sans antialiased`}
@@ -150,6 +173,7 @@ export default function RootLayout({
           {children}
           <CommandPalette projects={projectLinks} />
           <EasterEggs />
+          <ServiceWorker />
         </Providers>
       </body>
     </html>

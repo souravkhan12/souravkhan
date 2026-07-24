@@ -178,6 +178,68 @@
   }
 }
 
+/* ============================================================
+   ACCENT THEMES
+   The single accent lives under --blue (every text-blue/border-blue
+   utility resolves through it), so an accent swap is three variables.
+   `data-accent` is set on <html> by the picker; each accent carries a
+   lighter dark-mode value so it stays legible on the near-black bg.
+   ============================================================ */
+:root[data-accent="emerald"] {
+  --blue: #0e9f6e;
+  --focus: #0e9f6e;
+  --ring: #0e9f6e;
+}
+:root[data-accent="emerald"].dark {
+  --blue: #34d399;
+  --focus: #34d399;
+  --ring: #34d399;
+}
+
+:root[data-accent="amber"] {
+  --blue: #b45309;
+  --focus: #b45309;
+  --ring: #b45309;
+}
+:root[data-accent="amber"].dark {
+  --blue: #f0a92b;
+  --focus: #f0a92b;
+  --ring: #f0a92b;
+}
+
+:root[data-accent="rose"] {
+  --blue: #c2415d;
+  --focus: #c2415d;
+  --ring: #c2415d;
+}
+:root[data-accent="rose"].dark {
+  --blue: #f4789b;
+  --focus: #f4789b;
+  --ring: #f4789b;
+}
+
+:root[data-accent="ocean"] {
+  --blue: #2563eb;
+  --focus: #2563eb;
+  --ring: #2563eb;
+}
+:root[data-accent="ocean"].dark {
+  --blue: #60a5fa;
+  --focus: #60a5fa;
+  --ring: #60a5fa;
+}
+
+:root[data-accent="graphite"] {
+  --blue: #4b5563;
+  --focus: #4b5563;
+  --ring: #4b5563;
+}
+:root[data-accent="graphite"].dark {
+  --blue: #b6b6ae;
+  --focus: #b6b6ae;
+  --ring: #b6b6ae;
+}
+
 /* Opt out of the global lowercase (proper nouns, code, user content) */
 .normal-case-force {
   text-transform: none;

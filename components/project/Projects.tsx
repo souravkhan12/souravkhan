@@ -25,7 +25,7 @@ export default function Projects() {
               className="flex h-full items-center justify-between gap-4 p-6 sm:p-8"
             >
               <div className="min-w-0">
-                <h3 className="ss01 normal-case-force group-hover:text-blue text-base font-semibold transition-colors">
+                <h3 className="ss01 normal-case-force group-hover:text-blue text-base font-bold transition-colors">
                   {project.title}
                 </h3>
                 <p className="font-code mt-1.5 truncate text-xs text-gray-500">

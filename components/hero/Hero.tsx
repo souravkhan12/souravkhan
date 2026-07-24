@@ -13,6 +13,7 @@ import {
   VertexSquare,
 } from "@/components/ui";
 import { AvailabilityBadge } from "@/components/hero/AvailabilityBadge";
+import { SocialRail } from "@/components/hero/SocialRail";
 import { useInitialAnimation } from "@/hooks/use-initial-animation";
 
 export default function Hero() {
@@ -37,14 +38,9 @@ export default function Hero() {
             delay: 0.15,
             ease: MOTION.ease,
           }}
-          className="ss01 normal-case-force font-semilight text-2xl leading-[1.05] tracking-[-0.02em] sm:text-3xl lg:text-4xl"
+          className="ss01 normal-case-force font-semilight text-[2rem] leading-[1.08] tracking-[-0.02em] sm:text-[2.5rem] lg:text-3xl"
         >
-          {HERO.name.split(" ").map((word, i, arr) => (
-            <span key={i} className={i === arr.length - 1 ? "text-blue" : ""}>
-              {word}
-              {i < arr.length - 1 ? " " : ""}
-            </span>
-          ))}
+          {HERO.name}
           <br />
           <span className="text-gray-500 dark:text-gray-500">{HERO.title}</span>
         </motion.h1>
@@ -64,7 +60,7 @@ export default function Hero() {
 
         <div className="mt-2 flex flex-col gap-3 sm:flex-row">
           <motion.div {...INTERACTIONS.button} className="w-full sm:w-auto">
-            <Button asChild variant="default">
+            <Button asChild variant="default" size="sm">
               <a
                 href={`mailto:${CONTACT_INFO.email}`}
                 className="w-full sm:w-auto"
@@ -75,7 +71,7 @@ export default function Hero() {
           </motion.div>
 
           <motion.div {...INTERACTIONS.button} className="w-full sm:w-auto">
-            <Button asChild variant="outline">
+            <Button asChild variant="outline" size="sm">
               <a
                 href={CONTACT_INFO.resume}
                 target="_blank"
@@ -99,7 +95,7 @@ export default function Hero() {
           className="hover:text-blue group inline-flex w-fit items-center gap-2 text-sm text-gray-500 transition-colors"
         >
           <span aria-hidden="true">🐍</span>
-          feeling playful? play snake &amp; climb the leaderboard
+          feeling playful? play snake &amp; beat the high score
           <span
             aria-hidden="true"
             className="transition-transform group-hover:translate-x-0.5"
@@ -138,6 +134,8 @@ export default function Hero() {
               className="object-cover"
               sizes="(max-width: 640px) 210px, 240px"
             />
+            {/* links ride the bottom edge of the frame */}
+            <SocialRail className="absolute -bottom-5 left-1/2 -translate-x-1/2" />
           </div>
         </motion.div>
       </GridCell>

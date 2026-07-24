@@ -27,10 +27,15 @@ const Section = React.forwardRef<HTMLDivElement, SectionProps>(
     return (
       <section className={`relative ${className}`} id={id} ref={ref} {...props}>
         {title && (
-          <div className="border-border flex flex-col gap-1.5 border-t border-r border-l px-6 py-6 sm:px-8 sm:py-7">
-            <h2 className="ss01 text-base font-semibold">{title}</h2>
+          // Tinted strip + accent rule: the label used to sit at body size on
+          // the body background, so it read as another paragraph.
+          <div className="border-border flex flex-col gap-1.5 border-t border-r border-l bg-gray-50 px-6 py-5 sm:px-8 sm:py-6 dark:bg-black">
+            <h2 className="ss01 text-foreground flex items-center gap-3 text-base leading-none font-bold">
+              <span aria-hidden="true" className="bg-blue h-3.5 w-[3px]" />
+              {title}
+            </h2>
             {subtitle && (
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="pl-[18px] text-sm text-gray-600 dark:text-gray-400">
                 {subtitle}
               </p>
             )}
