@@ -4,7 +4,7 @@ import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { Section, GridBand, GridCell, DotGrid, Button } from "@/components/ui";
 
 const N = 15; // board is N×N
-const SPEED = 130; // ms per tick
+const SPEED = 165; // ms per tick
 const START = [
   { x: 7, y: 7 },
   { x: 6, y: 7 },
@@ -55,7 +55,7 @@ export default function SnakeGame() {
 
   const loadBoard = useCallback(async () => {
     try {
-      const r = await fetch("/api/scores");
+      const r = await fetch("/api/scores", { cache: "no-store" });
       const d = await r.json();
       setBoard(d.scores ?? []);
     } catch {
@@ -121,6 +121,12 @@ export default function SnakeGame() {
           submitRef.current(nameRef.current, g.score);
         }
         render();
+        // return focus to the name field so Enter can restart
+        setTimeout(() => {
+          boardRef.current
+            ?.querySelector<HTMLInputElement>("input[name=player]")
+            ?.focus();
+        }, 60);
         return;
       }
 
@@ -165,9 +171,9 @@ export default function SnakeGame() {
     g.pending = { x, y };
   };
 
-  const onKeyDown = (e: React.KeyboardEvent) => {
-    if (game.current.status !== "running") return;
-    const k = e.key.toLowerCase();
+  // Steer from a window-level listener so clicking anywhere never loses
+  // control (focus on the board is no longer required while playing).
+  useEffect(() => {
     const map: Record<string, [number, number]> = {
       arrowup: [0, -1],
       w: [0, -1],
@@ -178,11 +184,18 @@ export default function SnakeGame() {
       arrowright: [1, 0],
       d: [1, 0],
     };
-    if (map[k]) {
+    const onKey = (e: KeyboardEvent) => {
+      const g = game.current;
+      if (g.status !== "running") return;
+      const m = map[e.key.toLowerCase()];
+      if (!m) return;
       e.preventDefault();
-      steer(map[k][0], map[k][1]);
-    }
-  };
+      if (g.dir.x === -m[0] && g.dir.y === -m[1]) return;
+      g.pending = { x: m[0], y: m[1] };
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const onTouchStart = (e: React.TouchEvent) => {
     touch.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
@@ -220,7 +233,6 @@ export default function SnakeGame() {
           <div
             ref={boardRef}
             tabIndex={0}
-            onKeyDown={onKeyDown}
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
             role="application"

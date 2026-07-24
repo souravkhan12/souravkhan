@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 /**
  * GitHub-backed Snake leaderboard. Scores are stored as comments on a single
  * GitHub issue — no database. Best score per name is what surfaces.
@@ -36,7 +38,7 @@ export async function GET() {
 
   const res = await fetch(
     `${API}/repos/${REPO}/issues/${ISSUE}/comments?per_page=100`,
-    { headers: ghHeaders(true), next: { revalidate: 20 } },
+    { headers: ghHeaders(true), cache: "no-store" },
   );
   if (!res.ok) return NextResponse.json({ scores: [], configured: true });
 
