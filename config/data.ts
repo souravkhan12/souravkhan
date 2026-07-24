@@ -20,15 +20,6 @@ export const PROJECTS = [
     technologies: ["react", "redux", "css", "html"],
   },
   {
-    title: "AtlasLogs",
-    description:
-      "A world map that tracks your footsteps into every city you can think of. Developed as part of a React course, this project uses React, React-DOM, Leaflet, Vite, and CSS Modules.",
-    image: "/projects/AtlasLog.webp",
-    link: "https://atlas-logs-algw-caizdlp2u-sourav-khans-projects.vercel.app/",
-    code: "https://github.com/souravkhan12/AtlasLogs",
-    technologies: ["react", "cpp", "node", "mongodb", "sql"],
-  },
-  {
     title: "ReactSwigZo",
     description:
       "This app emulates a pizza ordering service where users can select and order pizzas. Developed using React and Redux, it showcases basic functionalities such as state management and user interaction. This app was created as part of a course to learn the fundamentals of React and Redux.",
@@ -88,7 +79,6 @@ export const CONTACT_INFO = {
 export const SOCIAL_LINKS = {
   linkedin: "https://www.linkedin.com/in/souravkhan1",
   github: "https://github.com/souravkhan12",
-  twitter: "https://twitter.com/souravkhan654",
 };
 
 // Hero section

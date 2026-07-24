@@ -14,6 +14,8 @@ const START = [
 
 type Cell = { x: number; y: number };
 type Status = "idle" | "running" | "over";
+type Scheme = "swipe" | "pad";
+const SCHEME_KEY = "snake-scheme";
 type View = {
   snake: Cell[];
   apple: Cell;
@@ -70,6 +72,10 @@ export default function SnakeGame() {
   const [plays, setPlays] = useState(0);
   const [beatRecord, setBeatRecord] = useState(false);
   const [submit, setSubmit] = useState<Submit>({ state: "idle" });
+  // Touch control scheme. Swipe keeps the board tall and uncluttered; the pad
+  // trades vertical space for buttons you can hit without covering the board.
+  const [scheme, setScheme] = useState<Scheme>("swipe");
+  const padRef = useRef<HTMLDivElement>(null);
 
   const sync = useCallback(() => {
     const g = game.current;
@@ -205,9 +211,43 @@ export default function SnakeGame() {
     // On a phone the board is usually half off-screen when you tap play, and
     // once it's running you can't scroll it into view. Bring it up front.
     if (window.matchMedia("(max-width: 640px)").matches) {
-      boardRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      // With the pad open the board alone isn't the thing to centre — scroll to
+      // the bottom of the pad so board and buttons are on screen together.
+      if (scheme === "pad" && padRef.current) {
+        padRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+      } else {
+        boardRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
     }
-  }, [sync]);
+  }, [sync, scheme]);
+
+  // Remember the control scheme between visits — re-picking the pad every
+  // session is the kind of friction that makes people stop playing.
+  // Read after paint, matching AccentPicker: the server can't know the stored
+  // choice, so the default renders first and the saved one lands next frame.
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      const saved = localStorage.getItem(SCHEME_KEY);
+      if (saved === "pad" || saved === "swipe") setScheme(saved);
+    });
+    return () => cancelAnimationFrame(id);
+  }, []);
+
+  const pickScheme = useCallback((next: Scheme) => {
+    setScheme(next);
+    localStorage.setItem(SCHEME_KEY, next);
+    buzz(5);
+    // Expanding the pad pushes it below the fold; bring the whole rig — board
+    // and buttons — back into frame after the layout settles.
+    if (next === "pad") {
+      requestAnimationFrame(() =>
+        padRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }),
+      );
+    }
+  }, []);
 
   const steer = useCallback((x: number, y: number) => {
     const g = game.current;
@@ -407,22 +447,54 @@ export default function SnakeGame() {
                   {view.status === "over" ? "play again" : "play"}
                 </span>
 
-                <p className="font-code text-[11px] text-gray-500">
+                <p className="font-code flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[11px] text-gray-500">
                   <span className="hidden sm:inline">arrow keys / wasd</span>
-                  <span className="sm:hidden">swipe or use the pad below</span>
+                  <span className="border-blue/40 text-blue bg-blue/5 border px-1.5 py-0.5">
+                    📱 on mobile · swipe or tap the d-pad
+                  </span>
                 </p>
               </button>
             )}
           </div>
 
-          {/* on-screen d-pad for touch devices */}
-          <div className="grid w-full max-w-[260px] grid-cols-3 gap-2 sm:hidden">
-            <span />
-            <DPad label="up" onPress={() => steer(0, -1)} char="↑" />
-            <span />
-            <DPad label="left" onPress={() => steer(-1, 0)} char="←" />
-            <DPad label="down" onPress={() => steer(0, 1)} char="↓" />
-            <DPad label="right" onPress={() => steer(1, 0)} char="→" />
+          {/* touch controls — scheme picker, then the pad it opens */}
+          <div
+            ref={padRef}
+            className="flex w-full flex-col items-center gap-3 sm:hidden"
+          >
+            <div
+              role="group"
+              aria-label="touch controls"
+              className="border-border font-code flex w-full max-w-[260px] border text-xs"
+            >
+              <SchemeTab
+                label="swipe"
+                active={scheme === "swipe"}
+                onPick={() => pickScheme("swipe")}
+              />
+              <SchemeTab
+                label="d-pad"
+                active={scheme === "pad"}
+                onPick={() => pickScheme("pad")}
+              />
+            </div>
+
+            {scheme === "swipe" ? (
+              <p className="font-code text-[11px] text-gray-500">
+                drag anywhere on the board to steer
+              </p>
+            ) : (
+              // Taller keys than the board-side buttons: with the pad chosen we
+              // have the vertical room, and bigger targets mean fewer misfires.
+              <div className="grid w-full max-w-[300px] grid-cols-3 gap-2 pb-2">
+                <span />
+                <DPad label="up" onPress={() => steer(0, -1)} char="↑" />
+                <span />
+                <DPad label="left" onPress={() => steer(-1, 0)} char="←" />
+                <DPad label="down" onPress={() => steer(0, 1)} char="↓" />
+                <DPad label="right" onPress={() => steer(1, 0)} char="→" />
+              </div>
+            )}
           </div>
         </GridCell>
 
@@ -472,7 +544,9 @@ export default function SnakeGame() {
             <span className="hidden sm:inline">
               arrow keys or wasd to steer
             </span>
-            <span className="sm:hidden">swipe the board or tap the pad</span>
+            <span className="border-blue/40 text-blue bg-blue/5 w-fit border px-1.5 py-0.5">
+              📱 on mobile · swipe the board or tap the d-pad
+            </span>
             <span>every apple is a point · walls and tails end it</span>
           </div>
         </GridCell>
@@ -512,9 +586,32 @@ function DPad({
         onPress();
       }}
       onContextMenu={(e) => e.preventDefault()}
-      className="border-border hover:border-blue hover:text-blue active:border-blue active:bg-blue/10 active:text-blue flex h-14 w-full touch-manipulation items-center justify-center border text-xl transition-colors select-none"
+      className="border-border hover:border-blue hover:text-blue active:border-blue active:bg-blue/10 active:text-blue flex h-20 w-full touch-manipulation items-center justify-center border text-2xl transition-colors select-none"
     >
       {char}
+    </button>
+  );
+}
+
+function SchemeTab({
+  label,
+  active,
+  onPick,
+}: {
+  label: string;
+  active: boolean;
+  onPick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onPick}
+      aria-pressed={active}
+      className={`flex-1 touch-manipulation px-3 py-2 transition-colors ${
+        active ? "bg-blue/10 text-blue" : "text-gray-500"
+      }`}
+    >
+      {label}
     </button>
   );
 }

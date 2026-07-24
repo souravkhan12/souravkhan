@@ -23,14 +23,6 @@ export default function Footer() {
           >
             linkedin
           </a>
-          <a
-            href={SOCIAL_LINKS.twitter}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-blue transition-colors"
-          >
-            twitter
-          </a>
         </div>
       </div>
     </footer>

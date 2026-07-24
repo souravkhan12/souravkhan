@@ -56,9 +56,9 @@ export function AccentPicker({ inline = false }: { inline?: boolean }) {
       key={a.id}
       type="button"
       onClick={() => select(a.id)}
-      aria-label={a.label}
+      aria-label={`${a.label} — accent only`}
       aria-pressed={active === a.id}
-      title={a.label}
+      title={`${a.label} — tints accents only, not the whole page`}
       className={`size-4 rounded-full transition-transform hover:scale-110 ${
         active === a.id
           ? "ring-foreground/40 ring-1 ring-offset-2 ring-offset-[var(--background)]"
@@ -68,10 +68,25 @@ export function AccentPicker({ inline = false }: { inline?: boolean }) {
     />
   ));
 
+  // Spells out what the swatches actually do — they tint links, highlights and
+  // focus rings, not the page. The text is fixed: an earlier version prefixed
+  // the hovered colour's name, which resized this right-anchored popover, slid
+  // the dots out from under the cursor and flickered the hover on and off.
+  const caption = (
+    <p className="font-code text-[10px] whitespace-nowrap text-gray-500">
+      accents only — text stays neutral
+    </p>
+  );
+
   if (inline) {
     return (
-      <div role="group" aria-label="accent colour" className="flex gap-2">
-        {dots}
+      <div
+        role="group"
+        aria-label="accent colour"
+        className="flex flex-col gap-2"
+      >
+        <div className="flex gap-2">{dots}</div>
+        {caption}
       </div>
     );
   }
@@ -93,9 +108,10 @@ export function AccentPicker({ inline = false }: { inline?: boolean }) {
         <div
           role="group"
           aria-label="accent colour"
-          className="border-border bg-background absolute top-8 right-0 z-40 flex gap-2 border p-2.5"
+          className="border-border bg-background absolute top-8 right-0 z-40 flex flex-col gap-2 border p-2.5"
         >
-          {dots}
+          <div className="flex gap-2">{dots}</div>
+          {caption}
         </div>
       )}
     </div>

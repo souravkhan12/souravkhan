@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Check, Github, Linkedin, Mail, Twitter } from "lucide-react";
+import { Check, Github, Linkedin, Mail } from "lucide-react";
 import { CONTACT_INFO, SOCIAL_LINKS } from "@/config/data";
 
 const LINKS = [
   { label: "github", href: SOCIAL_LINKS.github, Icon: Github },
   { label: "linkedin", href: SOCIAL_LINKS.linkedin, Icon: Linkedin },
-  { label: "twitter", href: SOCIAL_LINKS.twitter, Icon: Twitter },
 ];
 
 const tile =

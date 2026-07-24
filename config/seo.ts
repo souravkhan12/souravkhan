@@ -39,9 +39,7 @@ export const SEO_CONFIG = {
   ogType: "website",
   ogLocale: "en_US",
 
-  // Twitter
-  twitterHandle: "@souravkhan654",
-  twitterCreator: "@souravkhan654",
+  // card format for link previews — no profile is linked anywhere
   twitterCardType: "summary_large_image",
 
   // Canonical URL

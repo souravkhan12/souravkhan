@@ -76,8 +76,6 @@ export const metadata: Metadata = {
     title: SEO_CONFIG.ogTitle,
     description: SEO_CONFIG.ogDescription,
     images: [SEO_CONFIG.ogImage],
-    creator: SEO_CONFIG.twitterCreator,
-    site: SEO_CONFIG.twitterHandle,
   },
   robots: {
     index: true,
@@ -130,7 +128,7 @@ export default function RootLayout({
     },
     email: CONTACT_INFO.email,
     telephone: CONTACT_INFO.phone,
-    sameAs: [SOCIAL_LINKS.linkedin, SOCIAL_LINKS.github, SOCIAL_LINKS.twitter],
+    sameAs: [SOCIAL_LINKS.linkedin, SOCIAL_LINKS.github],
     knowsAbout: [
       "Software Engineering",
       "React",
