@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useReducer, useRef } from "react";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { Section, GridBand, GridCell, DotGrid, Button } from "@/components/ui";
 
 const N = 15; // board is N×N
@@ -13,6 +13,12 @@ const START = [
 
 type Cell = { x: number; y: number };
 type Status = "idle" | "running" | "over";
+type Score = { name: string; score: number };
+type Submit =
+  | { state: "idle" }
+  | { state: "saving" }
+  | { state: "saved" }
+  | { state: "error"; msg: string };
 
 function randomApple(snake: Cell[]): Cell {
   while (true) {
@@ -33,16 +39,65 @@ export default function SnakeGame() {
     score: 0,
     best: 0,
     status: "idle" as Status,
+    submitted: false,
   });
   const boardRef = useRef<HTMLDivElement>(null);
   const touch = useRef<{ x: number; y: number } | null>(null);
   const [, render] = useReducer((n) => n + 1, 0);
 
-  useEffect(() => {
-    const best = Number(localStorage.getItem("snake-best") || 0);
-    game.current.best = best;
-    render();
+  const [name, setName] = useState("");
+  const [board, setBoard] = useState<Score[]>([]);
+  const [boardLoaded, setBoardLoaded] = useState(false);
+  const [submit, setSubmit] = useState<Submit>({ state: "idle" });
+
+  const nameRef = useRef("");
+  nameRef.current = name;
+
+  const loadBoard = useCallback(async () => {
+    try {
+      const r = await fetch("/api/scores");
+      const d = await r.json();
+      setBoard(d.scores ?? []);
+    } catch {
+      setBoard([]);
+    } finally {
+      setBoardLoaded(true);
+    }
   }, []);
+
+  const submitScore = useCallback(
+    async (player: string, score: number) => {
+      if (!player || score <= 0) return;
+      setSubmit({ state: "saving" });
+      try {
+        const r = await fetch("/api/scores", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: player, score }),
+        });
+        const d = await r.json();
+        if (!r.ok) {
+          setSubmit({ state: "error", msg: d.error ?? "couldn't save" });
+          return;
+        }
+        setSubmit({ state: "saved" });
+        loadBoard();
+      } catch {
+        setSubmit({ state: "error", msg: "network error" });
+      }
+    },
+    [loadBoard],
+  );
+  const submitRef = useRef(submitScore);
+  submitRef.current = submitScore;
+
+  // initial load: best score + remembered name + leaderboard
+  useEffect(() => {
+    game.current.best = Number(localStorage.getItem("snake-best") || 0);
+    setName(localStorage.getItem("snake-name") || "");
+    loadBoard();
+    render();
+  }, [loadBoard]);
 
   // fixed-cadence game loop; reads/writes the ref so it never goes stale
   useEffect(() => {
@@ -51,10 +106,7 @@ export default function SnakeGame() {
       if (g.status !== "running") return;
 
       g.dir = g.pending;
-      const head = {
-        x: g.snake[0].x + g.dir.x,
-        y: g.snake[0].y + g.dir.y,
-      };
+      const head = { x: g.snake[0].x + g.dir.x, y: g.snake[0].y + g.dir.y };
 
       const hitWall = head.x < 0 || head.x >= N || head.y < 0 || head.y >= N;
       const hitSelf = g.snake.some((s) => s.x === head.x && s.y === head.y);
@@ -63,6 +115,10 @@ export default function SnakeGame() {
         if (g.score > g.best) {
           g.best = g.score;
           localStorage.setItem("snake-best", String(g.best));
+        }
+        if (!g.submitted && g.score > 0) {
+          g.submitted = true;
+          submitRef.current(nameRef.current, g.score);
         }
         render();
         return;
@@ -82,6 +138,13 @@ export default function SnakeGame() {
   }, []);
 
   const start = () => {
+    if (!nameRef.current.trim()) {
+      boardRef.current
+        ?.querySelector<HTMLInputElement>("input[name=player]")
+        ?.focus();
+      return;
+    }
+    localStorage.setItem("snake-name", nameRef.current.trim());
     const g = game.current;
     g.snake = START;
     g.dir = { x: 1, y: 0 };
@@ -89,21 +152,21 @@ export default function SnakeGame() {
     g.apple = randomApple(START);
     g.score = 0;
     g.status = "running";
+    g.submitted = false;
+    setSubmit({ state: "idle" });
     render();
     boardRef.current?.focus();
   };
 
   const steer = (x: number, y: number) => {
     const g = game.current;
-    if (g.status === "idle" || g.status === "over") {
-      start();
-    }
-    // ignore direct reversals
-    if (g.dir.x === -x && g.dir.y === -y) return;
+    if (g.status !== "running") return;
+    if (g.dir.x === -x && g.dir.y === -y) return; // ignore reversals
     g.pending = { x, y };
   };
 
   const onKeyDown = (e: React.KeyboardEvent) => {
+    if (game.current.status !== "running") return;
     const k = e.key.toLowerCase();
     const map: Record<string, [number, number]> = {
       arrowup: [0, -1],
@@ -118,9 +181,6 @@ export default function SnakeGame() {
     if (map[k]) {
       e.preventDefault();
       steer(map[k][0], map[k][1]);
-    } else if (k === " " || k === "enter") {
-      e.preventDefault();
-      if (game.current.status !== "running") start();
     }
   };
 
@@ -145,9 +205,10 @@ export default function SnakeGame() {
     <Section
       id="arcade"
       title="arcade"
-      subtitle="a little snake break — arrow keys / wasd, or swipe. eat the apples."
+      subtitle="enter a name, play snake, and land your score on the board."
     >
-      <GridBand cols="grid-cols-1">
+      <GridBand cols="grid-cols-1 lg:grid-cols-[1.3fr_1fr]">
+        {/* board */}
         <GridCell className="flex flex-col items-center gap-5">
           <div className="font-code flex w-full max-w-[420px] items-center justify-between text-xs text-gray-500">
             <span>
@@ -196,10 +257,35 @@ export default function SnakeGame() {
             </div>
 
             {g.status !== "running" && (
-              <div className="bg-background/80 absolute inset-0 flex flex-col items-center justify-center gap-3 backdrop-blur-[1px]">
+              <div className="bg-background/85 absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center backdrop-blur-[1px]">
                 <p className="ss01 text-lg font-semibold">
                   {g.status === "over" ? `game over · ${g.score}` : "snake"}
                 </p>
+
+                {g.status === "over" && (
+                  <p className="font-code text-[11px] text-gray-500">
+                    {submit.state === "saving" && "saving score…"}
+                    {submit.state === "saved" && "saved to leaderboard ✓"}
+                    {submit.state === "error" && submit.msg}
+                    {submit.state === "idle" &&
+                      g.score === 0 &&
+                      "no points — give it another go"}
+                  </p>
+                )}
+
+                <input
+                  name="player"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  onKeyDown={(e) => {
+                    e.stopPropagation();
+                    if (e.key === "Enter") start();
+                  }}
+                  maxLength={20}
+                  placeholder="your name"
+                  className="border-border bg-background w-44 border px-3 py-1.5 text-center text-sm outline-none focus:border-[var(--focus)]"
+                />
+
                 <Button variant="default" size="sm" onClick={start}>
                   {g.status === "over" ? "play again" : "play"}
                 </Button>
@@ -219,6 +305,45 @@ export default function SnakeGame() {
             <DPad label="down" onPress={() => steer(0, 1)} char="↓" />
             <DPad label="right" onPress={() => steer(1, 0)} char="→" />
           </div>
+        </GridCell>
+
+        {/* leaderboard */}
+        <GridCell tinted className="flex flex-col">
+          <h3 className="ss01 normal-case-force mb-4 text-base font-semibold">
+            leaderboard
+          </h3>
+
+          {!boardLoaded && (
+            <p className="text-sm text-gray-500">loading scores…</p>
+          )}
+          {boardLoaded && board.length === 0 && (
+            <p className="text-sm text-gray-500">
+              no scores yet — be the first to make the board 🐍
+            </p>
+          )}
+
+          <ol className="flex flex-col">
+            {board.map((s, i) => (
+              <li
+                key={`${s.name}-${i}`}
+                className="border-border flex items-center gap-3 border-b py-2.5 text-sm last:border-b-0"
+              >
+                <span
+                  className={`font-code w-6 shrink-0 text-xs ${
+                    i < 3 ? "text-blue font-semibold" : "text-gray-400"
+                  }`}
+                >
+                  {i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : i + 1}
+                </span>
+                <span className="ss01 normal-case-force min-w-0 flex-1 truncate">
+                  {s.name}
+                </span>
+                <span className="font-code shrink-0 tabular-nums">
+                  {s.score}
+                </span>
+              </li>
+            ))}
+          </ol>
         </GridCell>
       </GridBand>
     </Section>
