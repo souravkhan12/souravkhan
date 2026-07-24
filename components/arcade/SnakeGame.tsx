@@ -145,7 +145,7 @@ export default function SnakeGame() {
     <Section
       id="arcade"
       title="arcade"
-      subtitle="a little snake break — arrow keys / wasd, or swipe. eat the red."
+      subtitle="a little snake break — arrow keys / wasd, or swipe. eat the apples."
     >
       <GridBand cols="grid-cols-1">
         <GridCell className="flex flex-col items-center gap-5">
