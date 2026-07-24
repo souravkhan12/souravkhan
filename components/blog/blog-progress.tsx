@@ -126,6 +126,7 @@ export function BlogProgress({ headings }: { headings: Heading[] }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.98 }}
             transition={{ duration: MOTION.duration.fast, ease: MOTION.ease }}
+            data-lenis-prevent
             className="mb-2 max-h-[60vh] w-72 max-w-[calc(100vw-2rem)] overflow-y-auto rounded-2xl bg-neutral-900 p-2 shadow-xl"
           >
             <div className="px-3 pt-2 pb-1.5 text-[11px] tracking-wide text-neutral-500 uppercase">

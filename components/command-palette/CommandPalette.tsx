@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { AnimatePresence, motion } from "motion/react";
+import { useLenis } from "@studio-freight/react-lenis";
 import {
   LuArrowRight,
   LuFileText,
@@ -41,6 +42,7 @@ export default function CommandPalette({
   const [active, setActive] = useState(0);
   const router = useRouter();
   const { setTheme, resolvedTheme } = useTheme();
+  const lenis = useLenis();
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -195,38 +197,21 @@ export default function CommandPalette({
     return () => clearTimeout(t);
   }, [open]);
 
-  // Lock background scroll while the palette is open. Pinning the body with
-  // position:fixed at its current offset freezes the page no matter which
-  // element is the scroll container (overflow:hidden proved unreliable here).
+  // Lock background scroll while the palette is open. This site drives scroll
+  // with Lenis (virtual/transform scrolling), so overflow:hidden can't stop it
+  // — we pause Lenis instead. The list opts back into native scrolling via
+  // `data-lenis-prevent`. Body overflow:hidden is a fallback if Lenis is absent.
   useEffect(() => {
     if (!open) return;
-    const body = document.body;
-    const scrollY = window.scrollY;
-    const scrollbar = window.innerWidth - document.documentElement.clientWidth;
-    const prev = {
-      position: body.style.position,
-      top: body.style.top,
-      left: body.style.left,
-      right: body.style.right,
-      width: body.style.width,
-      paddingRight: body.style.paddingRight,
-    };
-    body.style.position = "fixed";
-    body.style.top = `-${scrollY}px`;
-    body.style.left = "0";
-    body.style.right = "0";
-    body.style.width = "100%";
-    if (scrollbar > 0) body.style.paddingRight = `${scrollbar}px`;
+    lenis?.stop();
+    const root = document.documentElement;
+    const prevOverflow = root.style.overflow;
+    if (!lenis) root.style.overflow = "hidden";
     return () => {
-      body.style.position = prev.position;
-      body.style.top = prev.top;
-      body.style.left = prev.left;
-      body.style.right = prev.right;
-      body.style.width = prev.width;
-      body.style.paddingRight = prev.paddingRight;
-      window.scrollTo(0, scrollY);
+      lenis?.start();
+      root.style.overflow = prevOverflow;
     };
-  }, [open]);
+  }, [open, lenis]);
 
   // keep the highlighted row in view
   useEffect(() => {
@@ -293,6 +278,7 @@ export default function CommandPalette({
 
             <div
               ref={listRef}
+              data-lenis-prevent
               className="min-h-0 flex-1 overflow-y-auto overscroll-contain py-2"
             >
               {filtered.length === 0 && (
