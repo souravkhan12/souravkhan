@@ -39,7 +39,12 @@ export default function Hero() {
           }}
           className="ss01 normal-case-force font-semilight text-2xl leading-[1.05] tracking-[-0.02em] sm:text-3xl lg:text-4xl"
         >
-          {HERO.name}
+          {HERO.name.split(" ").map((word, i, arr) => (
+            <span key={i} className={i === arr.length - 1 ? "text-blue" : ""}>
+              {word}
+              {i < arr.length - 1 ? " " : ""}
+            </span>
+          ))}
           <br />
           <span className="text-gray-500 dark:text-gray-500">{HERO.title}</span>
         </motion.h1>
