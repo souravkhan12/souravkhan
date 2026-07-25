@@ -8,6 +8,7 @@ import { ServiceWorker } from "@/components/ui/service-worker";
 import { InstallPrompt } from "@/components/ui/install-prompt";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import CommandPalette from "@/components/command-palette/CommandPalette";
+import BottomNav from "@/components/navbar/BottomNav";
 import EasterEggs from "@/components/easter-eggs/EasterEggs";
 import { getAllProjects } from "@/lib/projects";
 
@@ -170,6 +171,7 @@ export default function RootLayout({
         <ScrollToTop />
         <Providers>
           {children}
+          <BottomNav />
           <CommandPalette projects={projectLinks} />
           <EasterEggs />
           <ServiceWorker />

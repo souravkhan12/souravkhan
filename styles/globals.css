@@ -157,6 +157,14 @@
     font-feature-settings: "ss01";
   }
 
+  /* Reserve room for the fixed mobile bottom nav (see BottomNav) so the
+     footer and last section never sit under it. Desktop has no bottom bar. */
+  @media (max-width: 767px) {
+    body {
+      padding-bottom: calc(3.5rem + env(safe-area-inset-bottom));
+    }
+  }
+
   /* paper.design's signature: lowercase headings, tight tracking */
   h1,
   h2,

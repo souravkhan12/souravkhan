@@ -7,7 +7,7 @@
  *
  * Bump CACHE when the shell changes; old caches are dropped on activate.
  */
-const CACHE = "portfolio-v1";
+const CACHE = "portfolio-v2";
 const OFFLINE_URL = "/offline";
 const PRECACHE = [OFFLINE_URL, "/icons/icon192.png", "/favicon.ico"];
 

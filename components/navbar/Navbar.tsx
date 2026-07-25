@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { SunDim, Menu, X, MoonIcon, Search } from "lucide-react";
+import { SunDim, MoonIcon, Search } from "lucide-react";
 import { motion } from "motion/react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
@@ -10,22 +9,13 @@ import { AccentPicker } from "@/components/theme/AccentPicker";
 import { navLinks } from "@/config/nav-links";
 import { useMounted } from "@/hooks/use-mounted";
 import { INTERACTIONS, NAVBAR_ANIMATION } from "@/config/theme";
-import { useOutsideClick } from "@/hooks/use-outside-click";
-import { RemoveScroll } from "react-remove-scroll";
 import { usePathname, redirect } from "next/navigation";
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const isDarkMode = theme === "dark";
 
   const pathname = usePathname();
-
-  const navRef = useRef<HTMLDivElement | null>(null);
-  useOutsideClick({
-    ref: navRef,
-    callback: () => setIsOpen(false),
-  });
 
   const mounted = useMounted();
   if (!mounted) {
@@ -55,6 +45,8 @@ export default function Navbar() {
     redirect(`/#${id}`);
   };
 
+  const toggleTheme = () => setTheme(isDarkMode ? "light" : "dark");
+
   return (
     <motion.nav
       initial={NAVBAR_ANIMATION.initial}
@@ -74,6 +66,7 @@ export default function Navbar() {
           <span className="ss01 text-[15px] font-semibold">sourav khan</span>
         </Link>
 
+        {/* Desktop: full navigation + utilities */}
         <div className="hidden flex-row items-center gap-8 md:flex">
           {navLinks.map(({ name, href }, i) =>
             href.startsWith("#") ? (
@@ -121,7 +114,7 @@ export default function Navbar() {
           <motion.button
             type="button"
             aria-label="Toggle theme"
-            onClick={setTheme.bind(null, isDarkMode ? "light" : "dark")}
+            onClick={toggleTheme}
             {...INTERACTIONS.themeToggle}
             className="hover:text-blue cursor-pointer text-gray-600 dark:text-gray-400"
           >
@@ -129,71 +122,31 @@ export default function Navbar() {
           </motion.button>
         </div>
 
-        <motion.div
-          ref={navRef}
-          onClick={() => setIsOpen(!isOpen)}
-          {...INTERACTIONS.menuToggle}
-          className="cursor-pointer md:hidden"
-        >
-          {isOpen ? <X size={22} /> : <Menu size={22} />}
-        </motion.div>
-      </div>
+        {/* Mobile: quick utilities only — the page links live in the bottom bar */}
+        <div className="flex items-center gap-4 md:hidden">
+          <button
+            type="button"
+            aria-label="Search"
+            onClick={() =>
+              window.dispatchEvent(new Event("open-command-palette"))
+            }
+            className="hover:text-blue text-gray-600 dark:text-gray-400"
+          >
+            <Search size={19} />
+          </button>
 
-      {/* Mobile Menu */}
-      {isOpen && (
-        <RemoveScroll>
-          <div className="border-border bg-background flex flex-col border-t md:hidden">
-            <button
-              type="button"
-              onClick={() => {
-                setIsOpen(false);
-                window.dispatchEvent(new Event("open-command-palette"));
-              }}
-              className="border-border flex items-center gap-2 border-b px-6 py-4 text-left text-sm lowercase"
-            >
-              <Search size={16} />
-              search
-            </button>
-            {navLinks.map(({ name, href }, i) =>
-              href.startsWith("#") ? (
-                <a
-                  key={i}
-                  href={href}
-                  onClick={(e) => {
-                    handleSectionNavigation(e, href);
-                    setIsOpen(false);
-                  }}
-                  className="border-border border-b px-6 py-4 text-sm lowercase"
-                >
-                  {name}
-                </a>
-              ) : (
-                <Link
-                  key={i}
-                  href={href}
-                  onClick={() => setIsOpen(false)}
-                  className="border-border border-b px-6 py-4 text-sm lowercase"
-                >
-                  {name}
-                </Link>
-              ),
-            )}
-            <div className="border-border flex items-center gap-3 border-b px-6 py-4 text-sm lowercase">
-              accent
-              <AccentPicker inline />
-            </div>
-            <button
-              type="button"
-              aria-label="Toggle theme"
-              onClick={setTheme.bind(null, isDarkMode ? "light" : "dark")}
-              className="flex items-center gap-2 px-6 py-4 text-left text-sm lowercase"
-            >
-              {isDarkMode ? <SunDim size={18} /> : <MoonIcon size={18} />}
-              {isDarkMode ? "light mode" : "dark mode"}
-            </button>
-          </div>
-        </RemoveScroll>
-      )}
+          <AccentPicker />
+
+          <button
+            type="button"
+            aria-label="Toggle theme"
+            onClick={toggleTheme}
+            className="hover:text-blue text-gray-600 dark:text-gray-400"
+          >
+            {isDarkMode ? <SunDim size={20} /> : <MoonIcon size={19} />}
+          </button>
+        </div>
+      </div>
     </motion.nav>
   );
 }

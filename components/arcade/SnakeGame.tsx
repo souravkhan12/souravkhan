@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Maximize2, X } from "lucide-react";
+import { RemoveScroll } from "react-remove-scroll";
 import { Section, GridBand, GridCell, DotGrid } from "@/components/ui";
 
 const N = 15; // board is N×N
@@ -76,6 +78,10 @@ export default function SnakeGame() {
   // trades vertical space for buttons you can hit without covering the board.
   const [scheme, setScheme] = useState<Scheme>("swipe");
   const padRef = useRef<HTMLDivElement>(null);
+  // Immersive mode: on a phone the board is nearly full-screen and the page
+  // scrolls out from under you mid-run. `expanded` lifts the whole rig into a
+  // fixed overlay so play is steady and there's nothing to scroll.
+  const [expanded, setExpanded] = useState(false);
 
   const sync = useCallback(() => {
     const g = game.current;
@@ -208,21 +214,13 @@ export default function SnakeGame() {
     setSubmit({ state: "idle" });
     sync();
     boardRef.current?.focus({ preventScroll: true });
-    // On a phone the board is usually half off-screen when you tap play, and
-    // once it's running you can't scroll it into view. Bring it up front.
+    // On a phone the board is nearly full-screen and the page scrolls out from
+    // under the run. Lift the whole rig into the immersive overlay instead of
+    // chasing it with scrollIntoView.
     if (window.matchMedia("(max-width: 640px)").matches) {
-      // With the pad open the board alone isn't the thing to centre — scroll to
-      // the bottom of the pad so board and buttons are on screen together.
-      if (scheme === "pad" && padRef.current) {
-        padRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
-      } else {
-        boardRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-      }
+      setExpanded(true);
     }
-  }, [sync, scheme]);
+  }, [sync]);
 
   // Remember the control scheme between visits — re-picking the pad every
   // session is the kind of friction that makes people stop playing.
@@ -286,7 +284,12 @@ export default function SnakeGame() {
   // land in the same tick you make them. Each registered swipe re-anchors the
   // origin, so one continuous drag can chain several turns.
   useEffect(() => {
-    const el = boardRef.current;
+    // In fullscreen the whole screen steers — the board is only a fraction of
+    // it and reaching for it defeats the point. Otherwise, only the board does,
+    // so the surrounding page still scrolls normally.
+    const el: HTMLElement | Document | null = expanded
+      ? document
+      : boardRef.current;
     if (!el) return;
 
     const onStart = (e: TouchEvent) => {
@@ -308,17 +311,21 @@ export default function SnakeGame() {
     };
 
     // passive:false so preventDefault actually stops the page scrolling
-    el.addEventListener("touchstart", onStart, { passive: false });
-    el.addEventListener("touchmove", onMove, { passive: false });
+    el.addEventListener("touchstart", onStart as EventListener, {
+      passive: false,
+    });
+    el.addEventListener("touchmove", onMove as EventListener, {
+      passive: false,
+    });
     el.addEventListener("touchend", onEnd);
     el.addEventListener("touchcancel", onEnd);
     return () => {
-      el.removeEventListener("touchstart", onStart);
-      el.removeEventListener("touchmove", onMove);
+      el.removeEventListener("touchstart", onStart as EventListener);
+      el.removeEventListener("touchmove", onMove as EventListener);
       el.removeEventListener("touchend", onEnd);
       el.removeEventListener("touchcancel", onEnd);
     };
-  }, [steer]);
+  }, [steer, expanded]);
 
   const headKey = `${view.snake[0].x},${view.snake[0].y}`;
   const bodySet = new Set(view.snake.map((s) => `${s.x},${s.y}`));
@@ -336,166 +343,181 @@ export default function SnakeGame() {
       <GridBand cols="grid-cols-1 lg:grid-cols-[1.3fr_1fr]">
         {/* board */}
         <GridCell className="flex flex-col items-center gap-4 sm:gap-5">
-          <div className="font-code flex w-full max-w-[440px] items-center justify-between text-xs text-gray-500">
-            <span className="flex items-baseline gap-2">
-              score
-              <span className="font-code text-foreground text-base tabular-nums">
-                {view.score}
+          <Rig expanded={expanded} onClose={() => setExpanded(false)}>
+            <div className="font-code flex w-full max-w-[440px] items-center justify-between text-xs text-gray-500">
+              <span className="flex items-baseline gap-2">
+                score
+                <span className="font-code text-foreground text-base tabular-nums">
+                  {view.score}
+                </span>
               </span>
-            </span>
-            <span className="flex items-baseline gap-2">
-              {running ? (
-                leading ? (
-                  <span className="text-blue">you&apos;re in the lead 🔥</span>
+              <span className="flex items-baseline gap-2">
+                {running ? (
+                  leading ? (
+                    <span className="text-blue">
+                      you&apos;re in the lead 🔥
+                    </span>
+                  ) : (
+                    <>
+                      to take the lead
+                      <span className="font-code text-blue text-base tabular-nums">
+                        {target - view.score + 1}
+                      </span>
+                    </>
+                  )
                 ) : (
                   <>
-                    to take the lead
-                    <span className="font-code text-blue text-base tabular-nums">
-                      {target - view.score + 1}
+                    your best
+                    <span className="font-code text-foreground text-base tabular-nums">
+                      {view.best}
                     </span>
                   </>
-                )
-              ) : (
-                <>
-                  your best
-                  <span className="font-code text-foreground text-base tabular-nums">
-                    {view.best}
-                  </span>
-                </>
-              )}
-            </span>
-          </div>
-
-          <div
-            ref={boardRef}
-            tabIndex={0}
-            role="application"
-            aria-label="Snake game board"
-            // touch-action is only locked down while a game is actually in
-            // play. Locking it always turned the board — nearly a full phone
-            // screen — into a dead zone you couldn't scroll past.
-            className={`border-border relative aspect-square w-full max-w-[440px] border outline-none select-none focus-visible:ring-1 focus-visible:ring-[var(--focus)] ${
-              running ? "touch-none" : "touch-auto"
-            }`}
-          >
-            <DotGrid />
-            <div
-              className="absolute inset-0 grid gap-px p-1"
-              style={{ gridTemplateColumns: `repeat(${N}, 1fr)` }}
-            >
-              {Array.from({ length: N * N }).map((_, idx) => {
-                const x = idx % N;
-                const y = Math.floor(idx / N);
-                const key = `${x},${y}`;
-                const isHead = key === headKey;
-                const isBody = !isHead && bodySet.has(key);
-                const isApple = view.apple.x === x && view.apple.y === y;
-                return (
-                  <div
-                    key={idx}
-                    className={
-                      isHead
-                        ? "bg-foreground rounded-[2px]"
-                        : isBody
-                          ? "bg-foreground/70 rounded-[1px]"
-                          : isApple
-                            ? "bg-blue animate-pulse rounded-full"
-                            : ""
-                    }
-                  />
-                );
-              })}
+                )}
+              </span>
             </div>
 
-            {!running && (
-              // the whole board is the tap target — much kinder on touch than
-              // hunting for a small button
-              <button
-                type="button"
-                onClick={start}
-                aria-label={
-                  view.status === "over" ? "play again" : "play snake"
-                }
-                className="bg-background/85 absolute inset-0 flex cursor-pointer flex-col items-center justify-center gap-3 px-6 text-center backdrop-blur-[1px]"
+            <div
+              ref={boardRef}
+              tabIndex={0}
+              role="application"
+              aria-label="Snake game board"
+              // touch-action is only locked down while a game is actually in
+              // play. Locking it always turned the board — nearly a full phone
+              // screen — into a dead zone you couldn't scroll past.
+              className={`border-border relative aspect-square w-full max-w-[440px] border outline-none select-none focus-visible:ring-1 focus-visible:ring-[var(--focus)] ${
+                running ? "touch-none" : "touch-auto"
+              }`}
+            >
+              <DotGrid />
+              <div
+                className="absolute inset-0 grid gap-px p-1"
+                style={{ gridTemplateColumns: `repeat(${N}, 1fr)` }}
               >
-                <p className="font-code text-lg">
-                  {view.status === "over"
-                    ? `game over · ${view.score}`
-                    : "snake"}
-                </p>
+                {Array.from({ length: N * N }).map((_, idx) => {
+                  const x = idx % N;
+                  const y = Math.floor(idx / N);
+                  const key = `${x},${y}`;
+                  const isHead = key === headKey;
+                  const isBody = !isHead && bodySet.has(key);
+                  const isApple = view.apple.x === x && view.apple.y === y;
+                  return (
+                    <div
+                      key={idx}
+                      className={
+                        isHead
+                          ? "bg-foreground rounded-[2px]"
+                          : isBody
+                            ? "bg-foreground/70 rounded-[1px]"
+                            : isApple
+                              ? "bg-blue animate-pulse rounded-full"
+                              : ""
+                      }
+                    />
+                  );
+                })}
+              </div>
 
-                {view.status === "over" && (
-                  <p className="font-code text-[11px] text-gray-500">
-                    {submit.state === "saving" && "saving…"}
-                    {submit.state === "saved" &&
-                      (beatRecord ? "new high score 🏆" : "score counted ✓")}
-                    {submit.state === "error" && submit.msg}
-                    {submit.state === "idle" &&
-                      view.score === 0 &&
-                      "no points — give it another go"}
+              {!running && (
+                // the whole board is the tap target — much kinder on touch than
+                // hunting for a small button
+                <button
+                  type="button"
+                  onClick={start}
+                  aria-label={
+                    view.status === "over" ? "play again" : "play snake"
+                  }
+                  className="bg-background/85 absolute inset-0 flex cursor-pointer flex-col items-center justify-center gap-3 px-6 text-center backdrop-blur-[1px]"
+                >
+                  <p className="font-code text-lg">
+                    {view.status === "over"
+                      ? `game over · ${view.score}`
+                      : "snake"}
                   </p>
-                )}
 
-                {view.status !== "over" && target > 0 && (
-                  <p className="font-code text-[11px] text-gray-500">
-                    high score to beat ·{" "}
-                    <span className="font-code text-blue">{target}</span>
-                  </p>
-                )}
+                  {view.status === "over" && (
+                    <p className="font-code text-[11px] text-gray-500">
+                      {submit.state === "saving" && "saving…"}
+                      {submit.state === "saved" &&
+                        (beatRecord ? "new high score 🏆" : "score counted ✓")}
+                      {submit.state === "error" && submit.msg}
+                      {submit.state === "idle" &&
+                        view.score === 0 &&
+                        "no points — give it another go"}
+                    </p>
+                  )}
 
-                <span className="border-border bg-background pointer-events-none inline-flex h-11 items-center border px-6 text-sm">
-                  {view.status === "over" ? "play again" : "play"}
-                </span>
+                  {view.status !== "over" && target > 0 && (
+                    <p className="font-code text-[11px] text-gray-500">
+                      high score to beat ·{" "}
+                      <span className="font-code text-blue">{target}</span>
+                    </p>
+                  )}
 
-                <p className="font-code flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[11px] text-gray-500">
-                  <span className="hidden sm:inline">arrow keys / wasd</span>
-                  <span className="border-blue/40 text-blue bg-blue/5 border px-1.5 py-0.5">
-                    📱 on mobile · swipe or tap the d-pad
+                  <span className="border-border bg-background pointer-events-none inline-flex h-11 items-center border px-6 text-sm">
+                    {view.status === "over" ? "play again" : "play"}
                   </span>
-                </p>
-              </button>
-            )}
-          </div>
 
-          {/* touch controls — scheme picker, then the pad it opens */}
-          <div
-            ref={padRef}
-            className="flex w-full flex-col items-center gap-3 sm:hidden"
-          >
-            <div
-              role="group"
-              aria-label="touch controls"
-              className="border-border font-code flex w-full max-w-[260px] border text-xs"
-            >
-              <SchemeTab
-                label="swipe"
-                active={scheme === "swipe"}
-                onPick={() => pickScheme("swipe")}
-              />
-              <SchemeTab
-                label="d-pad"
-                active={scheme === "pad"}
-                onPick={() => pickScheme("pad")}
-              />
+                  <p className="font-code flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[11px] text-gray-500">
+                    <span className="hidden sm:inline">arrow keys / wasd</span>
+                    <span className="border-blue/40 text-blue bg-blue/5 border px-1.5 py-0.5">
+                      📱 on mobile · swipe or tap the d-pad
+                    </span>
+                  </p>
+                </button>
+              )}
             </div>
 
-            {scheme === "swipe" ? (
-              <p className="font-code text-[11px] text-gray-500">
-                drag anywhere on the board to steer
-              </p>
-            ) : (
-              // Taller keys than the board-side buttons: with the pad chosen we
-              // have the vertical room, and bigger targets mean fewer misfires.
-              <div className="grid w-full max-w-[300px] grid-cols-3 gap-2 pb-2">
-                <span />
-                <DPad label="up" onPress={() => steer(0, -1)} char="↑" />
-                <span />
-                <DPad label="left" onPress={() => steer(-1, 0)} char="←" />
-                <DPad label="down" onPress={() => steer(0, 1)} char="↓" />
-                <DPad label="right" onPress={() => steer(1, 0)} char="→" />
+            {/* touch controls — scheme picker, then the pad it opens */}
+            <div
+              ref={padRef}
+              className="flex w-full flex-col items-center gap-3 sm:hidden"
+            >
+              <div
+                role="group"
+                aria-label="touch controls"
+                className="border-border font-code flex w-full max-w-[260px] border text-xs"
+              >
+                <SchemeTab
+                  label="swipe"
+                  active={scheme === "swipe"}
+                  onPick={() => pickScheme("swipe")}
+                />
+                <SchemeTab
+                  label="d-pad"
+                  active={scheme === "pad"}
+                  onPick={() => pickScheme("pad")}
+                />
               </div>
-            )}
-          </div>
+
+              {scheme === "swipe" ? (
+                <p className="font-code text-[11px] text-gray-500">
+                  drag anywhere on the board to steer
+                </p>
+              ) : (
+                // Taller keys than the board-side buttons: with the pad chosen we
+                // have the vertical room, and bigger targets mean fewer misfires.
+                <div className="grid w-full max-w-[300px] grid-cols-3 gap-2 pb-2">
+                  <span />
+                  <DPad label="up" onPress={() => steer(0, -1)} char="↑" />
+                  <span />
+                  <DPad label="left" onPress={() => steer(-1, 0)} char="←" />
+                  <DPad label="down" onPress={() => steer(0, 1)} char="↓" />
+                  <DPad label="right" onPress={() => steer(1, 0)} char="→" />
+                </div>
+              )}
+
+              {!expanded && (
+                <button
+                  type="button"
+                  onClick={() => setExpanded(true)}
+                  className="border-border hover:border-blue hover:text-blue font-code mt-1 inline-flex items-center gap-1.5 border px-3 py-1.5 text-[11px] text-gray-500 transition-colors"
+                >
+                  <Maximize2 size={13} />
+                  fullscreen
+                </button>
+              )}
+            </div>
+          </Rig>
         </GridCell>
 
         {/* the number to beat — this is where the name leaderboard used to be */}
@@ -552,6 +574,48 @@ export default function SnakeGame() {
         </GridCell>
       </GridBand>
     </Section>
+  );
+}
+
+/**
+ * Immersive wrapper for the board rig. Off (the default, and always on desktop)
+ * it's transparent — the score / board / controls stay in their grid cell. On,
+ * it lifts the exact same subtree (refs intact — it's never duplicated) into a
+ * fixed, scroll-locked overlay so a phone run can't be scrolled out of frame.
+ */
+function Rig({
+  expanded,
+  onClose,
+  children,
+}: {
+  expanded: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+}) {
+  if (!expanded) return <>{children}</>;
+
+  return (
+    <RemoveScroll>
+      <div
+        className="bg-background fixed inset-0 z-50 flex flex-col items-center justify-center gap-4 px-4"
+        style={{
+          paddingTop: "calc(env(safe-area-inset-top) + 3.25rem)",
+          paddingBottom: "calc(env(safe-area-inset-bottom) + 1rem)",
+        }}
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="exit fullscreen"
+          className="border-border hover:border-blue hover:text-blue font-code absolute right-4 flex items-center gap-1.5 border px-3 py-1.5 text-xs text-gray-500 transition-colors"
+          style={{ top: "calc(env(safe-area-inset-top) + 0.75rem)" }}
+        >
+          <X size={14} />
+          close
+        </button>
+        {children}
+      </div>
+    </RemoveScroll>
   );
 }
 

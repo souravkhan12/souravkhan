@@ -1,29 +1,51 @@
-import { SOCIAL_LINKS } from "@/config/data";
+import Link from "next/link";
+import { Logo } from "@/components/ui";
+import { SOCIAL_LINKS, CONTACT_INFO } from "@/config/data";
+
+const links = [
+  { name: "github", href: SOCIAL_LINKS.github, external: true },
+  { name: "linkedin", href: SOCIAL_LINKS.linkedin, external: true },
+  { name: "résumé", href: CONTACT_INFO.resume, external: true },
+  { name: "email", href: `mailto:${CONTACT_INFO.email}`, external: true },
+];
 
 export default function Footer() {
-  return (
-    <footer className="border-border border-t border-r border-b border-l text-sm text-gray-500">
-      <div className="flex flex-col items-center justify-between gap-3 px-6 py-6 sm:flex-row sm:px-8">
-        <span>© {new Date().getFullYear()} sourav khan</span>
+  const year = new Date().getFullYear();
 
-        <div className="flex gap-6 lowercase">
-          <a
-            href={SOCIAL_LINKS.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-blue transition-colors"
-          >
-            github
-          </a>
-          <a
-            href={SOCIAL_LINKS.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-blue transition-colors"
-          >
-            linkedin
-          </a>
-        </div>
+  return (
+    <footer className="border-border border-x border-t text-sm text-gray-500">
+      {/* Main band: wordmark left, links right */}
+      <div className="flex flex-col items-start justify-between gap-6 px-6 py-8 sm:flex-row sm:items-center sm:px-10">
+        <Link href="/" className="group/logo flex items-center gap-2.5">
+          <Logo
+            size={20}
+            className="group-hover/logo:text-blue text-foreground shrink-0 transition-colors"
+          />
+          <span className="ss01 text-foreground text-sm font-semibold">
+            sourav khan
+          </span>
+        </Link>
+
+        <nav className="flex flex-wrap gap-x-6 gap-y-2">
+          {links.map((l) => (
+            <a
+              key={l.name}
+              href={l.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-blue text-sm lowercase transition-colors"
+            >
+              {l.name}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      {/* Baseline */}
+      <div className="border-border border-t px-6 py-4 sm:px-10">
+        <span className="font-code text-xs text-gray-500">
+          © {year} sourav khan
+        </span>
       </div>
     </footer>
   );
