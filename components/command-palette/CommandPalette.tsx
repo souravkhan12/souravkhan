@@ -68,7 +68,6 @@ export default function CommandPalette({
       { id: "projects", label: "go to projects", href: "#projects" },
       { id: "activity", label: "go to activity", href: "#github" },
       { id: "setup", label: "go to setup guides", href: "#setup" },
-      { id: "arcade", label: "play snake", href: "#arcade" },
       { id: "contact", label: "go to contact", href: "#contact" },
     ].map((n) => ({
       id: n.id,
@@ -78,16 +77,51 @@ export default function CommandPalette({
       run: () => go(n.href),
     }));
 
-    nav.push({
-      id: "blog",
-      label: "read the blog",
-      group: "navigate",
-      icon: <LuArrowRight size={15} />,
-      run: () => {
-        close();
-        router.push("/blog");
+    // Real routes, so they work from anywhere — not just the homepage.
+    for (const route of [
+      {
+        id: "blog",
+        label: "read the blog",
+        href: "/blog",
+        keywords: "writing posts articles",
       },
-    });
+      {
+        id: "all-projects",
+        label: "browse all projects",
+        href: "/projects",
+        keywords: "work case study",
+      },
+      {
+        id: "quiz",
+        label: "today's code puzzle",
+        href: "/arcade#quiz",
+        keywords: "quiz guess output daily game",
+      },
+      {
+        id: "snake",
+        label: "play snake",
+        href: "/arcade",
+        keywords: "game arcade high score",
+      },
+      {
+        id: "resume-page",
+        label: "view resume",
+        href: "/resume",
+        keywords: "cv hire experience",
+      },
+    ]) {
+      nav.push({
+        id: route.id,
+        label: route.label,
+        group: "navigate",
+        keywords: route.keywords,
+        icon: <LuArrowRight size={15} />,
+        run: () => {
+          close();
+          router.push(route.href);
+        },
+      });
+    }
 
     const projCmds: Cmd[] = projects.map((p) => ({
       id: `project-${p.slug}`,
@@ -114,10 +148,10 @@ export default function CommandPalette({
         },
       },
       {
-        id: "resume",
-        label: "view resume",
+        id: "resume-pdf",
+        label: "download resume (pdf)",
         group: "actions",
-        keywords: "cv",
+        keywords: "cv download",
         icon: <LuFileText size={15} />,
         run: () => openUrl(CONTACT_INFO.resume),
       },

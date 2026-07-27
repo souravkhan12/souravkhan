@@ -1,95 +1,52 @@
-import { getAllPosts } from "@/lib/blog";
-import { Section, GridBand, GridCell } from "@/components/ui";
-import { LuArrowRight } from "react-icons/lu";
-import Image from "next/image";
+import { getAllPosts, getAllTags, toSummary } from "@/lib/blog";
+import { Section } from "@/components/ui";
+import { PostList } from "@/components/blog/post-list";
+import { Subscribe } from "@/components/blog/subscribe";
+import { SEO_CONFIG } from "@/config/seo";
 import Link from "next/link";
+import { LuRss } from "react-icons/lu";
 
 export const metadata = {
   title: "Blog",
-  description: "Thoughts on software engineering, web development, and more.",
+  description:
+    "Notes on software engineering and web development — React, Next.js, TypeScript, and the debugging stories behind them.",
+  alternates: { canonical: `${SEO_CONFIG.baseUrl}/blog` },
 };
 
 export default function BlogPage() {
-  const posts = getAllPosts();
+  const posts = getAllPosts().map(toSummary);
+  const tags = getAllTags();
 
   return (
-    <Section
-      title="writing"
-      subtitle="notes on building for the web — the version i'd give a teammate, not a listicle."
-      className="pt-8"
-    >
-      <GridBand cols="grid-cols-1">
-        {posts.map((post, index) => (
-          <GridCell
-            key={post.slug}
-            padded={false}
-            tinted={index % 2 === 1}
-            className="group transition-colors hover:bg-gray-50 dark:hover:bg-black"
-          >
+    <>
+      <Section
+        title="writing"
+        subtitle="notes on building for the web — the version i'd give a teammate, not a listicle."
+        className="pt-8"
+      >
+        <div className="mb-6 flex flex-wrap items-center gap-2">
+          {tags.map(({ tag, slug, count }) => (
             <Link
-              href={`/blog/${post.slug}`}
-              className="flex gap-5 p-6 sm:gap-7 sm:p-8"
+              key={slug}
+              href={`/blog/tags/${slug}`}
+              className="border-border hover:border-blue hover:text-blue font-code border px-2 py-0.5 text-[11px] text-gray-500 transition-colors"
             >
-              {post.image && (
-                <div className="border-border relative hidden aspect-[4/3] w-40 shrink-0 overflow-hidden border sm:block">
-                  <Image
-                    src={post.image}
-                    alt=""
-                    fill
-                    sizes="160px"
-                    className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                  />
-                </div>
-              )}
-
-              <div className="flex min-w-0 flex-1 flex-col">
-                <div className="flex items-center gap-2">
-                  {index === 0 && (
-                    <span className="border-blue text-blue inline-flex shrink-0 items-center border px-1.5 py-0.5 text-[10px] font-medium tracking-wide uppercase">
-                      latest
-                    </span>
-                  )}
-                  <div className="font-code flex items-center gap-2 text-[11px] text-gray-400">
-                    <time dateTime={post.date}>
-                      {new Date(post.date).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </time>
-                    <span aria-hidden="true">·</span>
-                    <span>{post.readingTime}</span>
-                  </div>
-                </div>
-
-                <h3 className="ss01 normal-case-force group-hover:text-blue mt-2 text-lg font-semibold tracking-[-0.01em] transition-colors">
-                  {post.title}
-                </h3>
-                <p className="mt-1.5 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">
-                  {post.description}
-                </p>
-
-                <div className="mt-auto flex items-center justify-between gap-3 pt-4">
-                  <div className="flex flex-wrap gap-2">
-                    {post.tags.slice(0, 3).map((tag) => (
-                      <span
-                        key={tag}
-                        className="border-border font-code border px-2 py-0.5 text-[11px] text-gray-500"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                  <LuArrowRight
-                    size={16}
-                    className="group-hover:text-blue shrink-0 text-gray-300 transition-all group-hover:translate-x-0.5 dark:text-gray-600"
-                  />
-                </div>
-              </div>
+              {tag} <span className="text-gray-400">{count}</span>
             </Link>
-          </GridCell>
-        ))}
-      </GridBand>
-    </Section>
+          ))}
+          <Link
+            href="/feed.xml"
+            className="border-border hover:border-blue hover:text-blue font-code ml-auto inline-flex items-center gap-1.5 border px-2 py-0.5 text-[11px] text-gray-500 transition-colors"
+          >
+            <LuRss size={11} aria-hidden="true" />
+            rss
+          </Link>
+        </div>
+
+        <PostList posts={posts} />
+      </Section>
+
+      <Subscribe />
+    </>
   );
 }

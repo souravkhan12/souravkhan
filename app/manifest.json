@@ -34,9 +34,14 @@
   ],
   "shortcuts": [
     {
+      "name": "Today's puzzle",
+      "short_name": "puzzle",
+      "url": "/arcade#quiz"
+    },
+    {
       "name": "Play snake",
       "short_name": "snake",
-      "url": "/#arcade"
+      "url": "/arcade"
     },
     {
       "name": "Blog",

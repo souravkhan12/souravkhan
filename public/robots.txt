@@ -1,7 +1,0 @@
-# Allow all crawlers
-User-agent: *
-Allow: /
-Disallow: /api/
-
-# Sitemap location
-Sitemap: https://portfolio-souravkhan.vercel.app/sitemap.xml

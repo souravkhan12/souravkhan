@@ -345,3 +345,45 @@ html {
 .dark .overflow-x-auto::-webkit-scrollbar-thumb:hover {
   background-color: rgba(107, 114, 128, 0.6);
 }
+
+/* Autolinked headings ------------------------------------------------------
+   rehype-autolink-headings wraps each H2/H3's contents in an anchor so any
+   section can be linked directly. Without this the prose `a` styles would
+   render every heading in the accent colour and underline it on hover. */
+.prose :where(h2, h3) > a.heading-anchor {
+  color: inherit;
+  text-decoration: none;
+  font-weight: inherit;
+  position: relative;
+}
+
+.prose :where(h2, h3) > a.heading-anchor:hover {
+  text-decoration: none;
+}
+
+/* A '#' that fades in on hover, hung in the margin on wide screens so it never
+   reflows the heading. */
+.prose :where(h2, h3) > a.heading-anchor::before {
+  content: "#";
+  position: absolute;
+  left: -0.85em;
+  color: var(--blue);
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.prose :where(h2, h3) > a.heading-anchor:hover::before {
+  opacity: 1;
+}
+
+@media (max-width: 640px) {
+  /* No room for a hanging marker on phones. */
+  .prose :where(h2, h3) > a.heading-anchor::before {
+    content: none;
+  }
+}
+
+/* Scroll-margin so a deep link doesn't park the heading under the navbar. */
+.prose :where(h2, h3) {
+  scroll-margin-top: 5rem;
+}

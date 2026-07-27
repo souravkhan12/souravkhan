@@ -1,0 +1,108 @@
+[
+  {
+    "id": "array-sort-default",
+    "prompt": "What does this log?",
+    "snippet": "console.log([10, 9, 1].sort());",
+    "options": ["[1, 9, 10]", "[1, 10, 9]", "[10, 9, 1]", "[9, 10, 1]"],
+    "answer": 1,
+    "explanation": "Array.prototype.sort() coerces elements to strings and compares them lexicographically unless you pass a comparator. \"10\" sorts before \"9\" because \"1\" < \"9\". Always pass (a, b) => a - b for numbers."
+  },
+  {
+    "id": "typeof-null",
+    "prompt": "What does this log?",
+    "snippet": "console.log(typeof null, typeof NaN);",
+    "options": [
+      "\"null\" \"number\"",
+      "\"object\" \"number\"",
+      "\"object\" \"NaN\"",
+      "\"undefined\" \"number\""
+    ],
+    "answer": 1,
+    "explanation": "typeof null is \"object\" — a bug from the first JavaScript implementation that can never be fixed without breaking the web. And NaN is a numeric value, so typeof NaN is \"number\"."
+  },
+  {
+    "id": "settimeout-loop-var",
+    "prompt": "What does this log?",
+    "snippet": "for (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 0);\n}",
+    "options": ["0 1 2", "3 3 3", "0 0 0", "1 2 3"],
+    "answer": 1,
+    "explanation": "var is function-scoped, so all three callbacks close over the same binding. By the time the timers fire, the loop has finished and i is 3. Swap var for let and each iteration gets its own binding, logging 0 1 2."
+  },
+  {
+    "id": "promise-microtask-order",
+    "prompt": "In what order do these log?",
+    "snippet": "console.log(\"A\");\nsetTimeout(() => console.log(\"B\"), 0);\nPromise.resolve().then(() => console.log(\"C\"));\nconsole.log(\"D\");",
+    "options": ["A B C D", "A D C B", "A D B C", "A C D B"],
+    "answer": 1,
+    "explanation": "Synchronous code runs first (A, D). Then the microtask queue drains before any macrotask, so the resolved promise callback (C) beats the setTimeout (B) even at 0ms."
+  },
+  {
+    "id": "spread-shallow-copy",
+    "prompt": "What does this log?",
+    "snippet": "const a = { nested: { n: 1 } };\nconst b = { ...a };\nb.nested.n = 2;\nconsole.log(a.nested.n);",
+    "options": ["1", "2", "undefined", "TypeError"],
+    "answer": 1,
+    "explanation": "Spread is a shallow copy — b.nested and a.nested point at the same object. Use structuredClone(a) for a deep copy."
+  },
+  {
+    "id": "equality-coercion",
+    "prompt": "What does this log?",
+    "snippet": "console.log([] == false, [] === false);",
+    "options": ["true true", "true false", "false false", "false true"],
+    "answer": 1,
+    "explanation": "== coerces: [] becomes \"\" becomes 0, and false becomes 0, so 0 == 0 is true. === compares types first, and an array is never a boolean, so it's false."
+  },
+  {
+    "id": "react-stale-closure",
+    "prompt": "After clicking once, what is count?",
+    "snippet": "const [count, setCount] = useState(0);\n\nfunction onClick() {\n  setCount(count + 1);\n  setCount(count + 1);\n}",
+    "options": ["2", "1", "0", "It depends on batching"],
+    "answer": 1,
+    "explanation": "Both calls read the same `count` from the render's closure, so both compute 0 + 1. The second overwrites the first. Use the updater form — setCount(c => c + 1) — to queue on the latest value and get 2."
+  },
+  {
+    "id": "array-fill-reference",
+    "prompt": "What does this log?",
+    "snippet": "const grid = Array(2).fill([]);\ngrid[0].push(\"x\");\nconsole.log(grid[1].length);",
+    "options": ["0", "1", "2", "TypeError"],
+    "answer": 1,
+    "explanation": "fill() puts the same array reference in every slot, so both rows are literally the same array. Use Array.from({ length: 2 }, () => []) to build distinct ones."
+  },
+  {
+    "id": "parseint-map",
+    "prompt": "What does this log?",
+    "snippet": "console.log([\"1\", \"7\", \"11\"].map(parseInt));",
+    "options": ["[1, 7, 11]", "[1, NaN, 3]", "[1, 7, 3]", "[NaN, NaN, NaN]"],
+    "answer": 1,
+    "explanation": "map passes (value, index) and parseInt takes (string, radix). So you get parseInt(\"1\", 0)=1, parseInt(\"7\", 1)=NaN (radix 1 is invalid), and parseInt(\"11\", 2)=3 (binary). Use .map(Number) instead."
+  },
+  {
+    "id": "object-key-coercion",
+    "prompt": "What does this log?",
+    "snippet": "const o = {};\no[1] = \"a\";\no[\"1\"] = \"b\";\nconsole.log(Object.keys(o).length);",
+    "options": ["1", "2", "0", "TypeError"],
+    "answer": 0,
+    "explanation": "Plain object keys are always strings, so o[1] and o[\"1\"] are the same key — the second write just overwrites the first. A Map keeps 1 and \"1\" distinct."
+  },
+  {
+    "id": "async-foreach",
+    "prompt": "What does this log?",
+    "snippet": "const ids = [1, 2, 3];\nasync function run() {\n  ids.forEach(async (id) => await work(id));\n  console.log(\"done\");\n}",
+    "options": [
+      "\"done\" after all work finishes",
+      "\"done\" immediately, before any work finishes",
+      "A TypeError",
+      "Nothing — it hangs"
+    ],
+    "answer": 1,
+    "explanation": "forEach ignores the promises its callback returns, so there is nothing to await. Use a for...of loop for sequential work, or await Promise.all(ids.map(work)) for parallel."
+  },
+  {
+    "id": "float-precision",
+    "prompt": "What does this log?",
+    "snippet": "console.log(0.1 + 0.2 === 0.3);",
+    "options": ["true", "false", "undefined", "TypeError"],
+    "answer": 1,
+    "explanation": "IEEE-754 doubles can't represent 0.1 or 0.2 exactly, so the sum is 0.30000000000000004. Compare with a tolerance: Math.abs(a - b) < Number.EPSILON."
+  }
+]

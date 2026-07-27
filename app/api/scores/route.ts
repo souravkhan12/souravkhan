@@ -21,38 +21,50 @@ const API = "https://api.github.com";
 const MAX_SCORE = 225;
 const MARKER = /<!--\s*score:([\s\S]*?)\s*-->/;
 
+const PER_PAGE = 100;
+// Caps a cold read at 30 GitHub calls (~3000 games). Past that, move the board
+// to a real KV store rather than raising this.
+const MAX_PAGES = 30;
+
 export async function GET() {
   if (!REPO || !ISSUE) {
     return NextResponse.json({ best: 0, plays: 0, configured: false });
   }
 
-  // Newest comments first so the most recent page carries the live activity;
-  // the record itself is the max over everything we can see.
-  const res = await fetch(
-    `${API}/repos/${REPO}/issues/${ISSUE}/comments?per_page=100`,
-    { headers: ghHeaders(), cache: "no-store" },
-  );
-  if (!res.ok) {
-    return NextResponse.json({ best: 0, plays: 0, configured: true });
-  }
-
-  const data = (await res.json()) as Array<{ body: string }>;
-
   let best = 0;
   let plays = 0;
-  for (const c of data) {
-    const m = c.body?.match(MARKER);
-    if (!m) continue;
-    try {
-      // Older entries also carried a name — we only read the score now.
-      const parsed = JSON.parse(m[1]) as { score?: number };
-      const score = Math.floor(Number(parsed.score));
-      if (!Number.isFinite(score) || score <= 0) continue;
-      plays += 1;
-      if (score > best) best = score;
-    } catch {
-      /* ignore malformed */
+
+  // Walk every page — a single per_page=100 fetch silently under-reports both
+  // `best` and `plays` the moment the board passes 100 recorded games.
+  for (let page = 1; page <= MAX_PAGES; page++) {
+    const res = await fetch(
+      `${API}/repos/${REPO}/issues/${ISSUE}/comments?per_page=${PER_PAGE}&page=${page}`,
+      { headers: ghHeaders(), next: { revalidate: 60 } },
+    );
+    if (!res.ok) {
+      // Partial data still beats none, so return what we managed to read.
+      return NextResponse.json({ best, plays, configured: true });
     }
+
+    const data = (await res.json()) as Array<{ body: string }>;
+
+    for (const c of data) {
+      const m = c.body?.match(MARKER);
+      if (!m) continue;
+      try {
+        // Older entries also carried a name — we only read the score now.
+        const parsed = JSON.parse(m[1]) as { score?: number };
+        const score = Math.floor(Number(parsed.score));
+        if (!Number.isFinite(score) || score <= 0) continue;
+        plays += 1;
+        if (score > best) best = score;
+      } catch {
+        /* ignore malformed */
+      }
+    }
+
+    // A short page is the last page.
+    if (data.length < PER_PAGE) break;
   }
 
   return NextResponse.json({ best, plays, configured: true });

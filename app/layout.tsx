@@ -11,6 +11,8 @@ import CommandPalette from "@/components/command-palette/CommandPalette";
 import BottomNav from "@/components/navbar/BottomNav";
 import EasterEggs from "@/components/easter-eggs/EasterEggs";
 import { getAllProjects } from "@/lib/projects";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 // Chrome paints the browser/status bar with this; matches the paper background.
 export const viewport: Viewport = {
@@ -54,6 +56,12 @@ export const metadata: Metadata = {
   metadataBase: new URL(SEO_CONFIG.baseUrl),
   alternates: {
     canonical: SEO_CONFIG.canonical,
+    types: {
+      // Lets feed readers, daily.dev and aggregators auto-discover the blog.
+      "application/rss+xml": [
+        { url: `${SEO_CONFIG.baseUrl}/feed.xml`, title: "Sourav Khan — Blog" },
+      ],
+    },
   },
   openGraph: {
     type: SEO_CONFIG.ogType as "website",
@@ -121,7 +129,7 @@ export default function RootLayout({
     url: SEO_CONFIG.baseUrl,
     jobTitle: "Software Engineer",
     description: SEO_CONFIG.description,
-    image: `${SEO_CONFIG.baseUrl}/sourav.png`,
+    image: `${SEO_CONFIG.baseUrl}/sourav.webp`,
     address: {
       "@type": "PostalAddress",
       addressLocality: "Ambala",
@@ -177,6 +185,8 @@ export default function RootLayout({
           <ServiceWorker />
           <InstallPrompt />
         </Providers>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

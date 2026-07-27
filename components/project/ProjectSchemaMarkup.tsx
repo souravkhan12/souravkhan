@@ -1,4 +1,5 @@
 import { PROJECTS } from "@/config/data";
+import { SEO_CONFIG } from "@/config/seo";
 
 /**
  * Project Schema Markup
@@ -10,12 +11,12 @@ export function ProjectSchemaMarkup() {
     "@type": "CreativeWork",
     name: project.title,
     description: project.description,
-    image: `https://portfolio-souravkhan.vercel.app${project.image}`,
+    image: `${SEO_CONFIG.baseUrl}${project.image}`,
     url: project.link,
     creator: {
       "@type": "Person",
-      name: "Sourav Khan",
-      url: "https://portfolio-souravkhan.vercel.app",
+      name: SEO_CONFIG.author,
+      url: SEO_CONFIG.baseUrl,
     },
     datePublished: new Date().toISOString().split("T")[0],
     inLanguage: "en-US",

@@ -1,14 +1,26 @@
 import { notFound } from "next/navigation";
-import { getAllPosts, getPostBySlug, getPostHeadings } from "@/lib/blog";
+import {
+  getAllPosts,
+  getPostBySlug,
+  getPostHeadings,
+  getRelatedPosts,
+  getSeriesPosts,
+  tagSlug,
+} from "@/lib/blog";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import Image from "next/image";
 import Link from "next/link";
 import rehypeSlug from "rehype-slug";
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode from "rehype-pretty-code";
 import remarkGfm from "remark-gfm";
 import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
 import { mdxComponents } from "@/components/blog/mdx-components";
 import { BlogProgress } from "@/components/blog/blog-progress";
+import { BlogSchemaMarkup } from "@/components/blog/BlogSchemaMarkup";
+import { SeriesNav } from "@/components/blog/series-nav";
+import { Subscribe } from "@/components/blog/subscribe";
+import { SEO_CONFIG } from "@/config/seo";
 
 export async function generateStaticParams() {
   const posts = getAllPosts();
@@ -24,18 +36,38 @@ export async function generateMetadata({
   const post = getPostBySlug(slug);
   if (!post) return {};
 
+  const url = `${SEO_CONFIG.baseUrl}/blog/${post.slug}`;
+
   return {
     title: post.title,
     description: post.description,
+    keywords: post.tags,
+    // Points cross-posted copies on dev.to / Hashnode back at the original.
+    alternates: { canonical: url },
     openGraph: {
       title: post.title,
       description: post.description,
+      url,
       type: "article",
-      publishedTime: post.date,
-      images: post.image ? [{ url: post.image }] : [],
+      publishedTime: new Date(post.date).toISOString(),
+      modifiedTime: new Date(post.updated ?? post.date).toISOString(),
+      authors: [SEO_CONFIG.author],
+      tags: post.tags,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.description,
     },
   };
 }
+
+const fmtDate = (d: string) =>
+  new Date(d).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
 export default async function BlogPostPage({
   params,
@@ -47,21 +79,13 @@ export default async function BlogPostPage({
   if (!post) notFound();
 
   const headings = getPostHeadings(post);
-
-  // The two other most-recent posts, to keep the reader moving at the end.
-  const more = getAllPosts()
-    .filter((p) => p.slug !== post.slug)
-    .slice(0, 2);
-
-  const fmtDate = (d: string) =>
-    new Date(d).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+  // Tag-overlap scored, so "keep reading" stays on-topic instead of just recent.
+  const more = getRelatedPosts(post.slug, 2);
+  const series = post.series ? getSeriesPosts(post.series) : [];
 
   return (
     <>
+      <BlogSchemaMarkup post={post} />
       <BlogProgress headings={headings} />
 
       <article id="blog-post-content">
@@ -78,12 +102,13 @@ export default async function BlogPostPage({
 
             <div className="mt-5 flex flex-wrap gap-2">
               {post.tags.map((tag) => (
-                <span
+                <Link
                   key={tag}
-                  className="border-blue/40 text-blue bg-blue/5 font-code border px-2 py-0.5 text-[11px]"
+                  href={`/blog/tags/${tagSlug(tag)}`}
+                  className="border-blue/40 text-blue bg-blue/5 hover:bg-blue/10 font-code border px-2 py-0.5 text-[11px] transition-colors"
                 >
                   {tag}
-                </span>
+                </Link>
               ))}
             </div>
 
@@ -94,10 +119,18 @@ export default async function BlogPostPage({
               {post.description}
             </p>
 
-            <div className="font-code mt-5 flex items-center gap-2.5 text-xs text-gray-500">
+            <div className="font-code mt-5 flex flex-wrap items-center gap-2.5 text-xs text-gray-500">
               <time dateTime={post.date}>{fmtDate(post.date)}</time>
               <span aria-hidden="true" className="bg-border h-3 w-px" />
               <span>{post.readingTime}</span>
+              {post.updated && (
+                <>
+                  <span aria-hidden="true" className="bg-border h-3 w-px" />
+                  <span className="text-blue">
+                    updated {fmtDate(post.updated)}
+                  </span>
+                </>
+              )}
             </div>
           </div>
         </header>
@@ -117,6 +150,14 @@ export default async function BlogPostPage({
 
         {/* Body */}
         <div className="prose prose-gray dark:prose-invert prose-p:leading-relaxed prose-headings:normal-case prose-headings:tracking-[-0.01em] prose-a:text-blue prose-a:no-underline hover:prose-a:underline prose-lg mx-auto max-w-3xl px-6 pt-12 pb-16 sm:px-10 xl:pb-16">
+          {series.length > 1 && (
+            <SeriesNav
+              series={post.series!}
+              posts={series}
+              currentSlug={post.slug}
+            />
+          )}
+
           <MDXRemote
             source={post.content}
             components={mdxComponents}
@@ -125,6 +166,14 @@ export default async function BlogPostPage({
                 remarkPlugins: [remarkGfm],
                 rehypePlugins: [
                   rehypeSlug,
+                  // Makes every H2/H3 a shareable deep link.
+                  [
+                    rehypeAutolinkHeadings,
+                    {
+                      behavior: "wrap",
+                      properties: { className: "heading-anchor" },
+                    },
+                  ],
                   [rehypePrettyCode, { theme: "github-dark" }],
                 ],
               },
@@ -174,6 +223,8 @@ export default async function BlogPostPage({
           </div>
         </aside>
       )}
+
+      <Subscribe />
     </>
   );
 }

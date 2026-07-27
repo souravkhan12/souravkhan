@@ -5,8 +5,9 @@ import { SOCIAL_LINKS, CONTACT_INFO } from "@/config/data";
 const links = [
   { name: "github", href: SOCIAL_LINKS.github, external: true },
   { name: "linkedin", href: SOCIAL_LINKS.linkedin, external: true },
-  { name: "résumé", href: CONTACT_INFO.resume, external: true },
+  { name: "résumé", href: "/resume", external: false },
   { name: "email", href: `mailto:${CONTACT_INFO.email}`, external: true },
+  { name: "rss", href: "/feed.xml", external: true },
 ];
 
 export default function Footer() {

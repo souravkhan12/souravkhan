@@ -1,0 +1,31 @@
+name: Link check
+
+# Dead links in old posts are a slow, invisible ranking leak. Monthly is often
+# enough to catch them without nagging.
+on:
+  schedule:
+    - cron: "0 6 1 * *"
+  workflow_dispatch:
+
+jobs:
+  lychee:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check links in content
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --no-progress --max-retries 2 'content/**/*.mdx' 'README.md'
+          fail: false
+
+      - name: Open an issue if anything is broken
+        if: steps.lychee.outputs.exit_code != 0
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: Broken links found in content
+          content-filepath: ./lychee/out.md
+          labels: maintenance

@@ -10,7 +10,7 @@ import Footer from "@/components/footer/footer";
 import HeroTechStack from "@/components/hero/HeroTechStack";
 import { RecentPosts } from "@/components/blog/recent-posts";
 import Setup from "@/components/setup/Setup";
-import SnakeGame from "@/components/arcade/SnakeGame";
+import { ArcadeTeaser } from "@/components/arcade/ArcadeTeaser";
 
 export default function Page() {
   return (
@@ -44,7 +44,7 @@ export default function Page() {
         </Section>
 
         <Setup />
-        <SnakeGame />
+        <ArcadeTeaser />
         <Contact />
         <Footer />
       </main>
