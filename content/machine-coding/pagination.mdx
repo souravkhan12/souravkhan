@@ -1,0 +1,45 @@
+---
+title: "Pagination"
+question: "Build a reusable pagination component for a large list."
+category: "react-ui"
+categoryLabel: "React UI Components"
+difficulty: "medium"
+tags: ["render-props", "useMemo", "component-api"]
+repoPath: "src/folders/Pagination"
+order: 4
+---
+
+## What it tests
+
+Component API design. Slicing an array by page is trivial; the actual question
+is how the component stays reusable when the next screen needs different
+markup for both the rows and the controls.
+
+## The approach
+
+Headless, via render props. `Pagination` owns the page state and the maths and
+renders nothing opinionated — the caller supplies `renderItem` and
+`renderPagination`, and receives the state and movers as arguments:
+
+```jsx
+renderPagination({
+  page,
+  totalPages,
+  goTo,
+  next: () => goTo(page + 1),
+  prev: () => goTo(page - 1),
+});
+```
+
+`goTo` clamps to the valid range in one place, so `next`, `prev` and a direct
+page click can't each invent their own bounds check. The slice is memoised on
+`[data, page, pageSize]`.
+
+## Where it usually goes wrong
+
+- **Baking in the button markup.** Works once, gets copy-pasted the second time.
+- **Bounds checks at every call site.** Guard inside `goTo` instead.
+- **Not resetting on data change.** If `data` shrinks while you're on page 20,
+  `page` is now out of range and the list renders empty.
+- **Rendering every page number.** 2,000 items at 10 a page is 200 buttons;
+  real pagination windows them around the current page.

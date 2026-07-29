@@ -1,0 +1,42 @@
+---
+title: "Polyfill call and apply"
+question: "Implement Function.prototype.call and Function.prototype.apply yourself."
+category: "js-fundamentals"
+categoryLabel: "JavaScript Fundamentals"
+difficulty: "medium"
+tags: ["this", "prototypes", "polyfills"]
+repoPath: "src/folders/polyfills"
+order: 12
+---
+
+## What it tests
+
+Whether you really understand `this` binding, or have only memorised the rules.
+The trick is that you cannot use `call`/`apply`/`bind` to write them — you have
+to bind `this` some other way.
+
+## The approach
+
+Attach the function as a temporary property of the target object, call it as a
+method so the implicit binding does the work, then remove it:
+
+```js
+Function.prototype.myCall = function (context, ...args) {
+  context = context || globalThis;
+  const key = Symbol("fn");
+  context[key] = this;
+  const result = context[key](...args);
+  delete context[key];
+  return result;
+};
+```
+
+`apply` is the same thing with the arguments arriving as an array.
+
+## Where it usually goes wrong
+
+- **Using a string key.** `context.fn = this` clobbers a real `fn` property if
+  the object has one. A `Symbol` can't collide.
+- **Not returning the result.** Easy to forget once `delete` is in the way.
+- **Forgetting primitives and `null`.** Non-strict `call(null)` binds the
+  global object, and primitives get wrapped.

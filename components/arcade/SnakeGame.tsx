@@ -336,8 +336,8 @@ export default function SnakeGame() {
 
   return (
     <Section
-      id="arcade"
-      title="arcade"
+      id="snake"
+      title="snake"
       subtitle="one number to beat. no names, no sign-up — just snake."
     >
       <GridBand cols="grid-cols-1 lg:grid-cols-[1.3fr_1fr]">

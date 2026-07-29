@@ -2,6 +2,7 @@
   {
     "id": "array-sort-default",
     "prompt": "What does this log?",
+    "title": "Why does [10, 9, 1].sort() return [1, 10, 9] in JavaScript?",
     "snippet": "console.log([10, 9, 1].sort());",
     "options": ["[1, 9, 10]", "[1, 10, 9]", "[10, 9, 1]", "[9, 10, 1]"],
     "answer": 1,
@@ -10,6 +11,7 @@
   {
     "id": "typeof-null",
     "prompt": "What does this log?",
+    "title": "Why is typeof null \"object\" in JavaScript?",
     "snippet": "console.log(typeof null, typeof NaN);",
     "options": [
       "\"null\" \"number\"",
@@ -23,6 +25,7 @@
   {
     "id": "settimeout-loop-var",
     "prompt": "What does this log?",
+    "title": "Why does setTimeout inside a var loop log 3 3 3?",
     "snippet": "for (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 0);\n}",
     "options": ["0 1 2", "3 3 3", "0 0 0", "1 2 3"],
     "answer": 1,
@@ -31,6 +34,7 @@
   {
     "id": "promise-microtask-order",
     "prompt": "In what order do these log?",
+    "title": "Why does a resolved promise log before setTimeout(fn, 0)?",
     "snippet": "console.log(\"A\");\nsetTimeout(() => console.log(\"B\"), 0);\nPromise.resolve().then(() => console.log(\"C\"));\nconsole.log(\"D\");",
     "options": ["A B C D", "A D C B", "A D B C", "A C D B"],
     "answer": 1,
@@ -39,6 +43,7 @@
   {
     "id": "spread-shallow-copy",
     "prompt": "What does this log?",
+    "title": "Why does spreading an object still mutate the nested object?",
     "snippet": "const a = { nested: { n: 1 } };\nconst b = { ...a };\nb.nested.n = 2;\nconsole.log(a.nested.n);",
     "options": ["1", "2", "undefined", "TypeError"],
     "answer": 1,
@@ -47,6 +52,7 @@
   {
     "id": "equality-coercion",
     "prompt": "What does this log?",
+    "title": "Why is [] == false true but [] === false false?",
     "snippet": "console.log([] == false, [] === false);",
     "options": ["true true", "true false", "false false", "false true"],
     "answer": 1,
@@ -55,6 +61,7 @@
   {
     "id": "react-stale-closure",
     "prompt": "After clicking once, what is count?",
+    "title": "Why does calling setCount twice only increment React state by one?",
     "snippet": "const [count, setCount] = useState(0);\n\nfunction onClick() {\n  setCount(count + 1);\n  setCount(count + 1);\n}",
     "options": ["2", "1", "0", "It depends on batching"],
     "answer": 1,
@@ -63,6 +70,7 @@
   {
     "id": "array-fill-reference",
     "prompt": "What does this log?",
+    "title": "Why does Array(2).fill([]) share the same array in every slot?",
     "snippet": "const grid = Array(2).fill([]);\ngrid[0].push(\"x\");\nconsole.log(grid[1].length);",
     "options": ["0", "1", "2", "TypeError"],
     "answer": 1,
@@ -71,6 +79,7 @@
   {
     "id": "parseint-map",
     "prompt": "What does this log?",
+    "title": "Why does [\"1\", \"7\", \"11\"].map(parseInt) return [1, NaN, 3]?",
     "snippet": "console.log([\"1\", \"7\", \"11\"].map(parseInt));",
     "options": ["[1, 7, 11]", "[1, NaN, 3]", "[1, 7, 3]", "[NaN, NaN, NaN]"],
     "answer": 1,
@@ -79,6 +88,7 @@
   {
     "id": "object-key-coercion",
     "prompt": "What does this log?",
+    "title": "Why do o[1] and o[\"1\"] set the same object key in JavaScript?",
     "snippet": "const o = {};\no[1] = \"a\";\no[\"1\"] = \"b\";\nconsole.log(Object.keys(o).length);",
     "options": ["1", "2", "0", "TypeError"],
     "answer": 0,
@@ -87,6 +97,7 @@
   {
     "id": "async-foreach",
     "prompt": "What does this log?",
+    "title": "Why doesn't await work inside Array.prototype.forEach?",
     "snippet": "const ids = [1, 2, 3];\nasync function run() {\n  ids.forEach(async (id) => await work(id));\n  console.log(\"done\");\n}",
     "options": [
       "\"done\" after all work finishes",
@@ -100,6 +111,7 @@
   {
     "id": "float-precision",
     "prompt": "What does this log?",
+    "title": "Why is 0.1 + 0.2 === 0.3 false in JavaScript?",
     "snippet": "console.log(0.1 + 0.2 === 0.3);",
     "options": ["true", "false", "undefined", "TypeError"],
     "answer": 1,

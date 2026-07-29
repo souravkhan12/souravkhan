@@ -34,9 +34,7 @@ export default function ResumePage() {
       {/* Header */}
       <header className="border-border flex flex-wrap items-start justify-between gap-4 border-b pb-6">
         <div>
-          <h1 className="ss01 normal-case-force text-3xl font-bold tracking-[-0.02em]">
-            {HERO.name}
-          </h1>
+          <h1 className="ss01 normal-case-force page-title">{HERO.name}</h1>
           <p className="text-blue mt-1 text-base">{HERO.title}</p>
         </div>
 

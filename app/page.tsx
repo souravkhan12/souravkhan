@@ -11,8 +11,16 @@ import HeroTechStack from "@/components/hero/HeroTechStack";
 import { RecentPosts } from "@/components/blog/recent-posts";
 import Setup from "@/components/setup/Setup";
 import { ArcadeTeaser } from "@/components/arcade/ArcadeTeaser";
+import { getAllPosts } from "@/lib/blog";
+import { HERO_TECH_STACK } from "@/config/data";
 
 export default function Page() {
+  /* Sections with no content are dropped rather than rendered as an empty
+     heading. Each component that owns its own data guards itself (Projects,
+     WorkExperience, Setup); the two bands assembled here
+     have to be checked here, where their content is known. */
+  const hasPosts = getAllPosts().length > 0;
+
   return (
     <>
       <ProjectSchemaMarkup />
@@ -21,25 +29,35 @@ export default function Page() {
       <main className="mx-auto max-w-[1200px] px-0">
         <Hero />
 
-        <Section title="tech stack">
-          <HeroTechStack />
-        </Section>
+        {HERO_TECH_STACK.length > 0 && (
+          <Section title="tech stack">
+            <HeroTechStack />
+          </Section>
+        )}
 
         <WorkExperience />
         <Projects />
 
-        {/* Activity: contributions graph beside the writing feed */}
+        {/* Activity: contributions graph beside the writing feed. The feed cell
+            disappears with no posts, and the graph widens to fill the band
+            rather than leaving a hole beside itself. */}
         <Section title="activity" id="github">
-          <GridBand cols="grid-cols-1 lg:grid-cols-[2fr_1fr]">
+          <GridBand
+            cols={
+              hasPosts ? "grid-cols-1 lg:grid-cols-[2fr_1fr]" : "grid-cols-1"
+            }
+          >
             <GridCell className="overflow-x-auto">
               <GitHubContributions />
             </GridCell>
-            <GridCell tinted id="blog" className="flex flex-col">
-              <h3 className="ss01 mb-3 text-base font-bold">
-                latest from the blog
-              </h3>
-              <RecentPosts />
-            </GridCell>
+            {hasPosts && (
+              <GridCell tinted id="blog" className="flex flex-col">
+                <h3 className="ss01 mb-3 text-base font-bold">
+                  latest from the blog
+                </h3>
+                <RecentPosts />
+              </GridCell>
+            )}
           </GridBand>
         </Section>
 

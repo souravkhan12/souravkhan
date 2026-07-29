@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
  * Unconfigured, this returns 503 rather than pretending to succeed.
  */
 const API_KEY = process.env.BUTTONDOWN_API_KEY;
-const ENDPOINT = "https://api.buttondown.email/v1/subscribers";
+const ENDPOINT = "https://api.buttondown.com/v1/subscribers";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -59,7 +59,12 @@ export async function POST(request: Request) {
       Authorization: `Token ${API_KEY}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ email, tags: ["portfolio"] }),
+    // Buttondown's field is `email_address`, not `email`.
+    body: JSON.stringify({
+      email_address: email,
+      tags: ["portfolio"],
+      type: "regular",
+    }),
   });
 
   // Buttondown 400s on an address that's already subscribed; that's a success

@@ -44,9 +44,7 @@ export default async function ProjectPage({
   return (
     <article className="prose prose-gray dark:prose-invert prose-p:leading-relaxed prose-lg mx-auto max-w-3xl px-6 pt-16 pb-12 sm:px-8">
       <header>
-        <h1 className="ss01 normal-case-force text-xl font-semibold tracking-[-0.02em] sm:text-2xl">
-          {project.title}
-        </h1>
+        <h1 className="ss01 normal-case-force page-title">{project.title}</h1>
       </header>
       {project.image && (
         <div className="border-border relative mb-10 h-64 w-full overflow-hidden border sm:h-80">

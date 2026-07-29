@@ -28,17 +28,18 @@ export default function Hero() {
       <GridCell className="order-2 flex flex-col justify-center gap-7 py-16 sm:py-20 lg:order-1">
         <AvailabilityBadge text="available for work" />
 
+        {/* Transform-only entrance, and no delay.
+            This <h1> is the page's LCP element. `motion` inlines its `initial`
+            styles into the server HTML, so animating from opacity:0 behind a
+            150ms delay meant the headline wasn't merely late — it stayed
+            unpainted until hydration finished, then took another 320ms to
+            fade. Translate and blur are compositor-only and don't gate the
+            paint, so the movement survives and the LCP cost doesn't. */}
         <motion.h1
-          initial={
-            shouldAnimate ? { opacity: 0, y: 6, filter: "blur(10px)" } : false
-          }
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={{
-            duration: MOTION.duration.slow,
-            delay: 0.15,
-            ease: MOTION.ease,
-          }}
-          className="ss01 normal-case-force font-semilight text-[2rem] leading-[1.08] tracking-[-0.02em] sm:text-[2.5rem] lg:text-3xl"
+          initial={shouldAnimate ? { y: 6, filter: "blur(6px)" } : false}
+          animate={{ y: 0, filter: "blur(0px)" }}
+          transition={{ duration: MOTION.duration.slow, ease: MOTION.ease }}
+          className="ss01 normal-case-force hero-title font-semilight"
         >
           {HERO.name}
           <br />
@@ -50,7 +51,7 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{
             duration: MOTION.duration.slow,
-            delay: 0.3,
+            delay: 0.1,
             ease: MOTION.ease,
           }}
           className="max-w-xl text-base text-pretty text-gray-600 dark:text-gray-400"
@@ -114,12 +115,15 @@ export default function Hero() {
         <DiagonalLine direction="tl-br" />
         <DiagonalLine direction="tr-bl" />
         <VertexSquare corner="top-left" />
+        {/* Also transform-only: the portrait is the other LCP candidate, and
+            fading it in from opacity:0 on a 450ms delay was cancelling out the
+            `priority` + `fetchPriority="high"` hints on the image inside. */}
         <motion.div
-          initial={shouldAnimate ? { opacity: 0, scale: 0.98 } : false}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={shouldAnimate ? { scale: 0.98 } : false}
+          animate={{ scale: 1 }}
           transition={{
             duration: MOTION.duration.slow,
-            delay: 0.45,
+            delay: 0.1,
             ease: MOTION.ease,
           }}
           className="absolute inset-0 flex items-center justify-center p-8"

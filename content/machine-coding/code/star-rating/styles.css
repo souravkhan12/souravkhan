@@ -1,0 +1,11 @@
+.star-container {
+  display: flex;
+  gap: 2px;
+}
+.star {
+  line-height: 1; /* keeps height tight */
+  display: inline-block;
+  cursor: pointer;
+  height: 100px;
+  width: 50px;
+}

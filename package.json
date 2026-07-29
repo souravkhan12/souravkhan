@@ -9,6 +9,7 @@
     "lint": "bun run eslint .",
     "typecheck": "bun run tsc --noEmit",
     "new:post": "bun run scripts/new-post.ts",
+    "sync:machine-coding": "bun run scripts/sync-machine-coding.ts",
     "upgrade:next": "bunx @next/codemod@latest upgrade latest",
     "upgrade:tailwind": "bunx @tailwindcss/upgrade@latest",
     "prepare": "husky"

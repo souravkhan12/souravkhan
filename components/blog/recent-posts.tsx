@@ -6,6 +6,12 @@ export function RecentPosts() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-4">
+      {posts.length === 0 && (
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          The first post is still being written.
+        </p>
+      )}
+
       <ul className="flex flex-col">
         {posts.map((post) => (
           <li

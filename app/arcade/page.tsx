@@ -1,7 +1,4 @@
-import SnakeGame from "@/components/arcade/SnakeGame";
-import { CodeQuiz } from "@/components/arcade/CodeQuiz";
-import { Section } from "@/components/ui";
-import { getDailyQuestion } from "@/lib/quiz";
+import { Section, RowList } from "@/components/ui";
 import { SEO_CONFIG } from "@/config/seo";
 
 export const metadata = {
@@ -11,26 +8,35 @@ export const metadata = {
   alternates: { canonical: `${SEO_CONFIG.baseUrl}/arcade` },
 };
 
-// Rotates the daily question shortly after midnight UTC without a redeploy.
-export const revalidate = 3600;
-
+/**
+ * Index for the arcade. Each game lives on its own route so a link points at
+ * one game instead of loading both — /arcade/quiz and /arcade/snake.
+ */
 export default function ArcadePage() {
-  const { question, day } = getDailyQuestion();
-
   return (
-    <>
-      <Section
-        title="guess the output"
-        subtitle="one javascript snippet a day with a result that isn't what you'd expect. resets at midnight utc."
-        className="pt-8"
-        id="quiz"
-      >
-        <div className="border-border border-x border-b p-6 sm:p-8">
-          <CodeQuiz question={question} day={day} />
-        </div>
-      </Section>
-
-      <SnakeGame />
-    </>
+    <Section
+      title="arcade"
+      id="arcade"
+      count={2}
+      subtitle="two ways to waste two minutes. pick one."
+      className="pt-8"
+    >
+      <RowList
+        rows={[
+          {
+            href: "/arcade/quiz",
+            title: "Guess the Output",
+            meta: "javascript · new every day",
+            hint: "One snippet a day that doesn't do what it looks like it does.",
+          },
+          {
+            href: "/arcade/snake",
+            title: "Snake",
+            meta: "one global high score · no sign-up",
+            hint: "One number to beat, shared by everyone who's played.",
+          },
+        ]}
+      />
+    </Section>
   );
 }

@@ -112,7 +112,7 @@ export default async function BlogPostPage({
               ))}
             </div>
 
-            <h1 className="ss01 normal-case-force mt-4 text-2xl leading-tight font-bold tracking-[-0.02em] sm:text-3xl">
+            <h1 className="ss01 normal-case-force page-title mt-4">
               {post.title}
             </h1>
             <p className="mt-3 max-w-2xl text-base leading-relaxed text-gray-600 dark:text-gray-400">
@@ -149,7 +149,21 @@ export default async function BlogPostPage({
         )}
 
         {/* Body */}
-        <div className="prose prose-gray dark:prose-invert prose-p:leading-relaxed prose-headings:normal-case prose-headings:tracking-[-0.01em] prose-a:text-blue prose-a:no-underline hover:prose-a:underline prose-lg mx-auto max-w-3xl px-6 pt-12 pb-16 sm:px-10 xl:pb-16">
+        {/* Sizes and heading scale come from the `.prose` block in globals.css
+            so every post is one type system; only colour/link treatment is set
+            per-instance here.
+
+            The measure is narrower than the old `max-w-3xl`: 768px of 18px
+            text ran to ~87 characters a line, well past the 60–75 that reads
+            comfortably, and that over-wide line — not the glyph size — is what
+            made posts feel oversized next to the 16px UI.
+
+            Sized in rem rather than `ch` on purpose. The usual "65ch" advice
+            assumes 1ch ≈ one average character, which holds for monospace but
+            not for Inter, where `0` is 11.3px against an 8.4px average — 72ch
+            measured *wider* than what it replaced. 42rem = 672px, less the
+            80px of horizontal padding, puts a line at ~70 characters. */}
+        <div className="prose prose-gray dark:prose-invert prose-a:text-blue prose-a:no-underline hover:prose-a:underline mx-auto max-w-[42rem] px-6 pt-12 pb-16 sm:px-10 xl:pb-16">
           {series.length > 1 && (
             <SeriesNav
               series={post.series!}

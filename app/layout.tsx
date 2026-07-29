@@ -177,14 +177,21 @@ export default function RootLayout({
         className={`${sans.variable} ${mono.variable} font-sans antialiased`}
       >
         <ScrollToTop />
-        <Providers>
-          {children}
-          <BottomNav />
-          <CommandPalette projects={projectLinks} />
-          <EasterEggs />
-          <ServiceWorker />
-          <InstallPrompt />
-        </Providers>
+        {/* Horizontal clip lives here, not on <html> or <body>: overflow set
+            on either of those propagates to the viewport and leaves the
+            element itself computing to `visible`, so it clips nothing. A
+            plain wrapper is the only thing that actually contains the
+            screen-line rules, which overhang the viewport by design. */}
+        <div className="overflow-x-clip">
+          <Providers>
+            {children}
+            <BottomNav />
+            <CommandPalette projects={projectLinks} />
+            <EasterEggs />
+            <ServiceWorker />
+            <InstallPrompt />
+          </Providers>
+        </div>
         <Analytics />
         <SpeedInsights />
       </body>

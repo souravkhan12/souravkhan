@@ -15,7 +15,7 @@ export default function OfflinePage() {
       <main className="border-border mx-auto min-h-screen max-w-[1200px] border-x">
         <section className="flex min-h-[60vh] flex-col items-center justify-center gap-4 px-6 text-center">
           <p className="font-code text-xs text-gray-500">no connection</p>
-          <h1 className="ss01 text-2xl font-semibold">you&apos;re offline</h1>
+          <h1 className="ss01 page-title">you&apos;re offline</h1>
           <p className="max-w-md text-sm text-gray-500">
             pages you&apos;ve already visited are still available. reconnect and
             this one will load.

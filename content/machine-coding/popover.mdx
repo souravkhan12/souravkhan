@@ -1,0 +1,44 @@
+---
+title: "Popover"
+question: "Build a popover where the trigger and content are separate components."
+category: "react-ui"
+categoryLabel: "React UI Components"
+difficulty: "medium"
+tags: ["context", "compound-components", "refs"]
+repoPath: "src/folders/popover"
+order: 7
+---
+
+## What it tests
+
+Sharing state between sibling components without the caller having to wire it.
+The consumer should write `<Popover><Trigger /><Content /></Popover>` and not
+manage an `isOpen` boolean themselves.
+
+## The approach
+
+The compound-component pattern. A provider owns the open state and the parts
+read it from context, so they coordinate no matter how they're nested:
+
+```jsx
+const PopoverContext = createContext(null);
+
+export function usePopoverContext() {
+  const ctx = useContext(PopoverContext);
+  if (!ctx) throw new Error("Popover parts must be used inside <Popover>");
+  return ctx;
+}
+```
+
+Throwing from the hook when the context is missing turns a confusing null
+dereference into a message that names the actual mistake.
+
+## Where it usually goes wrong
+
+- **Prop-drilling `isOpen`.** Pushes the state back to the caller, which is the
+  thing the component was meant to hide.
+- **`cloneElement` on children.** Breaks the moment a part is wrapped in a div.
+- **No outside-click or Escape handling.** Both are expected of a popover, and
+  both need a listener that's cleaned up.
+- **Clipping.** A popover inside `overflow: hidden` gets cut off; that's what
+  portals are for.

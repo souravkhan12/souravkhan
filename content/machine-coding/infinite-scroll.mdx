@@ -1,0 +1,47 @@
+---
+title: "Infinite scroll"
+question: "Load more items as the user reaches the bottom of a list."
+category: "react-ui"
+categoryLabel: "React UI Components"
+difficulty: "medium"
+tags: ["IntersectionObserver", "refs", "useEffect"]
+repoPath: "src/folders/infiniteScroll"
+order: 5
+---
+
+## What it tests
+
+Knowing that there are two ways to do this and that one of them is better. The
+repo keeps both: a scroll-handler version, and the `IntersectionObserver`
+version that replaced it.
+
+## The approach
+
+A sentinel element sits at the end of the list and an observer watches it. When
+it intersects the viewport, the next page loads:
+
+```jsx
+const observer = new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting) loadMore();
+});
+```
+
+The observer is re-attached to the current last element whenever the list
+grows, and skipped entirely while `loading` is true so one scroll can't fire
+several loads.
+
+## Why not the scroll handler
+
+The commented-out first attempt measures
+`scrollHeight - (clientHeight + scrollTop)` on every scroll event. It works,
+but it runs on the main thread dozens of times a second and needs throttling to
+be viable. `IntersectionObserver` is called only when the sentinel crosses the
+boundary.
+
+## Where it usually goes wrong
+
+- **Not disconnecting.** Observers accumulate on every re-render without
+  cleanup.
+- **No `loading` guard.** Several rapid intersections fire several fetches.
+- **No end condition.** Real data runs out; without a `hasMore` flag it keeps
+  requesting past the last page.

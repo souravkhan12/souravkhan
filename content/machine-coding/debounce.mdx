@@ -1,0 +1,46 @@
+---
+title: "Debounce"
+question: "Implement a debounce utility from scratch and wire it to a search input."
+category: "js-fundamentals"
+categoryLabel: "JavaScript Fundamentals"
+difficulty: "easy"
+tags: ["closures", "timers", "higher-order-functions"]
+repoPath: "src/folders/debounce"
+order: 10
+---
+
+## What it tests
+
+Whether you can build a higher-order function that holds state in a closure.
+Debounce delays the call until the input has been quiet for `delay`
+milliseconds — every new call cancels the pending one, so a burst of keystrokes
+produces exactly one invocation.
+
+## The approach
+
+A timer id lives in the closure. Each call clears the previous timeout before
+scheduling a new one, so only the last call in a burst survives:
+
+```js
+function debounceFn(fn, delay) {
+  let tid;
+  return function (...args) {
+    clearTimeout(tid);
+    tid = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+```
+
+Forwarding `...args` and applying the original `this` is what makes it a
+drop-in wrapper rather than something that only works for zero-argument
+functions.
+
+## Where it usually goes wrong
+
+- **Creating the debounced function inside the component body.** Every render
+  makes a new closure with a fresh timer, so nothing is ever actually
+  cancelled. It has to be created once — module scope, `useMemo`, or a ref.
+- **Arrow functions and `this`.** An arrow function as the returned wrapper
+  captures the enclosing `this` instead of the caller's.
+- **No way to cancel.** Production versions expose a `.cancel()` so an
+  unmounting component can drop a pending call.

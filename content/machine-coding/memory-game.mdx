@@ -1,0 +1,35 @@
+---
+title: "Memory game"
+question: "Build a card-matching memory game on a grid."
+category: "react-ui"
+categoryLabel: "React UI Components"
+difficulty: "medium"
+tags: ["state-machine", "timers", "derived-state"]
+repoPath: "src/folders/memorygame"
+order: 8
+---
+
+## What it tests
+
+Modelling a small state machine. Cards are face-down, or flipped and awaiting a
+comparison, or matched permanently — and the "two are flipped, compare them"
+step happens on a delay, during which input has to be ignored.
+
+## The approach
+
+Track the flipped pair and the set of matched cards separately. When two cards
+are face up, compare them and either add both to `matched` or flip both back
+after a short timeout so the player can see what they picked.
+
+Keeping `matched` as its own collection means a matched card's appearance is
+derived rather than a third state stored on the card itself.
+
+## Where it usually goes wrong
+
+- **Letting a third card flip during the delay.** Clicks have to be ignored
+  while a comparison is pending, or the board desyncs.
+- **Shuffling during render.** A fresh shuffle on every render reorders the
+  board mid-game; it belongs in lazy initial state.
+- **Index as identity.** With duplicate values by design, pairs need stable
+  ids, not array positions.
+- **Uncleared timeouts.** Unmounting mid-comparison sets state on a dead tree.

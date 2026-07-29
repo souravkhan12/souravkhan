@@ -1,0 +1,43 @@
+---
+title: "Toggle switch"
+question: "Build an accessible toggle switch from a checkbox."
+category: "react-ui"
+categoryLabel: "React UI Components"
+difficulty: "easy"
+tags: ["controlled-components", "css", "accessibility"]
+repoPath: "src/folders/switch"
+order: 3
+---
+
+## What it tests
+
+Whether you reach for a native input before building one out of divs. The whole
+component is a styled `<input type="checkbox">` — which means focus, keyboard
+activation and screen-reader semantics come for free.
+
+## The approach
+
+A fully controlled component: `isOn` in, `onToggle` out, no internal state. The
+real checkbox is visually hidden and a sibling span is painted as the track:
+
+```jsx
+export function Switch({ isOn, onToggle, label }) {
+  return (
+    <label className="switch">
+      <input type="checkbox" checked={isOn} onChange={onToggle} />
+      <span className="slider" />
+      <span className="text">{label}</span>
+    </label>
+  );
+}
+```
+
+Wrapping everything in `<label>` makes the text part of the hit target without
+needing an explicit `htmlFor`.
+
+## Where it usually goes wrong
+
+- **`<div onClick>`.** Not focusable, not keyboard-operable, announces nothing.
+- **`display: none` on the input.** Removes it from the tab order too. Clip it
+  with `opacity: 0` or a `sr-only` pattern instead.
+- **`checked` without `onChange`.** React makes the input read-only and warns.

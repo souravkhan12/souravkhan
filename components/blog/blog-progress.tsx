@@ -2,41 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, animate, motion } from "motion/react";
+import { LuList } from "react-icons/lu";
 import type { Heading } from "@/lib/blog";
 import { MOTION } from "@/config/theme";
 import { cn } from "@/lib/utils";
 import { useOutsideClick } from "@/hooks/use-outside-click";
-
-const RADIUS = 9;
-const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-
-function ProgressRing({ progress }: { progress: number }) {
-  return (
-    <svg width={26} height={26} viewBox="0 0 24 24" className="-rotate-90">
-      <circle
-        cx={12}
-        cy={12}
-        r={RADIUS}
-        fill="none"
-        stroke="currentColor"
-        strokeOpacity={0.2}
-        strokeWidth={2}
-      />
-      <circle
-        cx={12}
-        cy={12}
-        r={RADIUS}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={2}
-        strokeLinecap="round"
-        strokeDasharray={CIRCUMFERENCE}
-        strokeDashoffset={CIRCUMFERENCE * (1 - progress / 100)}
-        className="text-white"
-      />
-    </svg>
-  );
-}
 
 export function BlogProgress({ headings }: { headings: Heading[] }) {
   const [progress, setProgress] = useState(0);
@@ -111,70 +81,81 @@ export function BlogProgress({ headings }: { headings: Heading[] }) {
   const activeHeading = headings.find((h) => h.id === activeId) ?? headings[0];
 
   return (
-    <div
-      ref={widgetRef}
-      className={cn(
-        "fixed z-20 flex flex-col items-end",
-        "right-4 bottom-4 sm:right-6 sm:bottom-6",
-        "xl:w-72",
-      )}
-    >
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: 8, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 8, scale: 0.98 }}
-            transition={{ duration: MOTION.duration.fast, ease: MOTION.ease }}
-            data-lenis-prevent
-            className="mb-2 max-h-[60vh] w-72 max-w-[calc(100vw-2rem)] overflow-y-auto rounded-2xl bg-neutral-900 p-2 shadow-xl"
-          >
-            <div className="px-3 pt-2 pb-1.5 text-[11px] tracking-wide text-neutral-500 uppercase">
-              Table of Contents
-            </div>
-            <div className="flex flex-col gap-0.5">
-              {headings.map((heading) => {
-                const isActive = heading.id === activeId;
-                return (
-                  <button
-                    key={heading.id}
-                    type="button"
-                    onClick={() => scrollToHeading(heading.id)}
-                    className={cn(
-                      "flex items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm transition-colors sm:py-2",
-                      heading.depth === 3 && "pl-6 text-[13px]",
-                      isActive
-                        ? "bg-white/10 font-medium text-white"
-                        : "text-neutral-400 hover:bg-white/5 hover:text-neutral-200",
-                    )}
-                  >
-                    {heading.text}
-                  </button>
-                );
-              })}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <motion.button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        aria-expanded={open}
-        className="flex items-center gap-3 rounded-full bg-neutral-900 p-2 text-left shadow-xl sm:rounded-2xl sm:px-4 sm:py-2.5 xl:w-full"
+    <>
+      {/* A hairline rule that fills as you read. The old floating ring was the
+          only rounded, hard-coded-dark element on the site; this reads as part
+          of the page frame in both themes and costs no reading space. */}
+      <div
+        aria-hidden="true"
+        className="bg-border/60 fixed inset-x-0 top-0 z-30 h-[2px]"
       >
-        <span className="shrink-0 text-white">
-          <ProgressRing progress={progress} />
-        </span>
-        <span className="hidden min-w-0 flex-1 truncate text-sm font-medium text-white sm:block">
-          {activeHeading?.text}
-        </span>
-        <span className="hidden shrink-0 text-xs text-neutral-500 tabular-nums sm:block">
-          {Math.round(progress)}%
-        </span>
-      </motion.button>
-    </div>
+        <div
+          className="bg-blue h-full origin-left"
+          style={{ transform: `scaleX(${progress / 100})` }}
+        />
+      </div>
+
+      <div
+        ref={widgetRef}
+        className={cn(
+          "fixed z-20 flex flex-col items-end",
+          "right-4 bottom-20 sm:right-6 sm:bottom-6",
+        )}
+      >
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: MOTION.duration.fast, ease: MOTION.ease }}
+              data-lenis-prevent
+              className="border-border bg-background mb-px max-h-[60vh] w-72 max-w-[calc(100vw-2rem)] overflow-y-auto border shadow-lg"
+            >
+              <div className="border-border font-code border-b bg-gray-50 px-3 py-2.5 text-[11px] text-gray-500 lowercase dark:bg-black">
+                on this page
+              </div>
+              <div className="flex flex-col">
+                {headings.map((heading) => {
+                  const isActive = heading.id === activeId;
+                  return (
+                    <button
+                      key={heading.id}
+                      type="button"
+                      onClick={() => scrollToHeading(heading.id)}
+                      className={cn(
+                        "normal-case-force border-l-2 px-3 py-2.5 text-left text-sm transition-colors sm:py-2",
+                        heading.depth === 3 && "pl-6 text-[13px]",
+                        isActive
+                          ? "border-blue text-blue bg-gray-50 font-medium dark:bg-black"
+                          : "hover:text-foreground border-transparent text-gray-500 hover:bg-gray-50 dark:hover:bg-black",
+                      )}
+                    >
+                      {heading.text}
+                    </button>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-label="Table of contents"
+          className="border-border bg-background hover:border-blue hover:text-blue flex items-center gap-2.5 border px-3 py-2 text-left shadow-lg transition-colors"
+        >
+          <LuList size={15} aria-hidden="true" className="shrink-0" />
+          <span className="normal-case-force hidden max-w-[14rem] min-w-0 truncate text-sm sm:block">
+            {activeHeading?.text}
+          </span>
+          <span className="font-code shrink-0 text-xs text-gray-500 tabular-nums">
+            {Math.round(progress)}%
+          </span>
+        </button>
+      </div>
+    </>
   );
 }

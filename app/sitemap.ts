@@ -3,6 +3,11 @@ import { SEO_CONFIG } from "@/config/seo";
 import { getPublishedPosts, getAllTags } from "@/lib/blog";
 import { getAllProjects } from "@/lib/projects";
 import { getAllSetupGuides } from "@/lib/setup";
+import { getAllQuestions } from "@/lib/quiz";
+import {
+  getAllMachineCodingQuestions,
+  getMachineCodingCategories,
+} from "@/lib/machine-coding";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = SEO_CONFIG.baseUrl;
@@ -24,6 +29,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      url: `${baseUrl}/reading`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.6,
+    },
+    {
       url: `${baseUrl}/projects`,
       lastModified: new Date(),
       changeFrequency: "monthly",
@@ -32,7 +43,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: `${baseUrl}/arcade`,
       lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/arcade/quiz`,
+      lastModified: new Date(),
       changeFrequency: "daily",
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/arcade/snake`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
       priority: 0.6,
     },
     {
@@ -59,11 +82,44 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.7,
     })),
+    {
+      url: `${baseUrl}/setup`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
     ...getAllSetupGuides().map((guide) => ({
       url: `${baseUrl}/setup/${guide.slug}`,
       lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.5,
+    })),
+    /* Puzzle permalinks. These are static and each one targets a long-tail
+       query, so they get a higher priority than the daily page they came
+       from — the daily page's content changes out from under any ranking. */
+    ...getAllQuestions().map((q) => ({
+      url: `${baseUrl}/arcade/quiz/${q.id}`,
+      lastModified: new Date(),
+      changeFrequency: "yearly" as const,
+      priority: 0.7,
+    })),
+    {
+      url: `${baseUrl}/machine-coding`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    ...getMachineCodingCategories().map((c) => ({
+      url: `${baseUrl}/machine-coding/category/${c.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...getAllMachineCodingQuestions().map((q) => ({
+      url: `${baseUrl}/machine-coding/${q.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
     })),
   ];
 }

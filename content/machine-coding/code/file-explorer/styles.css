@@ -1,0 +1,8 @@
+.tree {
+  display: flex;
+  flex-direction: column;
+  padding-left: 20px;
+}
+.tree li {
+  list-style: none;
+}

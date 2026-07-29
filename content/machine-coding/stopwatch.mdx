@@ -1,0 +1,42 @@
+---
+title: "Stopwatch"
+question: "Build a stopwatch with start, stop and reset."
+category: "react-ui"
+categoryLabel: "React UI Components"
+difficulty: "easy"
+tags: ["useEffect", "timers", "cleanup"]
+repoPath: "src/folders/stopwatch"
+order: 2
+---
+
+## What it tests
+
+Owning an interval correctly in React — creating it, tearing it down, and never
+leaking one. It's the smallest problem that punishes a missing effect cleanup.
+
+## The approach
+
+The interval is derived from `running` rather than started imperatively in a
+click handler. The effect returns its own cleanup, so toggling or unmounting
+clears the timer:
+
+```jsx
+useEffect(() => {
+  if (!running) return;
+  const id = setInterval(() => setSeconds((s) => s + 1), 1000);
+  return () => clearInterval(id);
+}, [running]);
+```
+
+The functional update (`s => s + 1`) is what keeps `seconds` out of the
+dependency array — reading it directly would need the effect to re-run every
+tick.
+
+## Where it usually goes wrong
+
+- **No cleanup.** Start, stop, start again and you have two intervals counting.
+- **`setSeconds(seconds + 1)`.** Reads a stale `seconds` from the effect's
+  closure and sticks at 1.
+- **Assuming `setInterval` is accurate.** It drifts. A stopwatch that has to be
+  correct should store a start timestamp and compute elapsed time from
+  `Date.now()`, using the interval only to trigger a re-render.

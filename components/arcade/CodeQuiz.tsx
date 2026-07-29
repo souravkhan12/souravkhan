@@ -2,9 +2,18 @@
 
 import { useMemo, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { LuCheck, LuX, LuFlame, LuArrowRight } from "react-icons/lu";
+import {
+  LuCheck,
+  LuX,
+  LuFlame,
+  LuArrowRight,
+  LuShare2,
+  LuCopy,
+} from "react-icons/lu";
 import { motion } from "motion/react";
 import { MOTION } from "@/config/theme";
+import { useCopy } from "@/hooks/use-copy";
+import { useMounted } from "@/hooks/use-mounted";
 import type { QuizQuestion } from "@/lib/quiz";
 
 type Progress = {
@@ -13,10 +22,43 @@ type Progress = {
   streak: number;
   answered: number;
   correct: number;
+  /** Whether the last answer was right — so a reload can still show the share card. */
+  lastCorrect?: boolean;
 };
 
 const STORAGE_KEY = "quiz-progress";
 const EMPTY: Progress = { lastDay: -1, streak: 0, answered: 0, correct: 0 };
+
+/**
+ * The share text.
+ *
+ * Deliberately spoiler-free: it reports whether you got it and how long your
+ * streak is, never the answer or which option you picked. That's the whole
+ * mechanic — a share that gives the answer away is a share nobody clicks
+ * through, and the click-through is the point.
+ */
+function buildShareText({
+  puzzleNumber,
+  correct,
+  streak,
+  url,
+}: {
+  puzzleNumber: number;
+  correct: boolean;
+  streak: number;
+  url: string;
+}): string {
+  const lines = [
+    `guess the output #${puzzleNumber}`,
+    "",
+    correct ? "🟩 got it" : "🟥 missed it",
+  ];
+
+  if (streak > 1) lines.push(`🔥 ${streak} day streak`);
+
+  lines.push("", url);
+  return lines.join("\n");
+}
 
 /* --- localStorage as an external store ------------------------------------
    useSyncExternalStore is the right primitive here: it gives us a correct SSR
@@ -67,11 +109,25 @@ function writeProgress(next: Progress) {
 export function CodeQuiz({
   question,
   day,
+  puzzleNumber,
+  shareUrl,
 }: {
   question: QuizQuestion;
   day: number;
+  /** Monotonic day counter, shown in the share card. */
+  puzzleNumber: number;
+  /** Absolute URL the share card points at. */
+  shareUrl: string;
 }) {
   const raw = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const { copied, copy } = useCopy();
+
+  /* `navigator.share` can't be read during render without the server and the
+     first client pass disagreeing about which icon to draw, so the swap waits
+     until after hydration. */
+  const mounted = useMounted();
+  const canNativeShare =
+    mounted && typeof navigator !== "undefined" && !!navigator.share;
 
   const progress = useMemo<Progress>(() => {
     if (!raw) return EMPTY;
@@ -101,7 +157,35 @@ export function CodeQuiz({
       streak: isCorrect ? (continues ? progress.streak + 1 : 1) : 0,
       answered: progress.answered + 1,
       correct: progress.correct + (isCorrect ? 1 : 0),
+      lastCorrect: isCorrect,
     });
+  }
+
+  // On a reload we no longer have `picked`, so the stored result is what tells
+  // us whether today was a hit — otherwise the share card vanishes on refresh.
+  const wasCorrect =
+    picked !== null ? picked === question.answer : progress.lastCorrect;
+
+  async function share() {
+    const text = buildShareText({
+      puzzleNumber,
+      correct: wasCorrect === true,
+      streak: progress.streak,
+      url: shareUrl,
+    });
+
+    /* Native share sheet where there is one — on a phone that's the difference
+       between "copied, now go find an app" and one tap into a group chat. */
+    if (canNativeShare) {
+      try {
+        await navigator.share({ text });
+        return;
+      } catch {
+        /* dismissed, or not permitted — fall through to the clipboard */
+      }
+    }
+
+    await copy(text);
   }
 
   const accuracy =
@@ -201,14 +285,43 @@ export function CodeQuiz({
               {question.explanation}
             </p>
 
-            {question.postSlug && (
+            <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+              {/* Only offered once there's a result to report — sharing a
+                  puzzle you haven't attempted says nothing. */}
+              {wasCorrect !== undefined && (
+                <button
+                  type="button"
+                  onClick={share}
+                  className="border-border hover:border-blue hover:text-blue font-code inline-flex cursor-pointer items-center gap-1.5 border px-3 py-1.5 text-[11px] text-gray-600 lowercase transition-colors dark:text-gray-400"
+                >
+                  {copied ? (
+                    <LuCheck size={12} aria-hidden="true" />
+                  ) : canNativeShare ? (
+                    <LuShare2 size={12} aria-hidden="true" />
+                  ) : (
+                    <LuCopy size={12} aria-hidden="true" />
+                  )}
+                  {copied ? "copied to clipboard" : "share result"}
+                </button>
+              )}
+
+              {question.postSlug && (
+                <Link
+                  href={`/blog/${question.postSlug}`}
+                  className="text-blue inline-flex items-center gap-1.5 text-xs transition-opacity hover:opacity-80"
+                >
+                  read the deep dive{" "}
+                  <LuArrowRight size={13} aria-hidden="true" />
+                </Link>
+              )}
+
               <Link
-                href={`/blog/${question.postSlug}`}
-                className="text-blue mt-3 inline-flex items-center gap-1.5 text-xs transition-opacity hover:opacity-80"
+                href={`/arcade/quiz/${question.id}`}
+                className="hover:text-blue font-code text-[11px] text-gray-500 lowercase transition-colors"
               >
-                read the deep dive <LuArrowRight size={13} aria-hidden="true" />
+                permalink for this one →
               </Link>
-            )}
+            </div>
           </motion.div>
         )}
       </div>

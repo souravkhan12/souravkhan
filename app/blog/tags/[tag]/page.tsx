@@ -45,12 +45,14 @@ export default async function TagPage({
         subtitle={`${match.count} post${match.count === 1 ? "" : "s"} tagged “${match.tag}”.`}
         className="pt-8"
       >
-        <div className="mb-6">
+        {/* A compact strip inside the grid. As a bare `mb-6` block it sat in
+            its own full-height band and read as an empty section. */}
+        <div className="border-border border-x border-t px-6 py-2.5 sm:px-8">
           <Link
             href="/blog"
-            className="hover:text-blue font-code inline-flex items-center gap-1.5 text-xs text-gray-500 lowercase transition-colors"
+            className="hover:text-blue font-code inline-flex items-center gap-1.5 text-[11px] text-gray-500 lowercase transition-colors"
           >
-            <LuArrowLeft size={13} aria-hidden="true" />
+            <LuArrowLeft size={12} aria-hidden="true" />
             all writing
           </Link>
         </div>

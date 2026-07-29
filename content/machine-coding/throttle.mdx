@@ -1,0 +1,44 @@
+---
+title: "Throttle"
+question: "Implement a throttle utility that caps how often a function can run."
+category: "js-fundamentals"
+categoryLabel: "JavaScript Fundamentals"
+difficulty: "easy"
+tags: ["closures", "timers", "higher-order-functions"]
+repoPath: "src/folders/throttle"
+order: 11
+---
+
+## What it tests
+
+The difference between throttle and debounce — the question interviewers
+actually care about. Debounce waits for silence; throttle guarantees a maximum
+rate. Scroll and resize handlers want throttle, search inputs want debounce.
+
+## The approach
+
+A boolean in the closure acts as a gate. While it's raised, calls are dropped;
+a timer lowers it and runs the function:
+
+```js
+function throttleFn(fn, delay) {
+  let flag = false;
+  return function (...args) {
+    if (flag) return;
+    flag = true;
+    setTimeout(() => {
+      flag = false;
+      fn(...args);
+    }, delay);
+  };
+}
+```
+
+## Where it usually goes wrong
+
+- **Leading vs trailing edge.** This variant fires on the *trailing* edge —
+  the first call is delayed by `delay`. If the interviewer wants the first call
+  to run immediately, invoke `fn` before starting the timer.
+- **Dropping the final call.** Calls that arrive while the gate is up are
+  discarded entirely. Lodash keeps the last one and runs it when the window
+  closes; say out loud which behaviour you're implementing.

@@ -1,0 +1,47 @@
+---
+title: "File explorer tree"
+question: "Render a nested folder structure with expandable and collapsible nodes."
+category: "react-ui"
+categoryLabel: "React UI Components"
+difficulty: "medium"
+tags: ["recursion", "nested-state", "immutability"]
+repoPath: "src/folders/File-manager"
+order: 6
+---
+
+## What it tests
+
+Recursive rendering plus the harder half — updating one node deep inside a
+nested structure without mutating it.
+
+## The approach
+
+`TreeNode` renders itself for each child, passing down the path it took to get
+there as an array of indices:
+
+```jsx
+<TreeNode data={child} path={[...path, idx]} onToggle={onToggle} />
+```
+
+State stays in one place at the top. Toggling clones the tree, walks the path
+to the target node and flips `isOpen`:
+
+```js
+const newTree = structuredClone(prev);
+let node = newTree;
+for (let i = 0; i < path.length; i++) node = node.children[path[i]];
+node.isOpen = !node.isOpen;
+```
+
+Passing the path rather than the node itself is what makes this work — a node
+reference alone gives you no way back to its position in the new clone.
+
+## Where it usually goes wrong
+
+- **Mutating the node directly.** React sees the same top-level reference and
+  doesn't re-render.
+- **Local `isOpen` in each node.** Fine until something needs to collapse all,
+  which nothing can then do.
+- **`structuredClone` on a large tree.** Correct and cheap to write, but it
+  copies everything on every click; a path-aware update that only clones the
+  spine scales better.

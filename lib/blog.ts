@@ -51,6 +51,9 @@ export type BlogPost = {
 const showDrafts = process.env.NODE_ENV === "development";
 
 function readPosts(): BlogPost[] {
+  // The directory is empty (or absent) until the first post is written.
+  if (!fs.existsSync(BLOG_DIR)) return [];
+
   const files = fs.readdirSync(BLOG_DIR).filter((f) => f.endsWith(".mdx"));
 
   return files

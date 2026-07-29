@@ -92,15 +92,40 @@ export default function CommandPalette({
         keywords: "work case study",
       },
       {
+        id: "reading",
+        label: "reading list",
+        href: "/reading",
+        keywords: "bookmarks saved links articles",
+      },
+      {
+        id: "machine-coding",
+        label: "machine coding questions",
+        href: "/machine-coding",
+        keywords:
+          "interview frontend react debounce throttle pagination practice round",
+      },
+      {
+        id: "setup-page",
+        label: "setup & tools",
+        href: "/setup",
+        keywords: "uses editor terminal dotfiles config",
+      },
+      {
+        id: "arcade",
+        label: "arcade",
+        href: "/arcade",
+        keywords: "games play fun",
+      },
+      {
         id: "quiz",
         label: "today's code puzzle",
-        href: "/arcade#quiz",
+        href: "/arcade/quiz",
         keywords: "quiz guess output daily game",
       },
       {
         id: "snake",
         label: "play snake",
-        href: "/arcade",
+        href: "/arcade/snake",
         keywords: "game arcade high score",
       },
       {

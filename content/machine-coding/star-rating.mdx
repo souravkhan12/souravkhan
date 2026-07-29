@@ -1,0 +1,39 @@
+---
+title: "Star rating"
+question: "Build a star rating widget with hover preview and a locked-in selection."
+category: "react-ui"
+categoryLabel: "React UI Components"
+difficulty: "easy"
+tags: ["state", "events", "render-props"]
+repoPath: "src/folders/star"
+order: 1
+---
+
+## What it tests
+
+Holding two pieces of state that describe the same visual and deciding which
+one wins. Hovering previews a rating; clicking commits it; leaving the row has
+to fall back to the committed value rather than clearing it.
+
+## The approach
+
+`selectedIdx` and `hoverIdx` are tracked separately, and one predicate decides
+whether a given star is filled — hover takes precedence when it's active:
+
+```js
+const isFilled = (idx) => {
+  if (hoverIdx !== -1) return idx <= hoverIdx;
+  return idx <= selectedIdx;
+};
+```
+
+`onMouseLeave` sits on the container, not each star, so moving between stars
+doesn't flicker through the cleared state.
+
+## Where it usually goes wrong
+
+- **One state variable.** Reusing `selected` for hover loses the committed
+  rating the moment the pointer leaves.
+- **`onMouseLeave` per star.** Fires on every star-to-star move.
+- **Not keyboard accessible.** The version in the repo is pointer-only; a
+  production widget wants a radio group so it's reachable by tab and arrow keys.

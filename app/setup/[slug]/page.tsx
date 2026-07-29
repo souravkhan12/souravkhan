@@ -57,9 +57,7 @@ export default async function SetupGuidePage({
         </Link>
 
         <header>
-          <h1 className="ss01 normal-case-force text-xl font-semibold tracking-[-0.02em] sm:text-2xl">
-            {guide.title}
-          </h1>
+          <h1 className="ss01 normal-case-force page-title">{guide.title}</h1>
           <p className="text-muted-foreground mt-2 text-base">
             {guide.description}
           </p>

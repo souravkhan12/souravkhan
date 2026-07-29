@@ -3,6 +3,8 @@ import { WORK_EXPERIENCE } from "@/config/data";
 import { Section, GridBand, GridCell } from "@/components/ui";
 
 export default function WorkExperience() {
+  if (WORK_EXPERIENCE.length === 0) return null;
+
   return (
     <Section id="experience" title="work experience">
       <GridBand cols="grid-cols-1">
