@@ -1,1 +1,9 @@
-{}
+[
+  {
+    "title": "How browser rendering works — behind the scenes",
+    "url": "https://blog.logrocket.com/how-browser-rendering-works-behind-scenes/",
+    "note": "Walks the pipeline from HTML/CSS parsing to the DOM and CSSOM, render tree, layout, paint and compositing. Good mental model for why layout thrashing and non-composited animations are slow.",
+    "tags": ["browser", "performance", "frontend"],
+    "date": "2026-07-29"
+  }
+]
