@@ -20,6 +20,7 @@ import { BlogProgress } from "@/components/blog/blog-progress";
 import { BlogToc } from "@/components/blog/blog-toc";
 import { BlogSchemaMarkup } from "@/components/blog/BlogSchemaMarkup";
 import { SeriesNav } from "@/components/blog/series-nav";
+import { ShareBar } from "@/components/blog/share-bar";
 import { SEO_CONFIG } from "@/config/seo";
 
 /* ------------------------------------------------------------------ *
@@ -112,6 +113,8 @@ export default async function BlogPostPage({
   // Tag-overlap scored, so "keep reading" stays on-topic instead of just recent.
   const more = getRelatedPosts(post.slug, 2);
   const series = post.series ? getSeriesPosts(post.series) : [];
+  // Absolute — share intents and the clipboard both need a full URL.
+  const url = `${SEO_CONFIG.baseUrl}/blog/${post.slug}`;
 
   return (
     <>
@@ -228,9 +231,18 @@ export default async function BlogPostPage({
                   },
                 }}
               />
+
+              {/* not-prose: the prose block would restyle the row's own
+                  spacing and link colours. */}
+              <div className="not-prose">
+                <ShareBar url={url} />
+              </div>
             </div>
 
-            <BlogToc headings={headings} />
+            <BlogToc
+              headings={headings}
+              footer={<ShareBar url={url} variant="rail" />}
+            />
           </div>
         </div>
       </article>

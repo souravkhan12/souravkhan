@@ -13,10 +13,17 @@ import { cn } from "@/lib/utils";
  * this renders nothing and BlogProgress's floating widget takes over; there
  * isn't room for a rail and a 40rem measure at the same time.
  */
-export function BlogToc({ headings }: { headings: Heading[] }) {
+export function BlogToc({
+  headings,
+  footer,
+}: {
+  headings: Heading[];
+  /** Rendered under the contents list, inside the same sticky block. */
+  footer?: React.ReactNode;
+}) {
   const { activeId, scrollToHeading } = useReadingProgress(headings);
 
-  if (headings.length === 0) return null;
+  if (headings.length === 0 && !footer) return null;
 
   const activeIndex = Math.max(
     0,
@@ -24,53 +31,58 @@ export function BlogToc({ headings }: { headings: Heading[] }) {
   );
 
   return (
-    <nav
-      aria-label="On this page"
-      className="sticky top-24 hidden max-h-[calc(100vh-8rem)] overflow-y-auto lg:block"
-    >
-      <p className="font-code mb-3 text-xs text-gray-400 lowercase">
-        on this page
-      </p>
+    <div className="sticky top-24 hidden max-h-[calc(100vh-8rem)] overflow-y-auto lg:block">
+      {/* A post with no H2s still gets the rail — just the share block in it,
+          rather than a percentage divided by zero. */}
+      {headings.length > 0 && (
+        <nav aria-label="On this page">
+          <p className="font-code mb-3 text-xs text-gray-400 lowercase">
+            on this page
+          </p>
 
-      <div className="relative">
-        {/* The rail itself, and the segment of it you've reached. */}
-        <span
-          aria-hidden="true"
-          className="bg-border absolute inset-y-0 left-0 w-px"
-        />
-        <span
-          aria-hidden="true"
-          className="bg-blue absolute left-0 w-px transition-all duration-200 ease-out"
-          style={{
-            top: `${(activeIndex / headings.length) * 100}%`,
-            height: `${(1 / headings.length) * 100}%`,
-          }}
-        />
+          <div className="relative">
+            {/* The rail itself, and the segment of it you've reached. */}
+            <span
+              aria-hidden="true"
+              className="bg-border absolute inset-y-0 left-0 w-px"
+            />
+            <span
+              aria-hidden="true"
+              className="bg-blue absolute left-0 w-px transition-all duration-200 ease-out"
+              style={{
+                top: `${(activeIndex / headings.length) * 100}%`,
+                height: `${(1 / headings.length) * 100}%`,
+              }}
+            />
 
-        <ul className="flex flex-col">
-          {headings.map((heading) => {
-            const isActive = heading.id === activeId;
-            return (
-              <li key={heading.id}>
-                <button
-                  type="button"
-                  onClick={() => scrollToHeading(heading.id)}
-                  aria-current={isActive ? "location" : undefined}
-                  className={cn(
-                    "normal-case-force block w-full py-1.5 pr-2 text-left text-[13px] leading-snug transition-colors",
-                    heading.depth === 3 ? "pl-6" : "pl-4",
-                    isActive
-                      ? "text-blue"
-                      : "hover:text-foreground text-gray-500",
-                  )}
-                >
-                  {heading.text}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    </nav>
+            <ul className="flex flex-col">
+              {headings.map((heading) => {
+                const isActive = heading.id === activeId;
+                return (
+                  <li key={heading.id}>
+                    <button
+                      type="button"
+                      onClick={() => scrollToHeading(heading.id)}
+                      aria-current={isActive ? "location" : undefined}
+                      className={cn(
+                        "normal-case-force block w-full py-1.5 pr-2 text-left text-[13px] leading-snug transition-colors",
+                        heading.depth === 3 ? "pl-6" : "pl-4",
+                        isActive
+                          ? "text-blue"
+                          : "hover:text-foreground text-gray-500",
+                      )}
+                    >
+                      {heading.text}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </nav>
+      )}
+
+      {footer}
+    </div>
   );
 }

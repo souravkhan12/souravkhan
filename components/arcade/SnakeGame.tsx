@@ -6,7 +6,7 @@ import { RemoveScroll } from "react-remove-scroll";
 import { Section, GridBand, GridCell, DotGrid } from "@/components/ui";
 
 const N = 15; // board is N×N
-const SPEED = 165; // ms per tick
+const SPEED = 200; // ms per tick
 const SWIPE = 22; // px of travel before a swipe registers
 const START = [
   { x: 7, y: 7 },
