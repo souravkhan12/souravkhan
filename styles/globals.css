@@ -133,6 +133,19 @@
   --text-3xl: 48px;
   --text-4xl: 64px;
 
+  /* Tailwind v4 emits `line-height: var(--tw-leading, var(--text-*--line-height))`
+     for every text-* utility. With these undefined the line-height half
+     resolved to nothing and the element silently inherited whatever leading it
+     landed in — which is why small font-code labels sat on 1.5 body leading. */
+  --text-xs--line-height: 1.45;
+  --text-sm--line-height: 1.5;
+  --text-base--line-height: 1.55;
+  --text-lg--line-height: 1.35;
+  --text-xl--line-height: 1.25;
+  --text-2xl--line-height: 1.15;
+  --text-3xl--line-height: 1.1;
+  --text-4xl--line-height: 1.05;
+
   /* paper.design weight ladder (Inter variable axis) */
   --font-weight-light: 270;
   --font-weight-semilight: 360;
@@ -381,18 +394,21 @@ html {
    type system no matter which element the MDX emits.
    ============================================================ */
 .prose {
-  --blog-font-size: 18px;
+  /* 17px, not 18. At the 40rem measure an 18px body ran ~78 characters a line
+     and every heading multiplied off it, which is what made a post read as
+     oversized next to the rest of the site. */
+  --blog-font-size: 17px;
   --tw-prose-body: var(--foreground);
   --tw-prose-headings: var(--foreground);
   --tw-prose-bold: var(--foreground);
   font-family: var(--font-sans);
   font-size: var(--blog-font-size);
-  line-height: 1.75;
+  line-height: 1.7;
 }
 
 @media (max-width: 640px) {
   .prose {
-    --blog-font-size: 17px;
+    --blog-font-size: 16px;
   }
 }
 
@@ -413,20 +429,23 @@ html {
   text-transform: none;
 }
 
+/* Ratios pulled in one step each. The old 2× / 1.6× ladder was tuned against
+   a narrower column; at the full measure an h2 at 1.6× read as a page title
+   rather than a section break. */
 .prose h1 {
-  font-size: calc(var(--blog-font-size) * 2);
+  font-size: calc(var(--blog-font-size) * 1.85);
   font-weight: 670;
 }
 .prose h2 {
-  font-size: calc(var(--blog-font-size) * 1.6);
+  font-size: calc(var(--blog-font-size) * 1.45);
   font-weight: 670;
 }
 .prose h3 {
-  font-size: calc(var(--blog-font-size) * 1.3);
+  font-size: calc(var(--blog-font-size) * 1.2);
   font-weight: 550;
 }
 .prose :is(h4, h5, h6) {
-  font-size: calc(var(--blog-font-size) * 1.1);
+  font-size: calc(var(--blog-font-size) * 1.05);
   font-weight: 550;
 }
 
@@ -523,3 +542,200 @@ html {
 .prose :where(h2, h3) {
   scroll-margin-top: 5rem;
 }
+
+/* ============================================================
+   BLOG MEASURE
+   The title band put its padding on the outer <header> and capped an
+   inner div at max-w-3xl (a true 768px column), while the body put
+   padding *and* max-w-[42rem] on the same element — border-box shrank
+   that text column to 672 − 80 = 592px. The h1 and the paragraphs under
+   it differed by 176px in width and stepped in by 88px at 1440px wide.
+
+   Two measures, declared once, used by every band:
+
+     --blog-measure  40rem / 640px  → prose. ~72 characters at the 17px
+                                      body size.
+     --blog-wide     56rem / 896px  → things that shouldn't be trapped
+                                      in the measure: diagram panels,
+                                      the related-posts grid.
+   ============================================================ */
+
+:root {
+  --blog-measure: 40rem;
+  --blog-wide: 56rem;
+  /* The article column on lg+. Wider than the measure so code and diagrams
+     have somewhere to break out to that still stops short of the rail. */
+  --blog-col: 52rem;
+  --blog-rail: 15rem;
+  --blog-gutter: 3rem;
+}
+
+.blog-measure {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--blog-measure);
+}
+
+/* ------------------------------------------------------------------
+   Two-column reading layout (lg+)
+   Below lg the article is a centred single column and the floating TOC
+   widget handles navigation. From lg the column moves left and the
+   recovered space becomes a sticky contents rail — which is what that
+   ~480px of dead margin on a 1200px shell was doing before.
+
+   Both the title band and the body use .blog-layout, so the h1 and the
+   paragraphs under it keep one left edge whichever mode is active.
+   ------------------------------------------------------------------ */
+.blog-layout > .blog-measure {
+  margin-inline: auto;
+}
+
+@media (min-width: 64rem) {
+  .blog-layout {
+    display: grid;
+    grid-template-columns: minmax(0, var(--blog-col)) var(--blog-rail);
+    column-gap: var(--blog-gutter);
+    justify-content: start;
+  }
+
+  /* Left-aligned inside its column now, not centred in the shell. */
+  .blog-layout > .blog-measure {
+    margin-inline: 0;
+  }
+}
+
+.blog-wide {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--blog-wide);
+}
+
+/* Once the article goes left-aligned, a centred 56rem band under it starts
+   112px in from the h1's left edge. Match the full two-column span instead. */
+@media (min-width: 64rem) {
+  .blog-wide {
+    margin-inline: 0;
+    max-width: calc(var(--blog-col) + var(--blog-gutter) + var(--blog-rail));
+  }
+}
+
+/* The typography plugin sets `max-width: 65ch` on .prose — a utility, same
+   specificity as `max-w-[42rem]`, so which one won came down to emit order.
+   Scoped to the pairing so .blog-measure is the single owner of the width
+   here. It must NOT be a bare `.prose { max-width: none }`: this file is
+   unlayered, so that would outrank the `max-w-3xl` utilities that /project,
+   /machine-coding and /setup use and send those articles full-bleed. */
+.prose.blog-measure {
+  max-width: var(--blog-measure);
+}
+
+/* Let wide content — diagrams, code blocks, tables — escape the measure
+   without the text following it out.
+ *
+ * Sized off available space rather than a `min-width: 80rem` breakpoint.
+ * The shell caps at 1200px, so a hard 1280px query left a laptop viewport
+ * rendering 640px code blocks that scrolled horizontally while ~240px of
+ * column sat empty on either side. `max(100%, …)` means this collapses to
+ * a plain full-width block on phones, where 100% always wins. */
+.blog-breakout {
+  width: 100%;
+}
+
+/* Wide content grows to the RIGHT from a left edge flush with the text.
+ * Centring it instead (margin-left: 50% + translateX(-50%)) is the usual
+ * trick, but it puts every code block and diagram on its own left edge —
+ * the article ends up with two ragged margins and reads as broken rather
+ * than deliberate. One left edge, one reading rhythm.
+ *
+ * --blog-slack is the empty space on one side of the measure inside the
+ * 1200px shell, so the block stops exactly at the shell's inner padding
+ * and can never overflow. It goes to 0 on narrow viewports, where
+ * max(100%, …) collapses this to an ordinary full-width block.
+ *
+ * Scoped to .blog-measure on purpose: mdxComponents (and so CodeBlock) is
+ * shared with /setup/[slug] and /machine-coding/[slug], whose columns are
+ * 768px and 672px. Unscoped, this would push code straight through the
+ * shell border on those routes. */
+.blog-measure {
+  --blog-slack: max(
+    0px,
+    calc((min(100vw, 1200px) - 5rem - var(--blog-measure)) / 2)
+  );
+}
+
+/* In two-column mode the slack is whatever the article column has spare over
+   the measure — a fixed 12rem, so wide content lands on the column's right
+   edge and never runs under the rail. */
+@media (min-width: 64rem) {
+  .blog-layout > .blog-measure {
+    --blog-slack: calc(var(--blog-col) - var(--blog-measure));
+  }
+}
+
+.blog-measure .blog-breakout {
+  width: max(100%, calc(100% + var(--blog-slack)));
+}
+
+/* ============================================================
+   CODE BLOCKS
+   --radius is 0px site-wide and every radius-* token collapses to 0,
+   but the typography plugin hardcodes `border-radius: 0.375rem` on pre
+   in its own CSS — so code blocks were the one rounded element on an
+   otherwise square site.
+   ============================================================ */
+
+.prose pre {
+  border-radius: 0;
+  border: 1px solid var(--border);
+  padding: 1rem 1.15rem;
+  overflow-x: auto;
+}
+
+/* Tables have the same problem code does — they don't reflow, so in a 40rem
+   column a four-column table scrolls sideways. Same flush-left wide band.
+   Direct children only: a descendant selector also catches tables inside the
+   .not-prose diagram panels, which have already broken out, and breaking a
+   second time pushes them through the panel border. */
+.prose.blog-measure > table {
+  display: block;
+  width: max(100%, calc(100% + var(--blog-slack)));
+  overflow-x: auto;
+}
+
+/* rehype-pretty-code emits this when a fence has a title:
+   ```ts title="lib/blog.ts" */
+.prose [data-rehype-pretty-code-title] {
+  font-family:
+    var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, monospace;
+  font-size: calc(var(--blog-font-size) * 0.8);
+  color: var(--muted-foreground);
+  border: 1px solid var(--border);
+  border-bottom: 0;
+  padding: 0.5rem 1.15rem;
+  margin-bottom: 0;
+}
+
+.prose [data-rehype-pretty-code-title] + pre {
+  margin-top: 0;
+}
+
+/* ============================================================
+   WRAPPING
+   Cheap, and does more for a long post than any size change:
+   headings stop dropping a single orphan word, paragraphs stop
+   leaving a one-word last line.
+   ============================================================ */
+
+.prose :is(h2, h3, h4) {
+  text-wrap: balance;
+}
+
+.prose p,
+.prose li {
+  text-wrap: pretty;
+}
+
+/* The --text-*--line-height pairs that go with this live in the @theme inline
+   block at the top of the file — Tailwind reads the paired token at build
+   time, so they can't be declared down here. */

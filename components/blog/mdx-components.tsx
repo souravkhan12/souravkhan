@@ -4,6 +4,13 @@ import { Aside } from "@/components/blog/aside";
 import { Demo } from "@/components/blog/demo";
 import { cn } from "@/lib/utils";
 
+import {
+  RenderingPipeline,
+  ScriptBlockingPlayground,
+  BlockingCheatSheet,
+  RenderTreeMerge,
+} from "@/components/mdx/BrowserRenderingDiagrams";
+
 export const mdxComponents = {
   pre: CodeBlock,
   code: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
@@ -13,4 +20,8 @@ export const mdxComponents = {
   Callout,
   Aside,
   Demo,
+  RenderingPipeline,
+  ScriptBlockingPlayground,
+  BlockingCheatSheet,
+  RenderTreeMerge,
 };

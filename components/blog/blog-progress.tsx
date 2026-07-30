@@ -1,78 +1,23 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, animate, motion } from "motion/react";
+import { useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { LuList } from "react-icons/lu";
 import type { Heading } from "@/lib/blog";
 import { MOTION } from "@/config/theme";
 import { cn } from "@/lib/utils";
 import { useOutsideClick } from "@/hooks/use-outside-click";
+import { useReadingProgress } from "@/hooks/use-reading-progress";
 
 export function BlogProgress({ headings }: { headings: Heading[] }) {
-  const [progress, setProgress] = useState(0);
-  const [activeId, setActiveId] = useState<string | null>(
-    headings[0]?.id ?? null,
-  );
+  const { progress, activeId, scrollToHeading } = useReadingProgress(headings);
   const [open, setOpen] = useState(false);
-  const articleRef = useRef<HTMLElement | null>(null);
   const widgetRef = useRef<HTMLDivElement>(null);
 
   useOutsideClick({ ref: widgetRef, callback: () => setOpen(false) });
 
-  useEffect(() => {
-    articleRef.current = document.getElementById("blog-post-content");
-
-    let ticking = false;
-
-    const measure = () => {
-      ticking = false;
-      const article = articleRef.current;
-      if (!article) return;
-
-      const { top, height } = article.getBoundingClientRect();
-      const scrolled = -top;
-      const scrollable = height - window.innerHeight;
-      const pct = Math.min(
-        100,
-        Math.max(0, (scrolled / Math.max(scrollable, 1)) * 100),
-      );
-      setProgress(pct);
-
-      let current: string | null = headings[0]?.id ?? null;
-      for (const heading of headings) {
-        const el = document.getElementById(heading.id);
-        if (el && el.getBoundingClientRect().top <= 120) {
-          current = heading.id;
-        }
-      }
-      setActiveId(current);
-    };
-
-    const handleScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(measure);
-    };
-
-    measure();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleScroll);
-    };
-  }, [headings]);
-
-  const scrollToHeading = (id: string) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const targetY = el.getBoundingClientRect().top + window.scrollY - 96;
-
-    animate(window.scrollY, targetY, {
-      duration: MOTION.duration.slow * 2,
-      ease: MOTION.ease,
-      onUpdate: (v) => window.scrollTo(0, v),
-    });
+  const goTo = (id: string) => {
+    scrollToHeading(id);
     setOpen(false);
   };
 
@@ -98,7 +43,9 @@ export function BlogProgress({ headings }: { headings: Heading[] }) {
       <div
         ref={widgetRef}
         className={cn(
-          "fixed z-20 flex flex-col items-end",
+          // lg:hidden — from lg up the sticky sidebar rail is on screen and
+          // two tables of contents competing for attention is one too many.
+          "fixed z-20 flex flex-col items-end lg:hidden",
           "right-4 bottom-20 sm:right-6 sm:bottom-6",
         )}
       >
@@ -122,7 +69,7 @@ export function BlogProgress({ headings }: { headings: Heading[] }) {
                     <button
                       key={heading.id}
                       type="button"
-                      onClick={() => scrollToHeading(heading.id)}
+                      onClick={() => goTo(heading.id)}
                       className={cn(
                         "normal-case-force border-l-2 px-3 py-2.5 text-left text-sm transition-colors sm:py-2",
                         heading.depth === 3 && "pl-6 text-[13px]",

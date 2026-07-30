@@ -20,7 +20,9 @@ export function CodeBlock({
   };
 
   return (
-    <div className="group relative">
+    // blog-breakout: code doesn't wrap, so it gets the wide band instead of
+    // scrolling sideways inside the 40rem text measure.
+    <div className="group blog-breakout relative">
       <pre
         ref={preRef}
         className={cn(

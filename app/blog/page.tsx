@@ -2,7 +2,6 @@ import { getAllPosts, getAllTags, toSummary } from "@/lib/blog";
 import { Section } from "@/components/ui";
 import { PostList } from "@/components/blog/post-list";
 import { ReadingList } from "@/components/blog/reading-list";
-import { Subscribe } from "@/components/blog/subscribe";
 import { getBookmarks, getReadingTags } from "@/lib/reading";
 import { SEO_CONFIG } from "@/config/seo";
 import Link from "next/link";
@@ -81,8 +80,6 @@ export default function BlogPage() {
       >
         <ReadingList bookmarks={bookmarks} tags={readingTags} initial={4} />
       </Section>
-
-      <Subscribe />
     </>
   );
 }

@@ -4,7 +4,6 @@ import { LuArrowLeft } from "react-icons/lu";
 import { getAllTags, getPostsByTag, toSummary } from "@/lib/blog";
 import { Section } from "@/components/ui";
 import { PostList } from "@/components/blog/post-list";
-import { Subscribe } from "@/components/blog/subscribe";
 import { SEO_CONFIG } from "@/config/seo";
 
 export async function generateStaticParams() {
@@ -59,8 +58,6 @@ export default async function TagPage({
 
         <PostList posts={posts} showSearch={false} showLatestBadge={false} />
       </Section>
-
-      <Subscribe />
     </>
   );
 }

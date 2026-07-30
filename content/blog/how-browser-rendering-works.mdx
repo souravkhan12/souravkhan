@@ -1,0 +1,163 @@
+---
+title: "How browser rendering works"
+description: "Move one script tag into the head and a working DOM lookup starts returning null. The full path from raw bytes to painted pixels, and where JavaScript cuts into it."
+date: "2026-07-30"
+tags: ["browsers", "performance", "html", "css", "javascript"]
+published: true
+---
+
+I had a script that found an element and logged it. Worked fine. I tidied the file up, moved the `<script>` from the bottom of `<body>` into `<head>`, and the same line started returning `null`.
+
+```js
+let header = document.getElementById("header");
+console.log("header is: ", header); // → null, but only from <head>
+```
+
+Nothing changed but the position of one tag. Explaining that properly means walking the whole path from the bytes arriving off the network to pixels on the screen — so that's what this is.
+
+## The short answer
+
+The browser doesn't read your file in one go. It converts it in stages, top to bottom, and a `<script>` tag stops that walk dead — so a script in `<head>` runs at a moment when the rest of your page genuinely does not exist yet.
+
+```html
+<!-- Runs after the DOM is built. Safe. -->
+<script src="app.js" defer></script>
+
+<!-- Runs the instant the parser reaches it, mid-document. -->
+<script src="app.js"></script>
+```
+
+Everything below is the machinery behind those two lines.
+
+## Why it happens
+
+### Who's actually doing the work
+
+Inside every browser is a **browser engine**: the component that takes the files it receives and decides what to put on screen. Chrome's is Blink, Firefox's is Gecko, Safari's is WebKit (Blink started life as a WebKit fork). They differ in the details, but the pipeline below is common to all of them. When I say "the browser" from here on, this is the part I mean.
+
+### The browser never sees your code
+
+Data crosses the network as packets of bytes. When you open an HTML file, what the engine receives is **raw bytes** — not the tags you typed. Before it can do anything at all, it has to climb from those bytes up to a structure it can reason about. That climb is four conversions:
+
+<RenderingPipeline />
+
+Worth pulling out of that sequence:
+
+**Bytes → characters.** The engine decodes the bytes using the file's character encoding. Now it has text — but text alone is still just a wall of characters with no meaning attached.
+
+**Characters → tokens.** This is where the file starts becoming a document. The `.html` extension tells the engine to interpret the file as HTML, and during tokenization every start tag and end tag is accounted for. The parser recognises each string in angle brackets and knows the rules attached to it: a token for an anchor tag carries different properties from one for a paragraph. Think of a token as a small data structure describing one tag.
+
+**Tokens → nodes.** Each token is turned into a node — a real object with properties. A node knows what kind of thing it is, but not yet where it sits.
+
+**Nodes → the DOM.** Finally the nodes are linked into a tree, and that tree establishes every relationship: parent to child, sibling to sibling. That's the Document Object Model, and it's the first structure the browser can actually work with.
+
+This is also why you open `index.html` in a browser and never `main.css` or `app.js`. HTML is the entry point — the DOM has to exist before anything else has anywhere to attach. And building it isn't free: the bigger the document, the longer construction takes.
+
+### CSS runs the same pipeline, in parallel
+
+While the DOM is being built, the parser hits this:
+
+```html
+<link rel="stylesheet" href="main.css" />
+```
+
+It fires off a request for that file immediately and keeps parsing. When the CSS comes back — again as raw bytes — it goes through the identical four conversions: bytes, characters, tokens, nodes, tree. The tree at the end is the **CSS Object Model**, the CSSOM.
+
+### Why CSS needs a tree at all
+
+This surprised me the first time. Why not just a flat list of rules?
+
+Because of the **cascade**. The styles that apply to any given element can come from a rule set directly on it, or be inherited from an ancestor. To work out the final computed style for one element, the browser has to walk down through the structure resolving what it inherits against what's set on it. That's a tree operation, so the CSSOM is a tree.
+
+### DOM + CSSOM = the render tree
+
+Now there are two independent trees that don't yet know about each other. The DOM knows what's on the page and how it's structured. The CSSOM knows how things should look. Neither one alone is enough to draw anything.
+
+The browser combines them into the **render tree**: every visible node, carrying the styles that apply to it.
+
+<RenderTreeMerge />
+
+The word doing the work there is _visible_. If an element is hidden with `display: none`, it has no box, so it isn't represented in the render tree at all. It stays in the DOM perfectly happily — you can still query it and change it from JavaScript — but nothing about it will be measured or drawn.
+
+<Callout type="warn" title="Gotcha">
+  `display: none` and `visibility: hidden` are not the same thing here.
+  `visibility: hidden` still generates a box, so the node is in the render tree
+  and still occupies its space during layout — it's just painted invisibly.
+  `display: none` never reaches the render tree at all.
+</Callout>
+
+### Layout: where everything goes
+
+The render tree has content and style, but still no geometry. **Layout** walks it and computes the exact size and position of every box inside the viewport — every width, every offset, everything relative to everything else. You'll also see this step called **reflow**, and that's the name that usually shows up in performance traces when it gets triggered again later.
+
+Nothing is on screen yet. This step is pure measurement.
+
+### Paint: pixels at last
+
+With content, style and geometry all resolved, the browser finally **paints**: filling in text, colours, borders, shadows, images. This is the first moment there's anything for a person to look at.
+
+### Render-blocking resources
+
+Because the DOM and the CSSOM both have to exist before a render tree can be built, and a render tree has to exist before layout and paint, **HTML and CSS are both render-blocking**. Neither is optional and neither can be skipped. The first rule of making a page feel fast is getting the important HTML and CSS to the browser as early as you can.
+
+<BlockingCheatSheet />
+
+### Where JavaScript cuts into all this
+
+JavaScript is the awkward one, because it can rewrite both structures. It can add and remove DOM nodes:
+
+```js
+document.body.appendChild(document.createElement("div"));
+```
+
+and it can change the CSSOM:
+
+```js
+document.getElementsByTagName("body")[0].style.backgroundColor = "red";
+```
+
+The browser has no way to know in advance which of those a given script will do. So when the parser reaches a `<script>` tag, it takes the only safe option available: **DOM construction stops** and the script runs to completion first.
+
+That's the whole answer to the bug I opened with. With the tag at the end of `<body>`, the parser has already walked past the markup, `#header` is in the DOM, and the lookup succeeds. Move it into `<head>` and the parser hasn't reached `<body>` yet. `getElementById` isn't failing — it's correctly reporting that no such element exists, because at that instant it really doesn't.
+
+Extracting the code into an external file changes nothing; the parser still halts. And if that file has to come over the network, **it halts for the entire round trip**. A script that takes 800ms to arrive is 800ms where your DOM stops growing.
+
+<ScriptBlockingPlayground />
+
+### JavaScript also waits for CSS
+
+There's a second dependency running the other way, and it's easy to miss.
+
+Since a script might read or modify styles, it can't safely run against a half-built CSSOM. So if the parser reaches a script while a stylesheet is still loading, **execution waits for the CSSOM to finish** — even if that script never touches a single style. No CSSOM, no JavaScript.
+
+So the two block in opposite directions: a script blocks DOM construction, and pending CSS blocks script execution. A slow stylesheet in `<head>` above a script can stall the whole document.
+
+### async and defer
+
+By default every script is a parser blocker. Two attributes change that:
+
+```html
+<script src="app.js" async></script>
+<script src="app.js" defer></script>
+```
+
+**`async`** stops the _download_ from blocking. The parser keeps building the DOM while the file comes down — but the moment it arrives, parsing pauses and the script runs. Multiple async scripts run in whatever order they finish downloading, which is not necessarily the order you wrote them.
+
+**`defer`** also downloads in parallel, but holds execution until the DOM is complete, then runs deferred scripts in document order, just before `DOMContentLoaded`. For anything that touches the page, this is what you want.
+
+Use `async` for things with no dependency on your markup or on each other — analytics is the usual example. Use `defer` for everything else.
+
+### The critical rendering path
+
+The whole sequence — bytes in, pixels out — is called the **critical rendering path**. Optimising a site's perceived speed is mostly optimising this path: getting the render-blocking resources delivered early, and keeping scripts from stalling the middle of it, so the page renders progressively instead of arriving all at once at the end.
+
+## What I got wrong first
+
+- **"`async` and `defer` are roughly the same."** They differ on when execution happens, and it matters. `async` still interrupts parsing the moment the file lands, in nondeterministic order. `defer` waits for a complete DOM and preserves document order.
+- **"CSS only matters at paint time, so it can't slow anything earlier."** CSS blocks CSSOM construction, which blocks the render tree, which blocks layout — and it blocks script execution too.
+- **"Moving the script to the bottom of `<body>` is the same as `defer`."** Nearly, but not quite: `defer` starts the download early instead of waiting for the parser to reach the tag, so you get the parallel fetch for free.
+- **"An element hidden with CSS is just an element that isn't painted."** With `display: none` it never enters the render tree, so it's never measured either — which is why toggling it forces a fresh layout, not just a repaint.
+
+## Takeaway
+
+If a script touches the page, give it `defer` and stop thinking about where the tag sits — a plain `<script>` halts DOM construction exactly where you put it, which is the entire reason the same lookup works at the bottom of `<body>` and returns `null` from `<head>`.
