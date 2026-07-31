@@ -34,7 +34,7 @@ const eras: Era[] = [
     headline: "One line. One file. Goodbye.",
     added: ["GET, and nothing else", "no headers", "no status codes"],
     broke:
-      "One TCP connection per file, torn down after every response. A page with ten images paid ten handshakes.",
+      "One connection per file, closed after every reply. A page with ten images paid to open ten connections.",
     wire: (
       <div className="font-code text-xs leading-6 text-gray-700 dark:text-gray-300">
         <div className="text-gray-400">→ request</div>
@@ -56,7 +56,7 @@ const eras: Era[] = [
       "Content-Type, so not just HTML",
     ],
     broke:
-      "Still one connection per request by default. Headers made every request bigger, and you paid for them in full, every time.",
+      "Still one connection per request. And headers made every request bigger, sent again in full every single time.",
     wire: (
       <div className="font-code text-xs leading-6 text-gray-700 dark:text-gray-300">
         <div>GET /index.html HTTP/1.0</div>
@@ -71,14 +71,14 @@ const eras: Era[] = [
     year: "1997",
     headline: "Keep the connection. Still one lane.",
     added: [
-      "persistent connections (keep-alive)",
-      "chunked transfer encoding",
-      "cache-control, ETag",
-      "Host header → virtual hosting",
+      "connections that stay open",
+      "start sending before you know the size",
+      "real caching (Cache-Control, ETag)",
+      "Host header → many sites, one address",
       "pipelining (in theory)",
     ],
     broke:
-      "Head-of-line blocking. Responses must come back in request order, so one slow response stalls everything queued behind it. Browsers shipped with pipelining disabled.",
+      "Replies must come back in the order they were asked for, so one slow reply holds up everything behind it. Browsers shipped with pipelining switched off.",
     wire: (
       <div className="font-code text-xs leading-6 text-gray-700 dark:text-gray-300">
         <div>GET /a.css HTTP/1.1</div>
@@ -91,16 +91,16 @@ const eras: Era[] = [
   {
     v: "2",
     year: "2015",
-    headline: "Binary frames, one connection, many streams.",
+    headline: "One connection. Everything at once.",
     added: [
-      "binary framing layer",
-      "true multiplexing over one TCP connection",
-      "HPACK header compression",
-      "stream prioritisation",
+      "binary format, every packet tagged",
+      "replies in any order, one connection",
+      "header compression",
+      "priorities",
       "server push",
     ],
     broke:
-      "TCP head-of-line blocking. The application layer stopped queueing, but TCP still delivers one ordered byte stream — so a single lost packet stalls every stream on the connection.",
+      "HTTP stopped queueing, but TCP underneath still delivers one strict in-order stream — so a single lost packet stalls every request on the connection.",
     wire: (
       <div className="flex flex-wrap gap-1.5">
         <Chip active>HEADERS · stream 1</Chip>
@@ -115,14 +115,14 @@ const eras: Era[] = [
     year: "2022",
     headline: "Drop TCP. Rebuild it in userspace.",
     added: [
-      "QUIC over UDP",
-      "independent streams — loss is per-stream",
-      "TLS 1.3 folded into the handshake (1-RTT, 0-RTT on resume)",
-      "connection IDs → survives a network change",
-      "QPACK header compression",
+      "QUIC, built on UDP",
+      "a lost packet stalls only its own request",
+      "encryption folded into the handshake",
+      "survives a switch from wifi to mobile",
+      "header compression",
     ],
     broke:
-      "Higher CPU cost per byte. Userspace ACKs and per-packet processing mean QUIC can lose to HTTP/2 on very fast links — the opposite of the problem it was built for.",
+      "More work for the processor per byte. That makes QUIC slower than HTTP/2 on very fast links — the opposite of the problem it was built for.",
     wire: (
       <div className="font-code text-xs leading-6 text-gray-700 dark:text-gray-300">
         <div className="text-gray-400">UDP datagram</div>
@@ -390,21 +390,21 @@ const PROTO_LABEL: Record<Proto, string> = {
 const VERDICT: Record<Proto, { clean: string; lossy: string }> = {
   h1: {
     clean:
-      "Six sockets, each handling one request at a time. Resources seven and eight wait for a socket to free up — that staircase is the connection limit, not bandwidth.",
+      "Six connections, each handling one file at a time. Files seven and eight wait for one to free up. That staircase is the connection limit, not slow internet.",
     lossy:
-      "A dropped packet only stalls the socket carrying it. The other five keep going. Crude, but the damage is contained.",
+      "A lost packet only stalls the connection carrying it. The other five keep going. Clumsy, but the damage stays in one place.",
   },
   h2: {
     clean:
-      "One connection, eight streams, all in flight at once. No staircase, no connection limit, and the header bytes are compressed away.",
+      "One connection, all eight files at once. No staircase, no limit, and the headers are compressed.",
     lossy:
-      "Here's the catch. TCP hands the application one ordered byte stream, so a single lost packet holds up every stream behind it — including the seven that arrived perfectly. On a lossy link this can be slower than HTTP/1.1.",
+      "Here's the catch. TCP hands over one strict in-order stream, so one lost packet holds up everything behind it — including the seven files that arrived perfectly. On a patchy connection this can be slower than HTTP/1.1.",
   },
   h3: {
     clean:
-      "Same multiplexing as HTTP/2, but the streams are QUIC's, not TCP's — and the handshake took one round trip instead of two.",
+      "Same as HTTP/2 from here, except the connection was set up in one round trip instead of two.",
     lossy:
-      "QUIC tracks each stream separately, so retransmission is scoped to the stream that lost data. Seven resources are unaffected. This is the entire reason HTTP/3 exists.",
+      "QUIC tracks each file separately, so only the one that lost data waits. The other seven are untouched. This is the entire reason HTTP/3 exists.",
   },
 };
 
@@ -418,7 +418,7 @@ export function HeadOfLineBlocking() {
 
   return (
     <Panel
-      label="eight resources, one page load"
+      label="eight files, one page load"
       footnote={loss ? VERDICT[proto].lossy : VERDICT[proto].clean}
     >
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
@@ -471,7 +471,7 @@ export function HeadOfLineBlocking() {
                       left: `${((b.start + base) / span) * 100}%`,
                       width: `${(stallWidth / span) * 100}%`,
                     }}
-                    title="waiting on retransmission"
+                    title="waiting for the lost packet to be sent again"
                   />
                 )}
               </div>
@@ -490,11 +490,11 @@ export function HeadOfLineBlocking() {
         <span className="flex items-center gap-2">
           <span aria-hidden="true" className="bg-amber h-2.5 w-4" />
           <span className="font-code text-xs text-gray-500 lowercase">
-            blocked, waiting on retransmit
+            stuck, waiting for the lost packet
           </span>
         </span>
         <span className="font-code ml-auto text-xs text-gray-400 lowercase">
-          last byte at {worst} units
+          page finishes at {worst} units
         </span>
       </div>
     </Panel>
@@ -515,32 +515,32 @@ const STACKS: { name: string; note: string; legs: Leg[] }[] = [
     name: "HTTP/1.1 + TLS 1.2",
     note: "the 2015 default",
     legs: [
-      { label: "TCP", rtt: 1, tone: "tcp" },
-      { label: "TLS 1.2", rtt: 2, tone: "tls" },
+      { label: "connect", rtt: 1, tone: "tcp" },
+      { label: "encrypt", rtt: 2, tone: "tls" },
       { label: "request", rtt: 1, tone: "req" },
     ],
   },
   {
     name: "HTTP/2 + TLS 1.3",
-    note: "the common case today",
+    note: "most of the web today",
     legs: [
-      { label: "TCP", rtt: 1, tone: "tcp" },
-      { label: "TLS 1.3", rtt: 1, tone: "tls" },
+      { label: "connect", rtt: 1, tone: "tcp" },
+      { label: "encrypt", rtt: 1, tone: "tls" },
       { label: "request", rtt: 1, tone: "req" },
     ],
   },
   {
     name: "HTTP/3 (QUIC)",
-    note: "transport and crypto in one handshake",
+    note: "connect and encrypt in one step",
     legs: [
-      { label: "QUIC + TLS 1.3", rtt: 1, tone: "tcp" },
+      { label: "connect + encrypt", rtt: 1, tone: "tcp" },
       { label: "request", rtt: 1, tone: "req" },
     ],
   },
   {
-    name: "HTTP/3, 0-RTT resume",
-    note: "returning visitor, replay risk applies",
-    legs: [{ label: "request with data", rtt: 1, tone: "req" }],
+    name: "HTTP/3, returning visitor",
+    note: "nothing to set up, just ask",
+    legs: [{ label: "request, with data attached", rtt: 1, tone: "req" }],
   },
 ];
 
@@ -557,8 +557,8 @@ export function HandshakeCost() {
 
   return (
     <Panel
-      label="round trips before the first byte"
-      footnote="On a 20ms link the difference is barely worth a paragraph. On a 200ms mobile link, HTTP/1.1 + TLS 1.2 spends 800ms on ceremony before the server has read your request, and HTTP/3 spends 200ms."
+      label="round trips (rtt) before anything loads"
+      footnote="On a fast 20ms link, none of this is worth a paragraph. On a 200ms mobile link it's 800ms of setup before the server has even read your request — against 200ms for HTTP/3."
     >
       <div className="space-y-3">
         {STACKS.map((s) => {
@@ -573,7 +573,7 @@ export function HandshakeCost() {
                   {s.note}
                 </span>
                 <span className="font-code text-blue ml-auto text-xs">
-                  {total} RTT
+                  {total} round {total === 1 ? "trip" : "trips"}
                 </span>
               </div>
               <div className="flex gap-0.5">
@@ -616,20 +616,20 @@ const CLASSES: readonly CodeClass[] = ["1xx", "2xx", "3xx", "4xx", "5xx"];
 const CLASS_META: Record<CodeClass, { name: string; gist: string }> = {
   "1xx": {
     name: "informational",
-    gist: "received, still working — the response proper is still coming",
+    gist: "the server got your request and is still working — the real reply is coming",
   },
   "2xx": { name: "success", gist: "received, understood, done" },
   "3xx": {
     name: "redirection",
-    gist: "it lives somewhere else, or your cached copy is still good",
+    gist: "it moved, or your cached copy is still fine",
   },
   "4xx": {
     name: "client error",
-    gist: "the request was wrong — don't resend it unchanged",
+    gist: "the client asked for something wrong — the same request gets the same answer",
   },
   "5xx": {
     name: "server error",
-    gist: "the request was fine, we broke — retrying may work",
+    gist: "the request was fine, the server broke — trying again might work",
   },
 };
 
@@ -638,13 +638,13 @@ const CODES: { c: CodeClass; code: string; name: string; note: string }[] = [
     c: "1xx",
     code: "101",
     name: "Switching Protocols",
-    note: "the HTTP→WebSocket upgrade handshake",
+    note: "what you see when a page opens a WebSocket",
   },
   {
     c: "1xx",
     code: "103",
     name: "Early Hints",
-    note: "preload hints while the real response is generated — the replacement for HTTP/2 server push",
+    note: "start downloading these while I build the page — the replacement for server push",
   },
   {
     c: "2xx",
@@ -656,19 +656,19 @@ const CODES: { c: CodeClass; code: string; name: string; note: string }[] = [
     c: "2xx",
     code: "201",
     name: "Created",
-    note: "a POST made something new — return its URL in Location",
+    note: "a POST made something new — send back its URL",
   },
   {
     c: "2xx",
     code: "204",
     name: "No Content",
-    note: "done, deliberately empty body — the right answer for DELETE",
+    note: "done, and there's deliberately nothing to send back — the right answer for a delete",
   },
   {
     c: "2xx",
     code: "206",
     name: "Partial Content",
-    note: "range request answered — video scrubbing and resumable downloads",
+    note: "here's the chunk you asked for — video scrubbing, resumed downloads",
   },
   {
     c: "3xx",
@@ -686,13 +686,13 @@ const CODES: { c: CodeClass; code: string; name: string; note: string }[] = [
     c: "3xx",
     code: "304",
     name: "Not Modified",
-    note: "your ETag still matches — no body sent, the cheapest response there is",
+    note: "your cached copy is still good — nothing sent back, the cheapest reply there is",
   },
   {
     c: "3xx",
     code: "307 / 308",
     name: "Temporary / Permanent Redirect",
-    note: "same as 302 / 301 but the method and body are preserved",
+    note: "same as 302 / 301, but a POST stays a POST",
   },
   {
     c: "4xx",
@@ -717,49 +717,49 @@ const CODES: { c: CodeClass; code: string; name: string; note: string }[] = [
     c: "4xx",
     code: "405",
     name: "Method Not Allowed",
-    note: "the path exists, the verb doesn't — list the valid ones in Allow",
+    note: "the address exists, but you can't POST to it — say which ones work",
   },
   {
     c: "4xx",
     code: "409",
     name: "Conflict",
-    note: "clashes with current state — duplicate key, stale edit",
+    note: "clashes with what's already there — a duplicate, or an edit based on an old copy",
   },
   {
     c: "4xx",
     code: "422",
     name: "Unprocessable Content",
-    note: "syntax fine, semantics wrong — the usual validation-failure code",
+    note: "we read it fine, we just can't do it — the usual answer to a failed validation",
   },
   {
     c: "4xx",
     code: "429",
     name: "Too Many Requests",
-    note: "rate limited — send Retry-After so the client backs off properly",
+    note: "slow down — tell them how long to wait, don't make them guess",
   },
   {
     c: "5xx",
     code: "500",
     name: "Internal Server Error",
-    note: "unhandled exception, the default for anything you didn't catch",
+    note: "something threw and nobody caught it — the default for any crash",
   },
   {
     c: "5xx",
     code: "502",
     name: "Bad Gateway",
-    note: "proxy reached upstream and got garbage back",
+    note: "the proxy in front reached your real server and got nonsense back",
   },
   {
     c: "5xx",
     code: "503",
     name: "Service Unavailable",
-    note: "overloaded or in maintenance — temporary, and retryable",
+    note: "overloaded, or down for maintenance — temporary, worth retrying",
   },
   {
     c: "5xx",
     code: "504",
     name: "Gateway Timeout",
-    note: "upstream never answered in time",
+    note: "the proxy waited, your real server never answered in time",
   },
 ];
 
@@ -774,9 +774,9 @@ export function StatusCodeCheatSheet() {
         <>
           The two everyone gets backwards: <strong>401</strong> means we
           don&apos;t know who you are, <strong>403</strong> means we do and the
-          answer is still no. And <strong>422</strong> beats a bare{" "}
-          <strong>400</strong> for validation failures — the request parsed
-          fine, it just asked for something impossible.
+          answer is still no. And reach for <strong>422</strong> over a plain{" "}
+          <strong>400</strong> when a form fails validation — the request made
+          sense, it just asked for something you can&apos;t do.
         </>
       }
     >
@@ -825,30 +825,41 @@ const COLS = ["HTTP/1.1", "HTTP/2", "HTTP/3"] as const;
 
 const ROWS: { k: string; v: [string, string, string] }[] = [
   { k: "shipped", v: ["1997", "2015", "2022"] },
-  { k: "transport", v: ["TCP", "TCP", "QUIC over UDP"] },
-  { k: "format", v: ["plain text", "binary frames", "binary frames"] },
+  { k: "runs on", v: ["TCP", "TCP", "QUIC, over UDP"] },
+  { k: "format", v: ["plain text", "binary", "binary"] },
   {
-    k: "concurrency",
+    k: "requests at once",
     v: [
-      "~6 connections",
-      "one connection, N streams",
-      "one connection, N streams",
+      "one per connection, ~6 open",
+      "all, on one connection",
+      "all, on one connection",
     ],
   },
   {
-    k: "head-of-line",
-    v: ["at the application", "at TCP", "none across streams"],
+    k: "one lost packet",
+    v: ["stalls one connection", "stalls everything", "stalls one request"],
   },
-  { k: "header compression", v: ["none", "HPACK", "QPACK"] },
-  { k: "handshake", v: ["2–3 RTT", "2 RTT", "1 RTT, 0 on resume"] },
+  {
+    k: "head-of-line blocking",
+    v: ["in HTTP", "in TCP, underneath", "gone"],
+  },
+  { k: "header compression", v: ["none", "yes", "yes"] },
+  {
+    k: "setup before you can ask",
+    v: ["3 round trips", "2 round trips", "1, or 0 if you've been before"],
+  },
   {
     k: "encryption",
-    v: ["optional", "optional, TLS in practice", "always on"],
+    v: ["optional", "optional, but always used", "built in"],
   },
-  { k: "survives network change", v: ["no", "no", "yes, via connection ID"] },
+  { k: "survives wifi → mobile", v: ["no", "no", "yes"] },
   {
     k: "best on",
-    v: ["lossy links, oddly", "fast, stable links", "lossy or mobile links"],
+    v: [
+      "patchy links, by accident",
+      "fast, stable links",
+      "patchy or mobile links",
+    ],
   },
 ];
 

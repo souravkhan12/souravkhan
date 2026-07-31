@@ -1,22 +1,22 @@
 ---
 title: "HTTP 1 vs HTTP 2 vs HTTP 3"
-description: "We turned on HTTP/2 and mobile got slower. The reason is a bottleneck that moved one layer down — and why HTTP/3 is not simply the upgrade everyone assumes."
+description: "We turned on HTTP/2 and mobile got slower. The reason sits one layer below HTTP, in a place your server config can't see — and it's also why HTTP/3 isn't the free upgrade everyone assumes."
 date: "2026-07-31"
 tags: ["http", "networking", "performance", "quic"]
 published: true
 ---
 
-We flipped on HTTP/2, expecting the free win everyone promises. Desktop improved slightly. Mobile p95 got _worse_, and stayed worse for two weeks before anyone connected it to the change.
+We turned on HTTP/2 expecting the free win everyone promises. Desktop got a little better. Mobile got _worse_, and stayed worse for two weeks before anyone linked it to the change.
 
-Nothing was misconfigured. HTTP/2 was doing exactly what it says on the tin — the bottleneck had just moved one layer down the stack, somewhere HTTP couldn't see it.
+Nothing was misconfigured. HTTP/2 was doing exactly what it says it does. The slow part had just moved one layer down, somewhere HTTP can't see.
 
 ## The short answer
 
-Every version of HTTP fixed the previous one's bottleneck and immediately hit a new one underneath.
+Serve both. Let the browser pick.
 
 ```nginx
-# HTTP/2 and HTTP/3 side by side. Alt-Svc is what tells the browser
-# HTTP/3 is available — without it, nothing negotiates up.
+# Alt-Svc is the part people forget. Without it the browser
+# never learns HTTP/3 is on offer.
 listen 443 ssl;
 listen 443 quic reuseport;
 
@@ -26,143 +26,151 @@ http3  on;
 add_header Alt-Svc 'h3=":443"; ma=86400' always;
 ```
 
-Turn both on, keep both. The right protocol depends on the network your user is standing in, and you don't get to pick that.
+Which one is faster depends on the network your user is standing in, and you don't get to choose that.
+
+<Callout type="note" title="About the underlined words">
+  This post uses plain words first, with the real name in brackets after — a{" "}
+  <Term
+    abbr="RTT"
+    def="Round-trip time. One full trip from the browser to the server and back. On office wifi that's about 20ms; on a mobile connection it's often 100–200ms."
+  >
+    round trip
+  </Term>{" "}
+  and so on. Hover or tap any underlined word to see what it means. You'll meet
+  the short forms in everyone else's writing, so it's worth knowing both.
+</Callout>
 
 ## Why it happens
 
-### Thirty years in five steps
+Every version of HTTP fixed the last one's slow part and immediately hit a new one underneath. That's the whole story, five times over.
 
 <ProtocolTimeline />
 
-### 0.9: one request, one connection, no vocabulary
+### The early versions: one file, one connection
 
-The first version was so small it didn't have a version number until later. A client opened a TCP connection, sent one line, and got back a document:
+The first version was so small it didn't get a version number until later. The browser opened a connection, sent one line, and got a file back:
 
 ```
 GET /index.html
 ```
 
-That's it. No headers, no status codes, no `POST` — and no content types either, so the response was always HTML. The server sent the file and **closed the connection**.
+No headers. No status codes. No `POST`. The reply was always HTML, and then the server **closed the connection**.
 
-Which means every single file on a page paid for its own TCP connection: a three-way handshake, a transfer, a teardown. A page with ten images did that eleven times.
+So every file on a page paid for its own connection — open it, transfer, close it. A page with ten images did that eleven times.
 
-### 1.0: headers, and the cost of headers
+HTTP/1.0 in 1996 added most of the words we still use: `POST`, status codes, headers, and `Content-Type` — the moment HTTP stopped being an HTML delivery system and became a way to move anything. But the connection habit didn't change. Still one file, one connection. And now every request carried a block of headers, sent again in full each time, uncompressed.
 
-HTTP/1.0 in 1996 added most of the vocabulary we still use. `POST` and `HEAD`. Status codes, so a client could tell "here it is" from "it's gone". Request and response headers, and with them `Content-Type` — which is the moment HTTP stopped being an HTML delivery mechanism and became a way to move anything.
+### HTTP/1.1: keep the connection open
 
-The connection model didn't change though. Still one request, one connection, one teardown. And now every request carried a block of headers, re-sent in full each time, uncompressed.
+HTTP/1.1 arrived in 1997 and still carries a big share of traffic today. It brought:
 
-### 1.1: keep the socket open
+- **Connections that stay open.** A page's files share one connection instead of each paying to set up its own.
+- **Sending before you know the size.** The server can start streaming a page it's still building.
+- **Real caching.** `Cache-Control`, `ETag`, and asking "has this changed?" before downloading again.
+- **The `Host` header.** Sounds boring. It's what lets many sites share one address, which is what made shared hosting and <Term abbr="CDN" def="Content delivery network. Copies of your files kept in data centres around the world, so a user in Delhi downloads from Delhi and not from Virginia.">content delivery networks</Term> possible.
+- **Pipelining.** Send the second request without waiting for the first reply.
 
-HTTP/1.1 arrived in 1997 and is, remarkably, still carrying a large share of traffic nearly thirty years later. It brought:
+That last one was meant to be the big win. It wasn't.
 
-- **Persistent connections.** The socket stays open by default, so a page's resources reuse one handshake instead of paying for their own.
-- **Chunked transfer encoding.** The server can start sending before it knows the total length, which is what makes streaming a slow-generated page possible.
-- **Real caching.** `Cache-Control`, `ETag`, conditional requests.
-- **The `Host` header.** Sounds minor, is not: it's what lets many domains share one IP, and effectively what made shared hosting and CDNs viable.
-- **Pipelining.** Send request two without waiting for response one.
+### The queue problem, or head-of-line blocking
 
-That last one was supposed to be the big performance win. It wasn't.
+The proper name for what happens next is <Term def="A queue where one stuck item at the front holds up everything behind it, even though those items are ready to go. Often written as HOL blocking.">head-of-line blocking</Term>, and it's worth knowing, because it comes back twice more in this post.
 
-### Head-of-line blocking, the HTTP/1.1 flavour
+Pipelining lets the browser send several requests back to back — but the server has to reply **in the order they were asked for**. There's no request number on the wire, so order is the only way the browser can tell which reply belongs to which request.
 
-Pipelining lets a client send several requests back to back — but the server must return the responses **in the order they were requested**. There's no request ID on the wire, so ordering is the only way the client can tell which response belongs to which request.
+So if the first request is a slow page and the next two are tiny files that finished instantly, those two sit and wait. The line is stuck behind whatever is at the front of it. That's the blocking.
 
-So if request one is a slow database-backed page and requests two and three are tiny static files that finished immediately, two and three sit in the server's buffer waiting for one. The line is blocked by whatever is at its head.
+This went badly enough in practice that **browsers shipped with pipelining switched off**. It was specified, built, then disabled.
 
-This turned out to be bad enough in practice — with intermediary proxies mangling things on top — that **browsers shipped with pipelining disabled**. It was specified, implemented, and then switched off.
-
-What browsers did instead was brute force: open around **six parallel TCP connections per origin** and spread requests across them. Six lanes, each strictly one-at-a-time.
+What browsers did instead was brute force: open about **six connections per site** and spread requests across them. Six lanes, each one strictly one-at-a-time.
 
 <HeadOfLineBlocking />
 
 ### The workarounds became an industry
 
-Six connections per _origin_ meant the obvious hack was more origins. That's **domain sharding** — serving images from `img1.example.com` and `img2.example.com` so the browser opens six sockets to each. Alongside it came the whole 2010s performance playbook: sprite sheets to turn twenty icons into one request, concatenating every script into one bundle, inlining CSS as base64.
+Six connections per site meant the obvious hack was more sites. That's why people served images from `img1.example.com` and `img2.example.com` — six more connections each. The name for this was <Term def="Splitting your files across several subdomains purely to get past the browser's six-connections-per-site limit. Standard practice in 2013, a mistake today.">domain sharding</Term>. The rest of the 2010s toolkit came from the same place: one big sprite image instead of twenty icons, every script glued into one file, CSS pasted inline.
 
-Every one of those techniques exists to work around a per-connection limit. Keep that in mind — most of them became actively harmful later.
+All of it exists to dodge a limit on connections. Remember that — most of it turned harmful later.
 
-### HTTP/2: stop queueing at the application layer
+### HTTP/2: stop making requests wait in line
 
-HTTP/2 landed in 2015, built from Google's SPDY, and changed the wire format completely.
+HTTP/2 landed in 2015, built from Google's SPDY, and changed the format on the wire completely.
 
-**Binary framing.** HTTP/1.1 is plain text you can type into telnet. HTTP/2 is binary frames, each tagged with a stream ID, length and type. Less human-friendly; enormously easier to parse unambiguously — and the stream ID is the thing that unlocks everything else.
+**It's binary now.** HTTP/1.1 is plain text you can type by hand. HTTP/2 sends small packets of data, each one tagged with the request it belongs to. Harder for humans to read, far easier for machines to read without guessing — and that tag is what makes everything else possible.
 
-**Multiplexing.** Because every frame says which stream it belongs to, responses can come back **in any order, interleaved**, over a single TCP connection. Response three can complete while response one is still being generated. That's the fix for HTTP/1.1's ordering problem, and it makes the six-connection workaround obsolete.
+**Replies can arrive in any order.** Because every packet says which request it belongs to, replies can come back mixed together over a single connection. Reply three can finish while reply one is still being made. This is <Term def="Sending many requests and replies over one connection at the same time, mixed together, instead of one after another.">multiplexing</Term>, and it's the reason HTTP/2 exists. It fixes head-of-line blocking inside HTTP, and it makes the six-connection hack pointless.
 
-**HPACK header compression.** HTTP/1.1 could compress bodies but never headers, so a hundred requests to the same origin re-sent near-identical cookie and user-agent blocks a hundred times. HPACK keeps a shared table of headers already seen and sends references instead.
+**Headers get compressed.** HTTP/1.1 could compress the page but never the headers, so a hundred requests to the same site sent near-identical cookies a hundred times. HTTP/2 remembers what it already sent and points back at it.
 
-**Prioritisation.** A dependency tree telling the server which streams matter most, so your stylesheet isn't queued behind a below-the-fold image.
-
-<Callout type="warn" title="Two HTTP/2 features you should ignore">
-  **Server push** is dead. It let the server send resources before the client
-  asked, but it couldn't know what was already cached, so it mostly wasted
-  bandwidth. Chrome 106 disabled it by default in 2022 and Firefox 132 removed
-  it entirely in 2024. Use `103 Early Hints` instead. **Priorities** fared
-  little better — the original dependency-tree scheme was so inconsistently
-  implemented that it was replaced by a simpler header-based scheme in RFC 9218.
+<Callout type="warn" title="Two HTTP/2 features you can ignore">
+  **Server push** is dead. It let the server send files before the browser asked
+  for them, but it couldn't tell what the browser already had cached, so it
+  mostly wasted bandwidth. Chrome switched it off in 2022, Firefox removed it in
+  2024. Use `103 Early Hints` instead. **Stream priorities** went much the same
+  way — the original design was built so differently across servers that it was
+  replaced with a simpler one.
 </Callout>
 
 ### What HTTP/2 didn't fix
 
-Here's the part that explains our mobile regression.
+Here's our mobile problem.
 
-HTTP/2 removed head-of-line blocking **at the application layer**. But it runs on TCP, and TCP delivers a single, strictly ordered byte stream. TCP has no idea HTTP/2 has divided that stream into eight independent conversations — it just knows bytes 4000–5400 haven't arrived, so it holds back everything after them until the retransmission lands.
+HTTP/2 stopped requests queueing **inside HTTP**. But it still runs on <Term abbr="TCP" def="Transmission Control Protocol. The layer under HTTP that turns unreliable packets into a reliable, in-order stream of bytes. That in-order promise is exactly what causes the problem here.">TCP</Term>, and TCP hands over data as one strict, in-order stream. TCP has no idea HTTP/2 split that stream into eight separate conversations. It only knows some bytes in the middle went missing, so it holds back everything after them until the missing part is sent again.
 
-So one lost packet stalls **every stream on the connection**, including the seven that arrived perfectly and are sitting in the receive buffer.
+One lost packet stalls **every request on that connection** — including the seven that arrived perfectly and are sitting there, ready. Head-of-line blocking again, one floor down.
 
-And HTTP/1.1's crude six-connection approach accidentally hedges against this: a drop stalls one socket, and the other five keep working. Flip the loss toggle in the diagram above and switch between the two.
+And HTTP/1.1's clumsy six-connection approach protects against this by accident. A lost packet stalls one connection and the other five keep working. Flip the packet-loss toggle in the diagram above and switch between the two.
 
-That's the whole regression. Fast stable office wifi: HTTP/2 wins comfortably. Patchy mobile with 2% packet loss: one connection with everything on it can be worse than six.
+That was our whole regression. On stable office wifi, HTTP/2 wins comfortably. On a patchy mobile connection dropping a couple of percent of packets, one connection carrying everything can be worse than six.
 
-### HTTP/3: rebuild the transport
+### HTTP/3: replace the layer underneath
 
-You cannot fix TCP head-of-line blocking inside TCP. TCP's ordering guarantee _is_ the problem, it's implemented in kernels and middleboxes worldwide, and it isn't going to change.
+You can't fix this inside TCP. The in-order guarantee _is_ the problem, and it's baked into every operating system and every piece of network equipment in the world. It isn't going to change.
 
-So HTTP/3 doesn't use TCP. It uses **QUIC**, a transport built on UDP — chosen not because UDP is good, but because it's the only thing that reliably traverses the internet's middleboxes while leaving reliability to userspace, where it can be changed.
+So HTTP/3 doesn't use TCP. It uses **QUIC**, which is built on <Term abbr="UDP" def="User Datagram Protocol. The bare-bones alternative to TCP: it fires packets off and promises nothing about order or delivery. QUIC adds those guarantees back itself, which is the point.">UDP</Term> — not because UDP is good, but because it's the one thing that reliably gets through the internet's equipment while leaving the hard parts to code that can actually be updated.
 
-QUIC re-implements what TCP gave you, per stream:
+QUIC rebuilds what TCP gave you, but per request:
 
-- **Independent streams.** Loss and retransmission are tracked per stream, so a dropped packet stalls only the stream that lost data.
-- **A folded handshake.** TLS 1.3 is part of the QUIC handshake rather than layered on top, so connection setup is one round trip, or zero when resuming.
-- **Connection IDs.** Connections are identified by an ID, not by the IP/port four-tuple — so walking from wifi onto cellular keeps the connection alive instead of resetting it mid-download.
-- **Always encrypted.** Not optional, and much of the transport metadata is encrypted too.
+- **Requests are independent.** A lost packet only stalls the request that lost it. No head-of-line blocking across requests.
+- **One <Term def="The back-and-forth two computers do before any real data moves: agreeing to talk, then agreeing on encryption keys.">handshake</Term> instead of two.** Encryption is part of setting up the connection, not a separate step on top. One round trip, or none at all for a returning visitor.
+- **Connections survive a network change.** A connection is identified by an ID, not by your address — so walking out of wifi onto mobile data doesn't kill your download.
+- **Always encrypted.** Not optional. The encryption itself is <Term abbr="TLS" def="Transport Layer Security. The encryption behind the padlock in your address bar — the S in HTTPS. Its old name was SSL, which people still say.">TLS</Term>, same as everywhere else.
 
 <HandshakeCost />
 
-### The plot twist
+### The twist
 
-This is where the tidy "newer is better" story falls apart.
+This is where "newer is better" falls apart.
 
-HTTP/3 adoption has **stalled, and slightly reversed**. <cite index="8-1">Cloudflare's own data showed HTTP/3 at 28% of traffic in May 2023; their public Radar data showed 21.11% and declining by April 2026, while HTTP/2 climbed to over 51%.</cite>
+HTTP/3 adoption has **stalled, and slightly gone backwards**. <cite index="8-1">Cloudflare's own data showed HTTP/3 at 28% of traffic in May 2023; their public Radar data showed 21.11% and declining by April 2026, while HTTP/2 climbed to over 51%.</cite>
 
-The reason is physics, not politics. Moving the transport into userspace means the CPU handles per-packet work the kernel used to do in optimised paths. A peer-reviewed WWW '24 paper measured this: <cite index="12-1">the QUIC/HTTP-3 stack lost up to 45.2% of its data rate compared with TCP + TLS + HTTP/2 over fast connections, and the gap widened as bandwidth increased.</cite> <cite index="12-1">The cause was traced to receiver-side processing overhead — too many small packets and QUIC's userspace acknowledgements — and it showed up across Chrome, Edge, Firefox and Opera, on desktop and mobile.</cite>
+The reason is physics, not politics. Moving this work out of the operating system means your computer's processor now does per-packet work that used to happen in a heavily optimised place. A peer-reviewed paper measured it: <cite index="12-1">the QUIC/HTTP-3 stack lost up to 45.2% of its data rate compared with TCP + TLS + HTTP/2 over fast connections, and the gap widened as bandwidth increased.</cite> <cite index="12-1">The cause was traced to receiver-side processing overhead — too many small packets and QUIC's userspace acknowledgements — and it showed up across Chrome, Edge, Firefox and Opera, on desktop and mobile.</cite>
 
-So the protocol built to survive bad networks can be the slower option on a very good one. Which is the same trade every version made: HTTP/2 optimised for one clean connection and lost on lossy links; HTTP/3 optimised for lossy links and pays for it on fast ones.
+So the protocol built to survive bad networks can be the slower choice on a very good one. Which is the same trade every version made: HTTP/2 is tuned for one clean connection and loses when packets drop; HTTP/3 is tuned for dropped packets and pays for it when they don't.
 
 <ProtocolCheatSheet />
 
 ## Status codes, in one pass
 
-None of this changed across versions — the codes arrived in HTTP/1.0 and every version since carries them unchanged. They fall into five classes, and the first digit is the whole story:
+These barely changed across versions. They arrived in HTTP/1.0 and every version since carries the same set. The first digit tells you almost everything:
 
-- **1xx — informational.** Received, still working; the real response is coming.
+- **1xx — informational.** The server got your request and is still working. The real reply is coming.
 - **2xx — success.** Received, understood, done.
-- **3xx — redirection.** It lives somewhere else, or your cached copy is still good.
-- **4xx — client error.** The request was wrong. Resending it unchanged gets the same answer.
-- **5xx — server error.** The request was fine, the server broke. Retrying may work.
+- **3xx — redirection.** It moved, or your cached copy is still fine.
+- **4xx — client error.** The client asked for something wrong. Sending the same request again gets the same answer.
+- **5xx — server error.** The request was fine; the server broke. Trying again might work.
 
-That last split is the one that matters operationally: **4xx is yours to fix, 5xx is theirs**, and it's what monitoring and retry logic key off.
+That last split is the one that matters day to day: **4xx means the client has to change something, 5xx means the server does.** It's what alerts and retry logic are built on.
 
 <StatusCodeCheatSheet />
 
 ## What I got wrong first
 
-- **"HTTP/2 makes domain sharding better."** It makes it _worse_. Sharding exists to get more connections; HTTP/2 wants exactly one, because compression state and prioritisation are per-connection. Sharding under HTTP/2 splits the thing that makes it fast. We deleted shards and improved before we understood why.
-- **"The regression must be a server config problem."** We spent days on nginx and the load balancer. Nothing there was wrong — the stall was in TCP, one layer below anything HTTP exposes. It's invisible in application metrics, which is why it took two weeks.
-- **"Bundle everything into one file."** Correct under HTTP/1.1, actively harmful under HTTP/2 and HTTP/3: one 400KB bundle invalidates entirely when one line changes, while thirty small files are cheap to multiplex and cache separately.
-- **"Enable HTTP/3 and turn HTTP/2 off."** Advertise both. `Alt-Svc` lets the client upgrade when it can, and fall back when the network eats UDP — which corporate firewalls still do.
+- **"HTTP/2 makes splitting across domains better."** It makes it worse. Splitting exists to get more connections; HTTP/2 wants exactly one, because header compression and priority only work within a single connection. We deleted ours and got faster before we understood why.
+- **"It must be a server config problem."** We spent days in nginx and the load balancer. Nothing there was wrong. The stall was in TCP, one layer below anything HTTP shows you — which is why it hid for two weeks.
+- **"Bundle everything into one file."** Right for HTTP/1.1, harmful now. One 400KB bundle is thrown away entirely when one line changes; thirty small files download together fine and cache separately.
+- **"Turn on HTTP/3 and turn HTTP/2 off."** Offer both. `Alt-Svc` lets the browser move up when it can and fall back when the network blocks UDP — which plenty of office firewalls still do.
 
 ## Takeaway
 
-Serve HTTP/2 and HTTP/3 together and let clients choose, because the honest answer to "which is fastest" is that it depends on the network your user is standing in — and if you moved to HTTP/2 and something got slower on mobile, look at packet loss under TCP, not at your HTTP config.
+Run HTTP/2 and HTTP/3 side by side and let the browser choose, because the honest answer to "which is faster" is that it depends on the network your user is standing in — and if you switched to HTTP/2 and mobile got slower, go look at packet loss, not at your HTTP config.

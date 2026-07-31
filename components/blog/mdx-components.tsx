@@ -2,6 +2,7 @@ import { CodeBlock } from "@/components/blog/copy-code-button";
 import { Callout } from "@/components/blog/callout";
 import { Aside } from "@/components/blog/aside";
 import { Demo } from "@/components/blog/demo";
+import { Term } from "@/components/blog/term";
 import { cn } from "@/lib/utils";
 
 import {
@@ -27,6 +28,7 @@ export const mdxComponents = {
   Callout,
   Aside,
   Demo,
+  Term,
   RenderingPipeline,
   ScriptBlockingPlayground,
   BlockingCheatSheet,
