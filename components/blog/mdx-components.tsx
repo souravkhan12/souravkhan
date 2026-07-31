@@ -10,6 +10,12 @@ import {
   BlockingCheatSheet,
   RenderTreeMerge,
 } from "@/components/mdx/BrowserRenderingDiagrams";
+import {
+  ProtocolTimeline,
+  HeadOfLineBlocking,
+  HandshakeCost,
+  ProtocolCheatSheet,
+} from "@/components/mdx/Httpversiondiagrams";
 
 export const mdxComponents = {
   pre: CodeBlock,
@@ -24,4 +30,8 @@ export const mdxComponents = {
   ScriptBlockingPlayground,
   BlockingCheatSheet,
   RenderTreeMerge,
+  ProtocolTimeline,
+  HeadOfLineBlocking,
+  HandshakeCost,
+  ProtocolCheatSheet,
 };
