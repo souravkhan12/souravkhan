@@ -142,6 +142,20 @@ So the protocol built to survive bad networks can be the slower option on a very
 
 <ProtocolCheatSheet />
 
+## Status codes, in one pass
+
+None of this changed across versions — the codes arrived in HTTP/1.0 and every version since carries them unchanged. They fall into five classes, and the first digit is the whole story:
+
+- **1xx — informational.** Received, still working; the real response is coming.
+- **2xx — success.** Received, understood, done.
+- **3xx — redirection.** It lives somewhere else, or your cached copy is still good.
+- **4xx — client error.** The request was wrong. Resending it unchanged gets the same answer.
+- **5xx — server error.** The request was fine, the server broke. Retrying may work.
+
+That last split is the one that matters operationally: **4xx is yours to fix, 5xx is theirs**, and it's what monitoring and retry logic key off.
+
+<StatusCodeCheatSheet />
+
 ## What I got wrong first
 
 - **"HTTP/2 makes domain sharding better."** It makes it _worse_. Sharding exists to get more connections; HTTP/2 wants exactly one, because compression state and prioritisation are per-connection. Sharding under HTTP/2 splits the thing that makes it fast. We deleted shards and improved before we understood why.

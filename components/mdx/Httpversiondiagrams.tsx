@@ -602,7 +602,223 @@ export function HandshakeCost() {
 }
 
 /* ------------------------------------------------------------------ *
- * 4. ProtocolCheatSheet
+ * 4. StatusCodeCheatSheet
+ *
+ * Revision aid, not a spec dump. Five classes, and inside each only the
+ * codes you actually meet in a normal week — with the line that tells
+ * you which one to reach for when two look interchangeable.
+ * ------------------------------------------------------------------ */
+
+type CodeClass = "1xx" | "2xx" | "3xx" | "4xx" | "5xx";
+
+const CLASSES: readonly CodeClass[] = ["1xx", "2xx", "3xx", "4xx", "5xx"];
+
+const CLASS_META: Record<CodeClass, { name: string; gist: string }> = {
+  "1xx": {
+    name: "informational",
+    gist: "received, still working — the response proper is still coming",
+  },
+  "2xx": { name: "success", gist: "received, understood, done" },
+  "3xx": {
+    name: "redirection",
+    gist: "it lives somewhere else, or your cached copy is still good",
+  },
+  "4xx": {
+    name: "client error",
+    gist: "the request was wrong — don't resend it unchanged",
+  },
+  "5xx": {
+    name: "server error",
+    gist: "the request was fine, we broke — retrying may work",
+  },
+};
+
+const CODES: { c: CodeClass; code: string; name: string; note: string }[] = [
+  {
+    c: "1xx",
+    code: "101",
+    name: "Switching Protocols",
+    note: "the HTTP→WebSocket upgrade handshake",
+  },
+  {
+    c: "1xx",
+    code: "103",
+    name: "Early Hints",
+    note: "preload hints while the real response is generated — the replacement for HTTP/2 server push",
+  },
+  {
+    c: "2xx",
+    code: "200",
+    name: "OK",
+    note: "the default success, body included",
+  },
+  {
+    c: "2xx",
+    code: "201",
+    name: "Created",
+    note: "a POST made something new — return its URL in Location",
+  },
+  {
+    c: "2xx",
+    code: "204",
+    name: "No Content",
+    note: "done, deliberately empty body — the right answer for DELETE",
+  },
+  {
+    c: "2xx",
+    code: "206",
+    name: "Partial Content",
+    note: "range request answered — video scrubbing and resumable downloads",
+  },
+  {
+    c: "3xx",
+    code: "301",
+    name: "Moved Permanently",
+    note: "permanent — cached hard by browsers, so be sure before you ship it",
+  },
+  {
+    c: "3xx",
+    code: "302",
+    name: "Found",
+    note: "temporary; method may change on the retry, which is why 307 exists",
+  },
+  {
+    c: "3xx",
+    code: "304",
+    name: "Not Modified",
+    note: "your ETag still matches — no body sent, the cheapest response there is",
+  },
+  {
+    c: "3xx",
+    code: "307 / 308",
+    name: "Temporary / Permanent Redirect",
+    note: "same as 302 / 301 but the method and body are preserved",
+  },
+  {
+    c: "4xx",
+    code: "400",
+    name: "Bad Request",
+    note: "malformed — the catch-all when nothing more specific fits",
+  },
+  {
+    c: "4xx",
+    code: "401",
+    name: "Unauthorized",
+    note: "actually unauthenticated: who are you? log in and try again",
+  },
+  {
+    c: "4xx",
+    code: "403",
+    name: "Forbidden",
+    note: "we know who you are and you still can't — re-authenticating won't help",
+  },
+  { c: "4xx", code: "404", name: "Not Found", note: "no such resource here" },
+  {
+    c: "4xx",
+    code: "405",
+    name: "Method Not Allowed",
+    note: "the path exists, the verb doesn't — list the valid ones in Allow",
+  },
+  {
+    c: "4xx",
+    code: "409",
+    name: "Conflict",
+    note: "clashes with current state — duplicate key, stale edit",
+  },
+  {
+    c: "4xx",
+    code: "422",
+    name: "Unprocessable Content",
+    note: "syntax fine, semantics wrong — the usual validation-failure code",
+  },
+  {
+    c: "4xx",
+    code: "429",
+    name: "Too Many Requests",
+    note: "rate limited — send Retry-After so the client backs off properly",
+  },
+  {
+    c: "5xx",
+    code: "500",
+    name: "Internal Server Error",
+    note: "unhandled exception, the default for anything you didn't catch",
+  },
+  {
+    c: "5xx",
+    code: "502",
+    name: "Bad Gateway",
+    note: "proxy reached upstream and got garbage back",
+  },
+  {
+    c: "5xx",
+    code: "503",
+    name: "Service Unavailable",
+    note: "overloaded or in maintenance — temporary, and retryable",
+  },
+  {
+    c: "5xx",
+    code: "504",
+    name: "Gateway Timeout",
+    note: "upstream never answered in time",
+  },
+];
+
+export function StatusCodeCheatSheet() {
+  const [active, setActive] = useState<CodeClass | "all">("all");
+  const shown = active === "all" ? CODES : CODES.filter((c) => c.c === active);
+
+  return (
+    <Panel
+      label="status codes, quickly"
+      footnote={
+        <>
+          The two everyone gets backwards: <strong>401</strong> means we
+          don&apos;t know who you are, <strong>403</strong> means we do and the
+          answer is still no. And <strong>422</strong> beats a bare{" "}
+          <strong>400</strong> for validation failures — the request parsed
+          fine, it just asked for something impossible.
+        </>
+      }
+    >
+      <Tabs
+        options={["all", ...CLASSES] as const}
+        value={active}
+        onChange={setActive}
+      />
+
+      {active !== "all" && (
+        <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
+          <span className="font-code text-gray-700 dark:text-gray-300">
+            {CLASS_META[active].name}
+          </span>{" "}
+          — {CLASS_META[active].gist}
+        </p>
+      )}
+
+      <div className="mt-4">
+        {shown.map((c) => (
+          <div
+            key={c.code}
+            className="border-border flex flex-col gap-0.5 border-b py-2.5 last:border-b-0 sm:flex-row sm:items-baseline sm:gap-4"
+          >
+            <span className="font-code text-blue text-xs sm:w-20 sm:shrink-0">
+              {c.code}
+            </span>
+            <span className="text-sm text-gray-700 sm:w-52 sm:shrink-0 dark:text-gray-300">
+              {c.name}
+            </span>
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              {c.note}
+            </span>
+          </div>
+        ))}
+      </div>
+    </Panel>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * 5. ProtocolCheatSheet
  * ------------------------------------------------------------------ */
 
 const COLS = ["HTTP/1.1", "HTTP/2", "HTTP/3"] as const;

@@ -15,6 +15,7 @@ import {
   HeadOfLineBlocking,
   HandshakeCost,
   ProtocolCheatSheet,
+  StatusCodeCheatSheet,
 } from "@/components/mdx/Httpversiondiagrams";
 
 export const mdxComponents = {
@@ -34,4 +35,5 @@ export const mdxComponents = {
   HeadOfLineBlocking,
   HandshakeCost,
   ProtocolCheatSheet,
+  StatusCodeCheatSheet,
 };
