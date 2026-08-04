@@ -40,10 +40,10 @@ export default function MachineCodingPage() {
             <Link
               key={category.slug}
               href={`/machine-coding/category/${category.slug}`}
-              className="border-border hover:border-blue hover:text-blue font-code shrink-0 border px-2 py-0.5 text-[11px] whitespace-nowrap text-gray-500 transition-colors"
+              className="border-border hover:border-blue hover:text-blue font-code text-2xs text-soft shrink-0 border px-2 py-0.5 whitespace-nowrap transition-colors"
             >
               {category.label.toLowerCase()}{" "}
-              <span className="text-gray-400">{category.count}</span>
+              <span className="text-faint">{category.count}</span>
             </Link>
           ))}
 
@@ -51,7 +51,7 @@ export default function MachineCodingPage() {
             href={MC_REPO_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="border-border hover:border-blue hover:text-blue font-code ml-auto inline-flex shrink-0 items-center gap-1.5 border px-2 py-0.5 text-[11px] text-gray-500 transition-colors"
+            className="border-border hover:border-blue hover:text-blue font-code text-2xs text-soft ml-auto inline-flex shrink-0 items-center gap-1.5 border px-2 py-0.5 transition-colors"
           >
             <LuGithub size={11} aria-hidden="true" />
             source

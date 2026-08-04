@@ -1,0 +1,126 @@
+---
+title: Observer Pattern
+description: The same subject-and-subscribers shape, except React owns the render — which changes who is allowed to call whom.
+category: state
+categoryLabel: State
+tags: ["hooks", "subscriptions", "useSyncExternalStore"]
+order: 10
+published: true
+---
+
+The vanilla version of this pattern hands you a `subscribe` that returns an
+unsubscribe. In React the hard part isn't building that — it's wiring it to a
+render without tearing.
+
+## The naive version, and why it's wrong
+
+```jsx
+// Don't ship this.
+function useStore(store) {
+  const [state, setState] = useState(store.getState());
+
+  useEffect(() => store.subscribe(() => setState(store.getState())), [store]);
+
+  return state;
+}
+```
+
+This works right up until concurrent rendering. React can start a render, pause
+it, and resume later — and in between, the store can change. Half the tree then
+renders with the old value and half with the new one. That's tearing, and it
+produces UI that is internally inconsistent in a way no single component is
+responsible for.
+
+There's also a subscription gap: between the first render reading
+`store.getState()` and the effect running, an update can land and be missed
+entirely.
+
+## useSyncExternalStore
+
+React 18 added a hook whose entire job is this pattern. You give it the two
+halves of an observable:
+
+```jsx
+import { useSyncExternalStore } from "react";
+
+function useStore(store) {
+  return useSyncExternalStore(
+    store.subscribe, // must return an unsubscribe
+    store.getState, // read the value (client)
+    store.getServerState, // read the value (SSR + hydration)
+  );
+}
+```
+
+React now controls when the read happens, forces a synchronous re-render when
+the store changes mid-render, and checks for a missed update after subscribing.
+The tearing problem stops being yours.
+
+<Callout type="warn" title="Both functions must be stable">
+If `subscribe` is a new arrow function each render, React unsubscribes and
+resubscribes on every commit. Define them outside the component, or wrap them
+in `useCallback` — this is the single most common way to make this hook
+pathological.
+</Callout>
+
+## A complete store
+
+```js
+// counter-store.js
+let state = { count: 0 };
+const listeners = new Set();
+
+export const store = {
+  getState: () => state,
+
+  subscribe(listener) {
+    listeners.add(listener);
+    return () => listeners.delete(listener);
+  },
+
+  increment() {
+    // A new object, always: useSyncExternalStore compares with Object.is, so a
+    // mutated-in-place state looks unchanged and never re-renders.
+    state = { count: state.count + 1 };
+    for (const listener of [...listeners]) listener();
+  },
+};
+```
+
+```jsx
+function Counter() {
+  const { count } = useSyncExternalStore(store.subscribe, store.getState);
+  return <button onClick={store.increment}>{count}</button>;
+}
+```
+
+Two components using this hook share one store and stay in sync, with no
+provider and no context.
+
+## The selector trap
+
+You'll want to subscribe to a slice. The obvious attempt re-renders forever:
+
+```jsx
+// Infinite loop: a new object every read, so Object.is is never true.
+useSyncExternalStore(store.subscribe, () => ({ count: store.getState().count }));
+```
+
+The snapshot function must return a value that is referentially stable when
+nothing changed. Return a primitive:
+
+```jsx
+const count = useSyncExternalStore(store.subscribe, () => store.getState().count);
+```
+
+For genuinely derived objects, `useSyncExternalStoreWithSelector` from
+`use-sync-external-store/shim/with-selector` takes an equality function. This
+is exactly what Zustand and Redux use under the hood — both are this pattern
+plus a selector layer.
+
+<Aside>
+Context is not a substitute here. Context re-renders every consumer when the
+value changes, with no selector; an external store lets each component
+subscribe to just the slice it reads. That difference is the reason store
+libraries exist alongside Context rather than being replaced by it.
+</Aside>

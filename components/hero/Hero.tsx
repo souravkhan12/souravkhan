@@ -43,7 +43,7 @@ export default function Hero() {
         >
           {HERO.name}
           <br />
-          <span className="text-gray-500 dark:text-gray-500">{HERO.title}</span>
+          <span className="text-soft">{HERO.title}</span>
         </motion.h1>
 
         <motion.p
@@ -54,7 +54,7 @@ export default function Hero() {
             delay: 0.1,
             ease: MOTION.ease,
           }}
-          className="max-w-xl text-base text-pretty text-gray-600 dark:text-gray-400"
+          className="text-soft max-w-xl text-base text-pretty"
         >
           {HERO.bio}
         </motion.p>
@@ -93,7 +93,7 @@ export default function Hero() {
               .getElementById("arcade")
               ?.scrollIntoView({ behavior: "smooth", block: "start" });
           }}
-          className="hover:text-blue group inline-flex w-fit items-center gap-2 text-sm text-gray-500 transition-colors"
+          className="hover:text-blue group text-soft inline-flex w-fit items-center gap-2 text-sm transition-colors"
         >
           <span aria-hidden="true">🐍</span>
           feeling playful? play snake &amp; beat the high score

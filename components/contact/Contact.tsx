@@ -78,14 +78,14 @@ export default function Contact() {
       <GridBand cols="grid-cols-1 md:grid-cols-2">
         {/* Contact Information */}
         <GridCell className="flex flex-col gap-6">
-          <p className="text-base text-pretty text-gray-600 dark:text-gray-400">
+          <p className="text-soft text-base text-pretty">
             I&apos;d love to hear from you — feel free to reach out via email,
             phone, or connect on LinkedIn.
           </p>
 
           <div className="flex flex-col gap-3 text-sm">
             <div className="flex items-center gap-3">
-              <LucideMail className="h-4 w-4 shrink-0 text-gray-400" />
+              <LucideMail className="text-faint h-4 w-4 shrink-0" />
               <Link
                 href={`mailto:${CONTACT_INFO.email}`}
                 className="hover:text-blue transition-colors"
@@ -95,7 +95,7 @@ export default function Contact() {
             </div>
 
             <div className="flex items-center gap-3">
-              <LucidePhone className="h-4 w-4 shrink-0 text-gray-400" />
+              <LucidePhone className="text-faint h-4 w-4 shrink-0" />
               <Link
                 href={`tel:${CONTACT_INFO.phone}`}
                 className="hover:text-blue transition-colors"
@@ -105,12 +105,12 @@ export default function Contact() {
             </div>
 
             <div className="flex items-center gap-3">
-              <LucideMapPin className="h-4 w-4 shrink-0 text-gray-400" />
+              <LucideMapPin className="text-faint h-4 w-4 shrink-0" />
               <span>{CONTACT_INFO.location}</span>
             </div>
 
             <div className="flex items-center gap-3">
-              <LucideLinkedin className="h-4 w-4 shrink-0 text-gray-400" />
+              <LucideLinkedin className="text-faint h-4 w-4 shrink-0" />
               <a
                 href={CONTACT_INFO.linkedin}
                 target="_blank"

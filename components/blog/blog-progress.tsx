@@ -59,7 +59,7 @@ export function BlogProgress({ headings }: { headings: Heading[] }) {
               data-lenis-prevent
               className="border-border bg-background mb-px max-h-[60vh] w-72 max-w-[calc(100vw-2rem)] overflow-y-auto border shadow-lg"
             >
-              <div className="border-border font-code border-b bg-gray-50 px-3 py-2.5 text-[11px] text-gray-500 lowercase dark:bg-black">
+              <div className="border-border font-code text-2xs text-soft border-b bg-gray-50 px-3 py-2.5 lowercase dark:bg-black">
                 on this page
               </div>
               <div className="flex flex-col">
@@ -72,10 +72,10 @@ export function BlogProgress({ headings }: { headings: Heading[] }) {
                       onClick={() => goTo(heading.id)}
                       className={cn(
                         "normal-case-force border-l-2 px-3 py-2.5 text-left text-sm transition-colors sm:py-2",
-                        heading.depth === 3 && "pl-6 text-[13px]",
+                        heading.depth === 3 && "text-2xs pl-6",
                         isActive
                           ? "border-blue text-blue bg-gray-50 font-medium dark:bg-black"
-                          : "hover:text-foreground border-transparent text-gray-500 hover:bg-gray-50 dark:hover:bg-black",
+                          : "hover:text-foreground text-soft border-transparent hover:bg-gray-50 dark:hover:bg-black",
                       )}
                     >
                       {heading.text}
@@ -98,7 +98,7 @@ export function BlogProgress({ headings }: { headings: Heading[] }) {
           <span className="normal-case-force hidden max-w-[14rem] min-w-0 truncate text-sm sm:block">
             {activeHeading?.text}
           </span>
-          <span className="font-code shrink-0 text-xs text-gray-500 tabular-nums">
+          <span className="font-code text-soft shrink-0 text-xs tabular-nums">
             {Math.round(progress)}%
           </span>
         </button>

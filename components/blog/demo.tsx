@@ -22,13 +22,11 @@ export function Demo({
   return (
     <div className="not-prose border-border my-8 border">
       <div className="border-border flex items-center justify-between border-b bg-gray-50 px-4 py-2 dark:bg-black">
-        <span className="font-code text-[11px] text-gray-500 lowercase">
-          {title}
-        </span>
+        <span className="font-code text-2xs text-soft lowercase">{title}</span>
         <button
           type="button"
           onClick={() => setRunId((n) => n + 1)}
-          className="hover:text-blue font-code inline-flex items-center gap-1.5 text-[11px] text-gray-500 transition-colors"
+          className="hover:text-blue font-code text-2xs text-soft inline-flex items-center gap-1.5 transition-colors"
         >
           <LuRotateCcw size={12} aria-hidden="true" />
           reset

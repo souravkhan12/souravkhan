@@ -49,7 +49,7 @@ export function Callout({
     <div className={cn("not-prose my-6 border px-5 py-4", tone)}>
       <div className="flex items-center gap-2">
         <Icon size={15} aria-hidden="true" />
-        <span className="font-code text-[11px] tracking-wide uppercase">
+        <span className="font-code text-2xs tracking-wide uppercase">
           {title ?? label}
         </span>
       </div>

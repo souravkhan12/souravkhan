@@ -26,7 +26,7 @@ export function CodeBlock({
       <pre
         ref={preRef}
         className={cn(
-          "font-code text-[13px]! leading-relaxed sm:text-sm!",
+          "font-code text-2xs! leading-relaxed sm:text-sm!",
           className,
         )}
         {...props}
@@ -39,7 +39,7 @@ export function CodeBlock({
         aria-label="Copy code"
         className={cn(
           "absolute top-2.5 right-2.5 rounded-md border border-white/10 bg-white/5 p-1.5",
-          "text-gray-400 opacity-0 transition-all group-hover:opacity-100 hover:text-gray-100",
+          "text-faint opacity-0 transition-all group-hover:opacity-100 hover:text-gray-100",
         )}
       >
         {copied ? <Check size={14} /> : <Copy size={14} />}

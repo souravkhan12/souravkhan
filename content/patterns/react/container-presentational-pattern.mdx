@@ -1,0 +1,116 @@
+---
+title: Container / Presentational Pattern
+description: Split the component that knows how to fetch from the component that knows how to look — and know which half hooks made obsolete.
+category: composition
+categoryLabel: Composition
+tags: ["separation of concerns", "hooks", "components"]
+order: 10
+published: true
+---
+
+Two components per feature. The container gets the data; the presentational
+component renders it and takes no view on where it came from.
+
+## The shape
+
+```jsx
+// Presentational: props in, JSX out. No fetching, no state.
+function DogImages({ images }) {
+  return (
+    <ul>
+      {images.map((src) => (
+        <li key={src}>
+          <img src={src} alt="" />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+// Container: knows the endpoint, knows nothing about markup.
+function DogImagesContainer() {
+  const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    fetch("https://dog.ceo/api/breed/labrador/images/random/6")
+      .then((res) => res.json())
+      .then(({ message }) => setImages(message));
+  }, []);
+
+  return <DogImages images={images} />;
+}
+```
+
+The payoff is that `DogImages` is now trivially testable and reusable — render
+it with an array and you're done, no network mock, no provider. It's also the
+component a designer can iterate on without touching data code.
+
+## Hooks took over most of it
+
+The original pitfall was that the container had to be a class (only classes had
+lifecycle and state), so the split was forced by the framework, not chosen. Once
+a hook could hold that logic, the container's reason to be a *component*
+disappeared:
+
+```jsx
+function useDogImages() {
+  const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch("https://dog.ceo/api/breed/labrador/images/random/6")
+      .then((res) => res.json())
+      // The guard matters: without it a response arriving after unmount sets
+      // state on a component that's gone.
+      .then(({ message }) => !cancelled && setImages(message));
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return images;
+}
+
+function DogImages() {
+  const images = useDogImages();
+  return <ul>{/* … */}</ul>;
+}
+```
+
+Same separation, one component instead of two, and the logic is now reusable
+somewhere with entirely different markup — which the container version never
+was, because its `return` hardcoded its child.
+
+<Callout type="tip" title="The rule of thumb">
+Reach for a custom hook by default. Reach for the two-component split only when
+the presentational half genuinely needs to be rendered with data from more than
+one source — a design-system component, a Storybook story, a list that's fed by
+props in one place and a query in another.
+</Callout>
+
+## Where the split still earns its keep
+
+**Server and client boundaries.** In the App Router the container is a server
+component that awaits the data and the presentational one is a `"use client"`
+component that renders it. Here the split isn't stylistic — it's the boundary
+the runtime enforces, and a hook can't cross it.
+
+```jsx
+// page.jsx — server component, no "use client"
+export default async function Page() {
+  const images = await getDogImages();
+  return <DogGallery images={images} />; // client component
+}
+```
+
+**Design systems.** A `<Table>` shipped to other teams must not know where rows
+come from. Props-only is the contract.
+
+## What it costs when overapplied
+
+Two files and a prop-drilling layer per feature, with names like
+`UserListContainerContainer` when someone needed one more level. If the
+presentational component has exactly one caller and always will, the split is
+ceremony — you've paid the indirection and bought nothing.

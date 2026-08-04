@@ -24,7 +24,7 @@ export default function NotFound() {
         className="pt-8"
       >
         <div className="border-border border-x border-b px-6 py-8 sm:px-8">
-          <p className="max-w-lg text-sm text-pretty text-gray-600 dark:text-gray-400">
+          <p className="text-soft max-w-lg text-sm text-pretty">
             Nothing lives at that address. If you followed a link from
             somewhere, I&apos;d genuinely like to know —{" "}
             <Link

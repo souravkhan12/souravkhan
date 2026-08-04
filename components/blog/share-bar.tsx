@@ -22,7 +22,7 @@ export function ShareBar({
   if (variant === "rail") {
     return (
       <div className="border-border mt-8 border-t pt-5">
-        <p className={`${LABEL} mb-3 text-gray-400`}>share</p>
+        <p className={`${LABEL} text-faint mb-3`}>share</p>
 
         {/* Full-width and accent-filled once copied, so the confirmation is
             unmissable at the width of the rail. */}
@@ -32,7 +32,7 @@ export function ShareBar({
           className={`${LABEL} flex w-full cursor-pointer items-center gap-2 border px-2.5 py-2 transition-colors ${
             copied
               ? "border-blue bg-blue/10 text-blue"
-              : "border-border hover:border-blue hover:text-blue text-gray-500"
+              : "border-border hover:border-blue hover:text-blue text-soft"
           }`}
         >
           {copied ? (
@@ -48,7 +48,7 @@ export function ShareBar({
 
   return (
     <div className="border-border mt-14 flex flex-wrap items-center gap-x-3 gap-y-2 border-t pt-6">
-      <span className={`${LABEL} text-gray-500`}>share this post</span>
+      <span className={`${LABEL} text-soft`}>share this post</span>
 
       <button
         type="button"
@@ -56,7 +56,7 @@ export function ShareBar({
         className={`${LABEL} inline-flex h-8 cursor-pointer items-center gap-1.5 border px-2.5 transition-colors ${
           copied
             ? "border-blue bg-blue/10 text-blue"
-            : "border-border hover:border-blue hover:text-blue text-gray-500"
+            : "border-border hover:border-blue hover:text-blue text-soft"
         }`}
       >
         {copied ? (

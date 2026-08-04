@@ -51,7 +51,7 @@ export default function ProjectsPage() {
                     <h2 className="ss01 normal-case-force group-hover:text-blue text-lg font-semibold tracking-[-0.01em] transition-colors">
                       {project.title}
                     </h2>
-                    <p className="mt-2 line-clamp-3 text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-soft mt-2 line-clamp-3 text-sm">
                       {project.description}
                     </p>
 
@@ -59,7 +59,7 @@ export default function ProjectsPage() {
                       {project.technologies.slice(0, 5).map((tech) => (
                         <span
                           key={tech}
-                          className="border-border font-code border px-2 py-0.5 text-[11px] text-gray-500"
+                          className="border-border font-code text-2xs text-soft border px-2 py-0.5"
                         >
                           {tech}
                         </span>
@@ -78,7 +78,7 @@ export default function ProjectsPage() {
                       href={project.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="hover:text-blue inline-flex items-center gap-1.5 text-gray-500 transition-colors"
+                      className="hover:text-blue text-soft inline-flex items-center gap-1.5 transition-colors"
                     >
                       <LuExternalLink size={12} aria-hidden="true" />
                       live
@@ -89,7 +89,7 @@ export default function ProjectsPage() {
                       href={project.code}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="hover:text-blue inline-flex items-center gap-1.5 text-gray-500 transition-colors"
+                      className="hover:text-blue text-soft inline-flex items-center gap-1.5 transition-colors"
                     >
                       <LuGithub size={12} aria-hidden="true" />
                       source

@@ -105,6 +105,13 @@ export default function CommandPalette({
           "interview frontend react debounce throttle pagination practice round",
       },
       {
+        id: "patterns",
+        label: "design patterns",
+        href: "/patterns/vanilla",
+        keywords:
+          "singleton observer factory module javascript react vanilla architecture",
+      },
+      {
         id: "setup-page",
         label: "setup & tools",
         href: "/setup",
@@ -322,7 +329,7 @@ export default function CommandPalette({
             transition={{ type: "spring", duration: 0.32, bounce: 0.22 }}
           >
             <div className="border-border flex shrink-0 items-center gap-3 border-b px-4 py-3">
-              <LuSearch className="shrink-0 text-gray-400" size={16} />
+              <LuSearch className="text-faint shrink-0" size={16} />
               <input
                 ref={inputRef}
                 value={query}
@@ -330,7 +337,7 @@ export default function CommandPalette({
                 placeholder="type a command or search..."
                 className="w-full bg-transparent text-sm outline-none placeholder:text-gray-400"
               />
-              <kbd className="border-border font-code shrink-0 border px-1.5 py-0.5 text-[10px] text-gray-400">
+              <kbd className="border-border font-code text-2xs text-faint shrink-0 border px-1.5 py-0.5">
                 esc
               </kbd>
             </div>
@@ -341,7 +348,7 @@ export default function CommandPalette({
               className="min-h-0 flex-1 overflow-y-auto overscroll-contain py-2"
             >
               {filtered.length === 0 && (
-                <p className="px-4 py-6 text-center text-sm text-gray-400">
+                <p className="text-faint px-4 py-6 text-center text-sm">
                   no results
                 </p>
               )}
@@ -350,7 +357,7 @@ export default function CommandPalette({
                 if (!items.length) return null;
                 return (
                   <div key={g} className="mb-1">
-                    <p className="font-code px-4 py-1.5 text-[10px] tracking-wide text-gray-400 uppercase">
+                    <p className="font-code text-2xs text-faint px-4 py-1.5 tracking-wide uppercase">
                       {g}
                     </p>
                     {items.map((c) => {
@@ -368,7 +375,7 @@ export default function CommandPalette({
                           }`}
                         >
                           <span
-                            className={`shrink-0 ${isActive ? "text-blue" : "text-gray-400"}`}
+                            className={`shrink-0 ${isActive ? "text-blue" : "text-faint"}`}
                           >
                             {c.icon}
                           </span>
@@ -383,7 +390,7 @@ export default function CommandPalette({
               })}
             </div>
 
-            <div className="border-border font-code flex shrink-0 items-center gap-4 border-t px-4 py-2 text-[10px] text-gray-400">
+            <div className="border-border font-code text-2xs text-faint flex shrink-0 items-center gap-4 border-t px-4 py-2">
               <span>↑↓ navigate</span>
               <span>↵ select</span>
               <span>esc close</span>

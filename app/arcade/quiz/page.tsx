@@ -29,7 +29,7 @@ export default function QuizPage() {
       <div className="px-6 pb-4 sm:px-8">
         <Link
           href="/arcade"
-          className="hover:text-blue font-code inline-flex items-center gap-1.5 text-xs text-gray-500 lowercase transition-colors"
+          className="hover:text-blue font-code text-soft inline-flex items-center gap-1.5 text-xs lowercase transition-colors"
         >
           <LuArrowLeft size={13} aria-hidden="true" />
           arcade

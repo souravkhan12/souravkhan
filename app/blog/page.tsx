@@ -39,16 +39,16 @@ export default function BlogPage() {
               <Link
                 key={slug}
                 href={`/blog/tags/${slug}`}
-                className="border-border hover:border-blue hover:text-blue font-code shrink-0 border px-2 py-0.5 text-[11px] whitespace-nowrap text-gray-500 transition-colors"
+                className="border-border hover:border-blue hover:text-blue font-code text-2xs text-soft shrink-0 border px-2 py-0.5 whitespace-nowrap transition-colors"
               >
-                {tag} <span className="text-gray-400">{count}</span>
+                {tag} <span className="text-faint">{count}</span>
               </Link>
             ))}
           </div>
           <Link
             href="/feed.xml"
             aria-label="RSS feed"
-            className="border-border hover:border-blue hover:text-blue font-code inline-flex shrink-0 items-center gap-1.5 border px-2 py-0.5 text-[11px] text-gray-500 transition-colors"
+            className="border-border hover:border-blue hover:text-blue font-code text-2xs text-soft inline-flex shrink-0 items-center gap-1.5 border px-2 py-0.5 transition-colors"
           >
             <LuRss size={11} aria-hidden="true" />
             rss
@@ -62,7 +62,7 @@ export default function BlogPage() {
             <p className="ss01 normal-case-force text-base font-semibold">
               Nothing here yet.
             </p>
-            <p className="mt-2 max-w-xl text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-soft mt-2 max-w-xl text-sm">
               The first post is being written. Until then, the reading list
               below is what I&apos;d have sent you anyway.
             </p>

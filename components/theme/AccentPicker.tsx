@@ -73,7 +73,7 @@ export function AccentPicker({ inline = false }: { inline?: boolean }) {
   // the hovered colour's name, which resized this right-anchored popover, slid
   // the dots out from under the cursor and flickered the hover on and off.
   const caption = (
-    <p className="font-code text-[10px] whitespace-nowrap text-gray-500">
+    <p className="font-code text-2xs text-soft whitespace-nowrap">
       accents only — text stays neutral
     </p>
   );

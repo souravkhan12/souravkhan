@@ -46,7 +46,7 @@ export function PostList({
           <LuSearch
             size={15}
             aria-hidden="true"
-            className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-gray-400"
+            className="text-faint pointer-events-none absolute top-1/2 left-4 -translate-y-1/2"
           />
           <label htmlFor="blog-search" className="sr-only">
             Search posts
@@ -63,7 +63,7 @@ export function PostList({
       )}
 
       {filtered.length === 0 ? (
-        <p className="border-border font-code border px-6 py-10 text-center text-sm text-gray-500">
+        <p className="border-border font-code text-soft border px-6 py-10 text-center text-sm">
           nothing matches “{query}”.
         </p>
       ) : (
@@ -94,11 +94,11 @@ export function PostList({
                 <div className="flex min-w-0 flex-1 flex-col">
                   <div className="flex items-center gap-2">
                     {showLatestBadge && index === 0 && !query && (
-                      <span className="border-blue text-blue inline-flex shrink-0 items-center border px-1.5 py-0.5 text-[10px] font-medium tracking-wide uppercase">
+                      <span className="border-blue text-blue text-2xs inline-flex shrink-0 items-center border px-1.5 py-0.5 font-medium tracking-wide uppercase">
                         latest
                       </span>
                     )}
-                    <div className="font-code flex items-center gap-2 text-[11px] text-gray-400">
+                    <div className="font-code text-2xs text-faint flex items-center gap-2">
                       <time dateTime={post.date}>
                         {new Date(post.date).toLocaleDateString("en-US", {
                           year: "numeric",
@@ -114,7 +114,7 @@ export function PostList({
                   <h3 className="ss01 normal-case-force group-hover:text-blue mt-2 text-lg font-semibold tracking-[-0.01em] transition-colors">
                     {post.title}
                   </h3>
-                  <p className="mt-1.5 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-soft mt-1.5 line-clamp-2 text-sm">
                     {post.description}
                   </p>
 
@@ -123,7 +123,7 @@ export function PostList({
                       {post.tags.slice(0, 3).map((tag) => (
                         <span
                           key={tag}
-                          className="border-border font-code border px-2 py-0.5 text-[11px] text-gray-500"
+                          className="border-border font-code text-2xs text-soft border px-2 py-0.5"
                         >
                           {tag}
                         </span>

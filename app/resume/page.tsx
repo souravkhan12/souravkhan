@@ -50,7 +50,7 @@ export default function ResumePage() {
       </header>
 
       {/* Contact strip */}
-      <div className="font-code text-muted-foreground mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs text-gray-500">
+      <div className="font-code text-muted-foreground text-soft mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs">
         <a
           href={`mailto:${CONTACT_INFO.email}`}
           className="hover:text-blue inline-flex items-center gap-1.5 transition-colors"
@@ -89,9 +89,7 @@ export default function ResumePage() {
         </a>
       </div>
 
-      <p className="mt-6 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-        {HERO.bio}
-      </p>
+      <p className="text-soft mt-6 text-sm leading-relaxed">{HERO.bio}</p>
 
       {/* Experience */}
       <ResumeSection title="experience">
@@ -102,19 +100,19 @@ export default function ResumePage() {
                 <h3 className="ss01 normal-case-force text-base font-semibold">
                   {job.position} · {job.company}
                 </h3>
-                <span className="font-code text-[11px] text-gray-500">
+                <span className="font-code text-2xs text-soft">
                   {job.duration}
                 </span>
               </div>
-              <p className="font-code mt-0.5 text-[11px] text-gray-500">
+              <p className="font-code text-2xs text-soft mt-0.5">
                 {job.location}
               </p>
-              <ul className="mt-2 flex list-disc flex-col gap-1.5 pl-4 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+              <ul className="text-soft mt-2 flex list-disc flex-col gap-1.5 pl-4 text-sm leading-relaxed">
                 {job.achievements.map((achievement, i) => (
                   <li key={i}>{achievement}</li>
                 ))}
               </ul>
-              <p className="font-code mt-2 text-[11px] text-gray-400">
+              <p className="font-code text-2xs text-faint mt-2">
                 {job.technologies.join(" · ")}
               </p>
             </article>
@@ -128,7 +126,7 @@ export default function ResumePage() {
           {HERO_TECH_STACK.map((tech) => (
             <span
               key={tech.name}
-              className="border-border font-code border px-2 py-0.5 text-[11px] text-gray-600 dark:text-gray-400"
+              className="border-border font-code text-2xs text-soft border px-2 py-0.5"
             >
               {tech.name}
             </span>
@@ -144,7 +142,7 @@ export default function ResumePage() {
               <h3 className="ss01 normal-case-force text-sm font-semibold">
                 {project.title}
               </h3>
-              <p className="mt-1 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+              <p className="text-soft mt-1 text-sm leading-relaxed">
                 {project.description}
               </p>
             </div>

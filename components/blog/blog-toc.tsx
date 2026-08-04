@@ -36,7 +36,7 @@ export function BlogToc({
           rather than a percentage divided by zero. */}
       {headings.length > 0 && (
         <nav aria-label="On this page">
-          <p className="font-code mb-3 text-xs text-gray-400 lowercase">
+          <p className="font-code text-faint mb-3 text-xs lowercase">
             on this page
           </p>
 
@@ -65,11 +65,11 @@ export function BlogToc({
                       onClick={() => scrollToHeading(heading.id)}
                       aria-current={isActive ? "location" : undefined}
                       className={cn(
-                        "normal-case-force block w-full py-1.5 pr-2 text-left text-[13px] leading-snug transition-colors",
+                        "normal-case-force text-2xs block w-full py-1.5 pr-2 text-left leading-snug transition-colors",
                         heading.depth === 3 ? "pl-6" : "pl-4",
                         isActive
                           ? "text-blue"
-                          : "hover:text-foreground text-gray-500",
+                          : "hover:text-foreground text-soft",
                       )}
                     >
                       {heading.text}

@@ -37,11 +37,11 @@ const eras: Era[] = [
       "One connection per file, closed after every reply. A page with ten images paid to open ten connections.",
     wire: (
       <div className="font-code text-xs leading-6 text-gray-700 dark:text-gray-300">
-        <div className="text-gray-400">→ request</div>
+        <div className="text-faint">→ request</div>
         <div>GET /index.html</div>
-        <div className="mt-2 text-gray-400">← response</div>
+        <div className="text-faint mt-2">← response</div>
         <div>&lt;html&gt;…&lt;/html&gt;</div>
-        <div className="mt-2 text-gray-400">connection closed</div>
+        <div className="text-faint mt-2">connection closed</div>
       </div>
     ),
   },
@@ -60,9 +60,9 @@ const eras: Era[] = [
     wire: (
       <div className="font-code text-xs leading-6 text-gray-700 dark:text-gray-300">
         <div>GET /index.html HTTP/1.0</div>
-        <div className="text-gray-400">User-Agent: …</div>
+        <div className="text-faint">User-Agent: …</div>
         <div className="mt-2">HTTP/1.0 200 OK</div>
-        <div className="text-gray-400">Content-Type: text/html</div>
+        <div className="text-faint">Content-Type: text/html</div>
       </div>
     ),
   },
@@ -82,8 +82,8 @@ const eras: Era[] = [
     wire: (
       <div className="font-code text-xs leading-6 text-gray-700 dark:text-gray-300">
         <div>GET /a.css HTTP/1.1</div>
-        <div className="text-gray-400">Connection: keep-alive</div>
-        <div className="mt-2 text-gray-400">…same socket…</div>
+        <div className="text-faint">Connection: keep-alive</div>
+        <div className="text-faint mt-2">…same socket…</div>
         <div>GET /b.js HTTP/1.1</div>
       </div>
     ),
@@ -125,11 +125,11 @@ const eras: Era[] = [
       "More work for the processor per byte. That makes QUIC slower than HTTP/2 on very fast links — the opposite of the problem it was built for.",
     wire: (
       <div className="font-code text-xs leading-6 text-gray-700 dark:text-gray-300">
-        <div className="text-gray-400">UDP datagram</div>
+        <div className="text-faint">UDP datagram</div>
         <div>QUIC packet · conn-id 0x9f2a</div>
         <div className="pl-4">stream 0 → HEADERS</div>
         <div className="pl-4">stream 4 → DATA</div>
-        <div className="pl-4 text-gray-400">(lost — only stream 4 waits)</div>
+        <div className="text-faint pl-4">(lost — only stream 4 waits)</div>
       </div>
     ),
   },
@@ -206,7 +206,7 @@ export function ProtocolTimeline() {
               >
                 <span
                   className={`font-code block text-xs ${
-                    now ? "text-blue" : "text-gray-400"
+                    now ? "text-blue" : "text-faint"
                   }`}
                 >
                   HTTP/{e.v}
@@ -215,7 +215,7 @@ export function ProtocolTimeline() {
                   className={`font-code block text-xs ${
                     now
                       ? "text-gray-900 dark:text-gray-100"
-                      : "text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300"
+                      : "text-faint group-hover:text-gray-600 dark:group-hover:text-gray-300"
                   }`}
                 >
                   {e.year}
@@ -236,10 +236,7 @@ export function ProtocolTimeline() {
 
             <ul className="mt-3 space-y-1">
               {era.added.map((a) => (
-                <li
-                  key={a}
-                  className="flex gap-2 text-sm text-gray-600 dark:text-gray-400"
-                >
+                <li key={a} className="text-soft flex gap-2 text-sm">
                   <span className="text-blue font-code">+</span>
                   {a}
                 </li>
@@ -247,7 +244,7 @@ export function ProtocolTimeline() {
             </ul>
 
             <div className="border-border border-l-amber mt-4 border-l-2 pl-3">
-              <div className="font-code text-xs text-gray-400 lowercase">
+              <div className="font-code text-faint text-xs lowercase">
                 what it broke
               </div>
               <p className="mt-1 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
@@ -260,7 +257,7 @@ export function ProtocolTimeline() {
             key={era.v}
             className="ht-stage border-border border bg-white p-3.5 dark:bg-gray-950/60"
           >
-            <div className="font-code mb-2 text-xs text-gray-400 lowercase">
+            <div className="font-code text-faint mb-2 text-xs lowercase">
               on the wire
             </div>
             {era.wire}
@@ -289,7 +286,7 @@ export function ProtocolTimeline() {
           </button>
 
           <div className="ml-auto flex items-center gap-1.5">
-            <span className="font-code mr-1 text-xs text-gray-400">
+            <span className="font-code text-faint mr-1 text-xs">
               {i + 1} / {eras.length}
             </span>
             <button
@@ -436,7 +433,7 @@ export function HeadOfLineBlocking() {
           className={`font-code border px-2.5 py-1.5 text-xs lowercase transition-colors ${
             loss
               ? "border-amber/60 bg-amber/10 text-gray-900 dark:text-gray-100"
-              : "border-border text-gray-500 hover:border-gray-400"
+              : "border-border text-soft hover:border-gray-400"
           }`}
         >
           drop a packet · {loss ? "on" : "off"}
@@ -451,7 +448,7 @@ export function HeadOfLineBlocking() {
           return (
             <div key={r} className="flex items-center gap-3">
               <span
-                className="font-code shrink-0 truncate text-xs text-gray-500"
+                className="font-code text-soft shrink-0 truncate text-xs"
                 style={{ width: 92 }}
               >
                 {r}
@@ -483,17 +480,17 @@ export function HeadOfLineBlocking() {
       <div className="border-border mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t pt-3.5">
         <span className="flex items-center gap-2">
           <span aria-hidden="true" className="bg-blue h-2.5 w-4" />
-          <span className="font-code text-xs text-gray-500 lowercase">
+          <span className="font-code text-soft text-xs lowercase">
             transferring
           </span>
         </span>
         <span className="flex items-center gap-2">
           <span aria-hidden="true" className="bg-amber h-2.5 w-4" />
-          <span className="font-code text-xs text-gray-500 lowercase">
+          <span className="font-code text-soft text-xs lowercase">
             stuck, waiting for the lost packet
           </span>
         </span>
-        <span className="font-code ml-auto text-xs text-gray-400 lowercase">
+        <span className="font-code text-faint ml-auto text-xs lowercase">
           page finishes at {worst} units
         </span>
       </div>
@@ -569,7 +566,7 @@ export function HandshakeCost() {
                 <span className="font-code text-xs text-gray-700 dark:text-gray-300">
                   {s.name}
                 </span>
-                <span className="font-code text-xs text-gray-400 lowercase">
+                <span className="font-code text-faint text-xs lowercase">
                   {s.note}
                 </span>
                 <span className="font-code text-blue ml-auto text-xs">
@@ -787,7 +784,7 @@ export function StatusCodeCheatSheet() {
       />
 
       {active !== "all" && (
-        <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-soft mt-4 text-sm">
           <span className="font-code text-gray-700 dark:text-gray-300">
             {CLASS_META[active].name}
           </span>{" "}
@@ -807,9 +804,7 @@ export function StatusCodeCheatSheet() {
             <span className="text-sm text-gray-700 sm:w-52 sm:shrink-0 dark:text-gray-300">
               {c.name}
             </span>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              {c.note}
-            </span>
+            <span className="text-soft text-sm">{c.note}</span>
           </div>
         ))}
       </div>
@@ -870,7 +865,7 @@ export function ProtocolCheatSheet() {
         <table className="w-full border-collapse text-left">
           <thead>
             <tr>
-              <th className="border-border font-code border-b pr-4 pb-2 text-xs font-normal text-gray-400 lowercase">
+              <th className="border-border font-code text-faint border-b pr-4 pb-2 text-xs font-normal lowercase">
                 &nbsp;
               </th>
               {COLS.map((c) => (
@@ -886,7 +881,7 @@ export function ProtocolCheatSheet() {
           <tbody>
             {ROWS.map((r) => (
               <tr key={r.k} className="align-top">
-                <td className="border-border font-code border-b py-2.5 pr-4 text-xs whitespace-nowrap text-gray-400 lowercase">
+                <td className="border-border font-code text-faint border-b py-2.5 pr-4 text-xs whitespace-nowrap lowercase">
                   {r.k}
                 </td>
                 {r.v.map((cell, idx) => (

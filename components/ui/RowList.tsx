@@ -35,7 +35,7 @@ export function RowList({ rows }: { rows: Row[] }) {
                 without it they read as an undifferentiated stack of text. */}
             <span
               aria-hidden="true"
-              className="font-code group-hover:text-blue w-6 shrink-0 text-[11px] text-gray-300 tabular-nums transition-colors dark:text-gray-700"
+              className="font-code group-hover:text-blue text-2xs w-6 shrink-0 text-gray-300 tabular-nums transition-colors dark:text-gray-700"
             >
               {String(index + 1).padStart(2, "0")}
             </span>
@@ -45,14 +45,14 @@ export function RowList({ rows }: { rows: Row[] }) {
                 {row.title}
               </h3>
               {row.meta && (
-                <p className="font-code mt-0.5 truncate text-[11px] text-gray-400">
+                <p className="font-code text-2xs text-faint mt-0.5 truncate">
                   {row.meta}
                 </p>
               )}
             </div>
 
             {row.chip && (
-              <span className="border-border font-code hidden shrink-0 border px-2 py-0.5 text-[11px] text-gray-500 sm:inline">
+              <span className="border-border font-code text-2xs text-soft hidden shrink-0 border px-2 py-0.5 sm:inline">
                 {row.chip}
               </span>
             )}

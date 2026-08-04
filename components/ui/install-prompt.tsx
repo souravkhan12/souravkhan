@@ -85,11 +85,11 @@ export function InstallPrompt() {
         <div className="min-w-0 flex-1">
           <p className="ss01 text-sm font-semibold">install this site</p>
           {deferred ? (
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="text-soft mt-1 text-xs">
               add it to your home screen — opens full screen, works offline.
             </p>
           ) : (
-            <p className="mt-1 flex flex-wrap items-center gap-1 text-xs text-gray-500">
+            <p className="text-soft mt-1 flex flex-wrap items-center gap-1 text-xs">
               tap <Share size={13} className="inline shrink-0" /> then
               <span className="text-foreground inline-flex items-center gap-1">
                 <Plus size={13} className="shrink-0" />
@@ -113,7 +113,7 @@ export function InstallPrompt() {
           type="button"
           onClick={dismiss}
           aria-label="Dismiss install prompt"
-          className="hover:text-foreground -mr-1 shrink-0 p-1 text-gray-500 transition-colors"
+          className="hover:text-foreground text-soft -mr-1 shrink-0 p-1 transition-colors"
         >
           <X size={16} />
         </button>

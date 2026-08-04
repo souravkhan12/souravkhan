@@ -15,17 +15,15 @@ export default function WorkExperience() {
                 <h3 className="ss01 normal-case-force text-base font-bold">
                   {experience.company}
                   {index === 0 && (
-                    <span className="ml-2 text-sm font-normal text-gray-500">
+                    <span className="text-soft ml-2 text-sm font-normal">
                       (via thinkify labs)
                     </span>
                   )}
                 </h3>
-                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                  {experience.position}
-                </p>
+                <p className="text-soft mt-1 text-sm">{experience.position}</p>
               </div>
 
-              <div className="shrink-0 text-sm text-gray-500 md:text-right">
+              <div className="text-soft shrink-0 text-sm md:text-right">
                 {experience.duration && <p>{experience.duration}</p>}
                 {experience.location && <p>{experience.location}</p>}
               </div>

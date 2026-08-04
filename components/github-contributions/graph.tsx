@@ -92,7 +92,7 @@ const GitHubContributionGraph = memo(
                   <ContributionGraphTotalCount>
                     {({ totalCount, year }) => (
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-500 sm:text-sm">
+                        <span className="text-soft text-xs sm:text-sm">
                           {totalCount.toLocaleString() + " "} contributions in{" "}
                           {year} on GitHub.
                         </span>

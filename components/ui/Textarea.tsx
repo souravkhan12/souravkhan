@@ -69,7 +69,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           }}
           {...props}
         />
-        <div className="mt-1 flex justify-between text-xs text-gray-500">
+        <div className="text-soft mt-1 flex justify-between text-xs">
           {error && <span className="text-destructive">{error}</span>}
           {charCountMax && (
             <span className="ml-auto">

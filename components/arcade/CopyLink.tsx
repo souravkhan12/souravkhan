@@ -11,7 +11,7 @@ export function CopyLink({ url }: { url: string }) {
     <button
       type="button"
       onClick={() => copy(url)}
-      className="hover:text-blue font-code inline-flex cursor-pointer items-center gap-1.5 text-[11px] text-gray-500 lowercase transition-colors"
+      className="hover:text-blue font-code text-2xs text-soft inline-flex cursor-pointer items-center gap-1.5 lowercase transition-colors"
     >
       {copied ? (
         <LuCheck size={12} aria-hidden="true" />

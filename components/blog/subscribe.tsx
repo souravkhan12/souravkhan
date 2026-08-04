@@ -49,7 +49,7 @@ export function Subscribe() {
           <span aria-hidden="true" className="bg-blue h-3.5 w-[3px]" />
           get new posts by email
         </h2>
-        <p className="mt-3 max-w-xl text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+        <p className="text-soft mt-3 max-w-xl text-sm leading-relaxed">
           One email when something new goes up. No drip sequence, no spam,
           unsubscribe in one click.
         </p>
@@ -107,7 +107,7 @@ export function Subscribe() {
           </p>
         )}
 
-        <p className="font-code mt-4 text-[11px] text-gray-400">
+        <p className="font-code text-2xs text-faint mt-4">
           prefer a reader?{" "}
           <a href="/feed.xml" className="hover:text-blue underline">
             rss

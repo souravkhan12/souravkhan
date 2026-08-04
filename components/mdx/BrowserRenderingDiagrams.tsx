@@ -30,9 +30,7 @@ function Panel({
     <figure className="not-prose blog-breakout border-border my-10 border bg-gray-50 dark:bg-black">
       <figcaption className="border-border flex items-center gap-3 border-b px-4 py-2.5 sm:px-5">
         <span aria-hidden="true" className="bg-blue h-3.5 w-[3px]" />
-        <span className="font-code text-xs text-gray-500 lowercase">
-          {label}
-        </span>
+        <span className="font-code text-soft text-xs lowercase">{label}</span>
       </figcaption>
 
       <div className="px-4 py-5 sm:px-5">{children}</div>
@@ -111,15 +109,11 @@ function TreeLine({
   return (
     <div
       className={`font-code text-xs leading-6 ${
-        muted
-          ? "text-gray-400 dark:text-gray-600"
-          : "text-gray-700 dark:text-gray-300"
+        muted ? "text-faint" : "text-gray-700 dark:text-gray-300"
       } ${struck ? "line-through" : ""}`}
       style={{ paddingLeft: depth * 16 }}
     >
-      {depth > 0 && (
-        <span className="text-gray-300 dark:text-gray-700">└─ </span>
-      )}
+      {depth > 0 && <span className="text-faint">└─ </span>}
       {children}
     </div>
   );
@@ -183,7 +177,7 @@ const steps: Step[] = [
             className="border-border bg-white px-2.5 py-2 dark:bg-gray-950"
           >
             <div className="font-code text-blue text-xs">{n.t}</div>
-            <div className="font-code mt-0.5 text-xs text-gray-500">{n.d}</div>
+            <div className="font-code text-soft mt-0.5 text-xs">{n.d}</div>
           </div>
         ))}
       </div>
@@ -233,7 +227,7 @@ const steps: Step[] = [
         <TreeLine depth={2} muted struck>
           p.note
         </TreeLine>
-        <p className="font-code mt-2 text-xs text-gray-400">
+        <p className="font-code text-faint mt-2 text-xs">
           in the DOM, not in the render tree
         </p>
       </div>
@@ -248,11 +242,11 @@ const steps: Step[] = [
       <div className="border-border relative border border-dashed p-3">
         <div className="border-blue/40 bg-blue/5 relative border px-3 py-4">
           <span className="font-code text-blue text-xs">h1</span>
-          <span className="font-code absolute -top-2 right-2 bg-gray-50 px-1 text-xs text-gray-400 dark:bg-black">
+          <span className="font-code text-faint absolute -top-2 right-2 bg-gray-50 px-1 text-xs dark:bg-black">
             640 × 38
           </span>
         </div>
-        <span className="font-code mt-2 block text-xs text-gray-400">
+        <span className="font-code text-faint mt-2 block text-xs">
           x: 0 · y: 0
         </span>
       </div>
@@ -350,7 +344,7 @@ export function RenderingPipeline() {
               >
                 <span
                   className={`font-code block text-xs ${
-                    now ? "text-blue" : "text-gray-400"
+                    now ? "text-blue" : "text-faint"
                   }`}
                 >
                   {s.n}
@@ -359,7 +353,7 @@ export function RenderingPipeline() {
                   className={`font-code block truncate text-xs lowercase ${
                     now
                       ? "text-gray-900 dark:text-gray-100"
-                      : "text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300"
+                      : "text-faint group-hover:text-gray-600 dark:group-hover:text-gray-300"
                   }`}
                 >
                   {s.label}
@@ -411,7 +405,7 @@ export function RenderingPipeline() {
           </button>
 
           <div className="ml-auto flex items-center gap-1.5">
-            <span className="font-code mr-1 text-xs text-gray-400">
+            <span className="font-code text-faint mr-1 text-xs">
               {i + 1} / {steps.length}
             </span>
             <button
@@ -554,7 +548,7 @@ export function ScriptBlockingPlayground() {
             className={`font-code border px-2.5 py-1.5 text-xs transition-colors ${
               mode === m
                 ? "border-blue bg-blue/5 text-blue"
-                : "border-border text-gray-500 hover:border-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                : "border-border text-soft hover:border-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
             }`}
           >
             {TIMELINES[m].tag}
@@ -567,7 +561,7 @@ export function ScriptBlockingPlayground() {
         {lanes.map((lane) => (
           <div key={lane.label} className="mb-2.5 flex items-center gap-3">
             <span
-              className="font-code shrink-0 text-xs text-gray-500 lowercase"
+              className="font-code text-soft shrink-0 text-xs lowercase"
               style={{ width: LABEL_W }}
             >
               {lane.label}
@@ -601,7 +595,7 @@ export function ScriptBlockingPlayground() {
       </div>
 
       <div className="mt-1 flex justify-end">
-        <span className="font-code text-xs text-gray-400 lowercase">
+        <span className="font-code text-faint text-xs lowercase">
           ↑ DOMContentLoaded
         </span>
       </div>
@@ -614,7 +608,7 @@ export function ScriptBlockingPlayground() {
           ["runs when?", t.runsAt],
         ].map(([k, v]) => (
           <div key={k}>
-            <dt className="font-code text-xs text-gray-400 lowercase">{k}</dt>
+            <dt className="font-code text-faint text-xs lowercase">{k}</dt>
             <dd className="mt-0.5 text-sm text-gray-700 dark:text-gray-300">
               {v}
             </dd>
@@ -681,7 +675,7 @@ export function BlockingCheatSheet() {
                 (h, i) => (
                   <th
                     key={i}
-                    className="border-border font-code border-b pr-4 pb-2 text-xs font-normal text-gray-400 lowercase"
+                    className="border-border font-code text-faint border-b pr-4 pb-2 text-xs font-normal lowercase"
                   >
                     {h}
                   </th>
@@ -700,16 +694,16 @@ export function BlockingCheatSheet() {
                     className={`font-code border px-1.5 py-0.5 text-xs whitespace-nowrap lowercase ${
                       r.blocking
                         ? "border-amber/50 bg-amber/10 text-gray-800 dark:text-gray-200"
-                        : "border-border text-gray-400"
+                        : "border-border text-faint"
                     }`}
                   >
                     {r.blocking ? "blocks" : "free"}
                   </span>
                 </td>
-                <td className="border-border border-b py-2.5 pr-4 text-sm text-gray-600 dark:text-gray-400">
+                <td className="border-border text-soft border-b py-2.5 pr-4 text-sm">
                   {r.blocks}
                 </td>
-                <td className="border-border border-b py-2.5 text-sm text-gray-600 dark:text-gray-400">
+                <td className="border-border text-soft border-b py-2.5 text-sm">
                   {r.fix}
                 </td>
               </tr>
@@ -743,9 +737,7 @@ export function RenderTreeMerge() {
   }) => (
     <div className="border-border border bg-white p-3.5 dark:bg-gray-950/60">
       <div className="font-code text-blue text-xs lowercase">{title}</div>
-      <div className="font-code mt-0.5 text-xs text-gray-400 lowercase">
-        {sub}
-      </div>
+      <div className="font-code text-faint mt-0.5 text-xs lowercase">{sub}</div>
       <div className="mt-3">{children}</div>
     </div>
   );
@@ -793,7 +785,7 @@ export function RenderTreeMerge() {
         className={`font-code mt-4 border px-2.5 py-1.5 text-xs lowercase transition-colors ${
           hidden
             ? "border-blue bg-blue/5 text-blue"
-            : "border-border text-gray-500 hover:border-gray-400"
+            : "border-border text-soft hover:border-gray-400"
         }`}
       >
         p.note &#123; display: none &#125; · {hidden ? "on" : "off"}

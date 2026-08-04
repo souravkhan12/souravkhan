@@ -5,7 +5,7 @@
  */
 export function Aside({ children }: { children: React.ReactNode }) {
   return (
-    <aside className="not-prose border-border my-6 border-l-2 pl-5 text-sm leading-relaxed text-gray-500 [&>p]:m-0 [&>p+p]:mt-3">
+    <aside className="not-prose border-border text-soft my-6 border-l-2 pl-5 text-sm leading-relaxed [&>p]:m-0 [&>p+p]:mt-3">
       {children}
     </aside>
   );

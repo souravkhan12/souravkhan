@@ -197,10 +197,10 @@ export function CodeQuiz({
     <div className="border-border border">
       {/* Header */}
       <div className="border-border flex flex-wrap items-center justify-between gap-3 border-b bg-gray-50 px-4 py-2.5 dark:bg-black">
-        <span className="font-code text-[11px] text-gray-500 lowercase">
+        <span className="font-code text-2xs text-soft lowercase">
           guess the output · daily
         </span>
-        <div className="font-code flex items-center gap-3 text-[11px] text-gray-500">
+        <div className="font-code text-2xs text-soft flex items-center gap-3">
           {progress.streak > 0 && (
             <span className="text-blue inline-flex items-center gap-1">
               <LuFlame size={12} aria-hidden="true" />
@@ -214,7 +214,7 @@ export function CodeQuiz({
       <div className="p-5 sm:p-6">
         <p className="text-sm font-medium">{question.prompt}</p>
 
-        <pre className="border-border font-code mt-4 overflow-x-auto border bg-gray-50 p-4 text-[13px] leading-relaxed dark:bg-black">
+        <pre className="border-border font-code text-2xs mt-4 overflow-x-auto border bg-gray-50 p-4 leading-relaxed dark:bg-black">
           <code>{question.snippet}</code>
         </pre>
 
@@ -242,7 +242,7 @@ export function CodeQuiz({
                 onClick={() => choose(i)}
                 disabled={revealed}
                 aria-pressed={isPicked}
-                className={`font-code flex items-center justify-between gap-3 border px-4 py-2.5 text-left text-[13px] transition-colors ${tone}`}
+                className={`font-code text-2xs flex items-center justify-between gap-3 border px-4 py-2.5 text-left transition-colors ${tone}`}
               >
                 <span className="min-w-0 break-words">{option}</span>
                 {revealed && isAnswer && (
@@ -265,13 +265,13 @@ export function CodeQuiz({
             className="border-border mt-5 border-t pt-4"
           >
             {picked === null ? (
-              <p className="font-code text-[11px] text-gray-500">
+              <p className="font-code text-2xs text-soft">
                 you already played today — here&apos;s the answer. new question
                 at midnight utc.
               </p>
             ) : (
               <p
-                className={`font-code text-[11px] ${
+                className={`font-code text-2xs ${
                   picked === question.answer
                     ? "text-emerald-600 dark:text-emerald-400"
                     : "text-red-500"
@@ -281,7 +281,7 @@ export function CodeQuiz({
               </p>
             )}
 
-            <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+            <p className="text-soft mt-2 text-sm leading-relaxed">
               {question.explanation}
             </p>
 
@@ -292,7 +292,7 @@ export function CodeQuiz({
                 <button
                   type="button"
                   onClick={share}
-                  className="border-border hover:border-blue hover:text-blue font-code inline-flex cursor-pointer items-center gap-1.5 border px-3 py-1.5 text-[11px] text-gray-600 lowercase transition-colors dark:text-gray-400"
+                  className="border-border hover:border-blue hover:text-blue font-code text-2xs inline-flex cursor-pointer items-center gap-1.5 border px-3 py-1.5 text-gray-600 lowercase transition-colors dark:text-gray-400"
                 >
                   {copied ? (
                     <LuCheck size={12} aria-hidden="true" />
@@ -317,7 +317,7 @@ export function CodeQuiz({
 
               <Link
                 href={`/arcade/quiz/${question.id}`}
-                className="hover:text-blue font-code text-[11px] text-gray-500 lowercase transition-colors"
+                className="hover:text-blue font-code text-2xs text-soft lowercase transition-colors"
               >
                 permalink for this one →
               </Link>

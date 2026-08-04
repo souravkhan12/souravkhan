@@ -27,7 +27,7 @@ export default function Projects() {
               <li key={project.slug}>
                 <Link
                   href={`/project/${project.slug}`}
-                  className="hover:text-blue group inline-flex items-center gap-1.5 text-gray-500 transition-colors"
+                  className="hover:text-blue group text-soft inline-flex items-center gap-1.5 transition-colors"
                 >
                   {project.title}
                   <LuArrowUpRight

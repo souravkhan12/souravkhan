@@ -29,7 +29,7 @@ export default function ReadingPage() {
       <div className="border-border border-x border-b px-6 py-4 sm:px-8">
         <Link
           href="/blog"
-          className="hover:text-blue font-code inline-flex items-center gap-1.5 text-xs text-gray-500 lowercase transition-colors"
+          className="hover:text-blue font-code text-soft inline-flex items-center gap-1.5 text-xs lowercase transition-colors"
         >
           things i did write <LuArrowRight size={13} aria-hidden="true" />
         </Link>

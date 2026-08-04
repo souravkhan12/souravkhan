@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "motion/react";
-import { Home, Layers, PenLine, Gamepad2, Mail } from "lucide-react";
+import { Home, Layers, PenLine, Compass, Mail } from "lucide-react";
 import { useMounted } from "@/hooks/use-mounted";
 
 /**
@@ -23,12 +23,14 @@ type Item = {
 const ITEMS: Item[] = [
   { name: "home", href: "/", icon: Home, match: "home" },
   { name: "projects", href: "#projects", icon: Layers, match: "projects" },
-  { name: "arcade", href: "#arcade", icon: Gamepad2, match: "arcade" },
+  // Points at the site index rather than at /arcade directly: arcade is one of
+  // eight destinations there, and a phone tab is too scarce to spend on one.
+  { name: "explore", href: "#explore", icon: Compass, match: "explore" },
   { name: "blog", href: "/blog", icon: PenLine, match: "blog" },
   { name: "contact", href: "#contact", icon: Mail, match: "contact" },
 ];
 
-const SECTION_IDS = ["projects", "arcade", "contact"];
+const SECTION_IDS = ["explore", "projects", "contact"];
 
 export default function BottomNav() {
   const pathname = usePathname();
@@ -113,13 +115,11 @@ export default function BottomNav() {
               <Icon
                 size={20}
                 strokeWidth={activeNow ? 2.4 : 1.8}
-                className={
-                  activeNow ? "text-blue" : "text-gray-500 dark:text-gray-400"
-                }
+                className={activeNow ? "text-blue" : "text-soft"}
               />
               <span
-                className={`font-code text-[10px] lowercase ${
-                  activeNow ? "text-blue" : "text-gray-500 dark:text-gray-400"
+                className={`font-code text-2xs lowercase ${
+                  activeNow ? "text-blue" : "text-soft"
                 }`}
               >
                 {item.name}

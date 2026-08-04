@@ -7,7 +7,7 @@ export function RecentPosts() {
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-4">
       {posts.length === 0 && (
-        <p className="text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-soft text-sm">
           The first post is still being written.
         </p>
       )}
@@ -27,7 +27,7 @@ export function RecentPosts() {
               </span>
               <time
                 dateTime={post.date}
-                className="shrink-0 text-xs text-gray-400"
+                className="text-faint shrink-0 text-xs"
               >
                 {new Date(post.date).toLocaleDateString("en-US", {
                   month: "short",

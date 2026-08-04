@@ -33,6 +33,10 @@
   --color-blue-400: #81adec;
   --color-blue-500: #5d8cd7;
   --color-amber: #ffcf3f;
+
+  /* The reading layout's own breakpoint: the exact width at which the
+     sidebar + measure + rail arithmetic closes. */
+  --breakpoint-wide: 82.5rem;
 }
 
 :root {
@@ -58,6 +62,13 @@
   /* Accent + focus shift one step lighter on dark so they stay legible. */
   /* Single accent, kept under the --blue token name so every existing
      text-blue/border-blue utility picks it up site-wide. */
+  /* Text greys, per theme. gray-400 (2.31:1) and gray-500 (3.11:1) both fail
+     WCAG AA on paper, so light mode steps two rungs darker while dark mode
+     keeps the lighter values that already passed there. Two rungs, not one,
+     so the meta/label hierarchy survives the fix. */
+  --soft: var(--color-gray-700); /* 6.61:1 on paper */
+  --faint: var(--color-gray-600); /* 5.59:1 on paper */
+
   --blue: #5b5bd6;
   --focus: #5b5bd6;
   --ring: #5b5bd6;
@@ -84,6 +95,8 @@
   --destructive: #e08b85;
   --border: var(--color-gray-900);
   --input: var(--color-gray-900);
+  --soft: var(--color-gray-400); /* 7.47:1 on #181818 */
+  --faint: var(--color-gray-500); /* 5.56:1 on #181818 */
 
   --blue: #7c7cf0;
   --focus: #7c7cf0;
@@ -94,6 +107,8 @@
   /* Theme-reactive tokens: `inline` makes the utility reference the var, so
      these follow .dark without regenerating classes. */
   --color-blue: var(--blue);
+  --color-soft: var(--soft);
+  --color-faint: var(--faint);
   --color-focus: var(--focus);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -124,6 +139,7 @@
   --radius-4xl: 0px;
 
   /* paper.design type scale */
+  --text-2xs: 13px;
   --text-xs: 14px;
   --text-sm: 16px;
   --text-base: 18px;
@@ -137,6 +153,7 @@
      for every text-* utility. With these undefined the line-height half
      resolved to nothing and the element silently inherited whatever leading it
      landed in — which is why small font-code labels sat on 1.5 body leading. */
+  --text-2xs--line-height: 1.45;
   --text-xs--line-height: 1.45;
   --text-sm--line-height: 1.5;
   --text-base--line-height: 1.55;
@@ -188,7 +205,6 @@
     font-family: var(--font-sans);
     font-weight: 550;
     letter-spacing: -0.02em;
-    text-transform: lowercase;
     font-feature-settings: "ss01";
   }
 
@@ -261,9 +277,28 @@
   --ring: #b6b6ae;
 }
 
-/* Opt out of the global lowercase (proper nouns, code, user content) */
+/* Section labels ("explore", "machine coding") opt *in* to lowercase now.
+   It used to be global on every heading, which meant proper nouns —
+   JavaScript, HTTP/2, React — came out wrong unless a caller remembered
+   .normal-case-force. Twenty-five callers had to remember. */
+.label-case {
+  text-transform: lowercase;
+}
+
+/* Retained as a no-op so the 25 existing call sites keep working; the global
+   transform they were fighting is gone. */
 .normal-case-force {
   text-transform: none;
+}
+
+/* Section boundaries get a heavier rule than cell edges — one border weight
+   for all 177 boundaries meant a section break and a row divider read as the
+   same event. */
+.rule-strong {
+  border-top-color: var(--color-gray-300);
+}
+.dark .rule-strong {
+  border-top-color: var(--color-gray-800);
 }
 
 /* ============================================================
@@ -582,6 +617,78 @@ html {
   --blog-col: 52rem;
   --blog-rail: 15rem;
   --blog-gutter: 3rem;
+  /* Section index on the left of a reading page (patterns.dev's sidebar). */
+  /* 17.5rem = a 15rem list plus the 2.5rem left gutter every other
+     column on the page already has. */
+  --reading-nav: 17.5rem;
+}
+
+/* A reading page needs a wider frame than the 1200px shell: a sidebar, a
+   40rem measure and a contents rail don't fit in it without squeezing the
+   prose, which was the whole reason the sidebar looked cramped. `:has` lets
+   the shell widen itself for exactly these pages without threading a prop
+   through four layouts. */
+main:has(> .reading-shell) {
+  max-width: 82.5rem;
+}
+
+/* The navbar is a sibling of <main>, so it can't inherit the widened frame —
+   match it from the body instead, or the top bar's hairline edges sit 80px
+   inside the article's and the whole page looks misregistered. */
+body:has(main > .reading-shell) .navbar-frame {
+  max-width: 82.5rem;
+  /* px-10 to match the article gutter, so the wordmark lines up with the
+     sidebar's first item instead of sitting 8px inside it. */
+  padding-inline: 2.5rem;
+}
+
+/* ------------------------------------------------------------------
+   Three-column reading layout (xl+)
+
+       section nav │ article + contents rail
+     40 + 240      │  40 + (640 + 48 + 224) + 40
+
+   Every number closes against the 82.5rem (1320px) reading frame:
+
+       280 + 48 + 992 = 1320          columns + gap
+       992 - 80 = 912                 article minus its px-10 gutters
+       640 + 48 + 224 = 912           measure + gap + rail  ✓
+
+   So the prose is exactly --blog-measure, the sidebar's text sits on
+   the same 40px gutter as the article's, and the contents rail ends
+   flush with the frame's right edge. The earlier 85rem frame left 80px
+   of dead space to the right of the rail, which is what made it read as
+   misaligned. Below `wide` the nav drops out (it re-renders as a
+   <details> strip above the article) and .blog-layout's own two-column
+   rule takes over unchanged.
+   ------------------------------------------------------------------ */
+.reading-shell {
+  display: block;
+}
+
+@media (min-width: 82.5rem) {
+  .reading-shell {
+    display: grid;
+    grid-template-columns: var(--reading-nav) minmax(0, 1fr);
+    column-gap: 3rem;
+    align-items: start;
+
+    /* Retune the inner two-column layout to the space the nav left behind,
+       rather than forking .blog-layout for this case. */
+    --blog-col: var(--blog-measure);
+    --blog-rail: 14rem;
+    --blog-gutter: 3rem;
+  }
+}
+
+/* Full viewport height so the rule on its right reads as a column edge
+   rather than a box that stops halfway down the article. */
+.reading-nav-rail {
+  position: sticky;
+  top: 4.5rem;
+  max-height: calc(100vh - 6rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .blog-measure {

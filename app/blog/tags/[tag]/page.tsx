@@ -49,7 +49,7 @@ export default async function TagPage({
         <div className="border-border border-x border-t px-6 py-2.5 sm:px-8">
           <Link
             href="/blog"
-            className="hover:text-blue font-code inline-flex items-center gap-1.5 text-[11px] text-gray-500 lowercase transition-colors"
+            className="hover:text-blue font-code text-2xs text-soft inline-flex items-center gap-1.5 lowercase transition-colors"
           >
             <LuArrowLeft size={12} aria-hidden="true" />
             all writing

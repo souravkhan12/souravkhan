@@ -16,7 +16,7 @@ export default function ProjectCard({
   return (
     <GridCell padded={false} tinted={tinted} className="group flex flex-col">
       {/* terminal title bar */}
-      <div className="border-border flex items-center justify-between gap-3 border-b px-4 py-2.5 text-gray-500">
+      <div className="border-border text-soft flex items-center justify-between gap-3 border-b px-4 py-2.5">
         <span className="font-code truncate text-xs">
           ~/projects/{project.slug}
         </span>
@@ -29,8 +29,8 @@ export default function ProjectCard({
 
       <div className="flex flex-1 flex-col gap-5 p-8 sm:p-10">
         {/* stack, printed like a shell command */}
-        <p className="font-code text-xs leading-relaxed text-gray-500">
-          <span className="text-gray-400 dark:text-gray-600">$ </span>
+        <p className="font-code text-soft text-xs leading-relaxed">
+          <span className="text-faint">$ </span>
           stack:{" "}
           <span className="text-gray-700 dark:text-gray-300">
             {project.technologies.join(" · ")}
@@ -43,7 +43,7 @@ export default function ProjectCard({
               {project.title}
             </h3>
           </Link>
-          <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-pretty text-gray-600 dark:text-gray-400">
+          <p className="text-soft mt-2 line-clamp-3 text-sm leading-relaxed text-pretty">
             {project.description}
           </p>
         </div>
@@ -70,7 +70,7 @@ export default function ProjectCard({
           </a>
           <Link
             href={href}
-            className="hover:text-blue ml-auto inline-flex items-center gap-1 text-gray-500 transition-colors"
+            className="hover:text-blue text-soft ml-auto inline-flex items-center gap-1 transition-colors"
           >
             details <LuArrowUpRight size={13} />
           </Link>

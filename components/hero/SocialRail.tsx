@@ -10,7 +10,7 @@ const LINKS = [
 ];
 
 const tile =
-  "flex size-10 items-center justify-center text-gray-500 transition-colors hover:text-blue hover:bg-gray-500/5";
+  "flex size-10 items-center justify-center text-soft transition-colors hover:text-blue hover:bg-gray-500/5";
 
 /**
  * Segmented strip of icon tiles — three links plus click-to-copy email.
@@ -78,7 +78,7 @@ export function SocialRail({ className = "" }: { className?: string }) {
       {/* confirmation, floated above the strip so nothing shifts */}
       <span
         aria-live="polite"
-        className={`font-code border-border bg-background pointer-events-none absolute -top-7 right-0 border px-2 py-1 text-[10px] whitespace-nowrap transition-opacity duration-200 ${
+        className={`font-code border-border bg-background text-2xs pointer-events-none absolute -top-7 right-0 border px-2 py-1 whitespace-nowrap transition-opacity duration-200 ${
           copied ? "opacity-100" : "opacity-0"
         }`}
       >

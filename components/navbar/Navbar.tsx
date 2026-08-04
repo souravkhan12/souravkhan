@@ -59,7 +59,7 @@ export default function Navbar() {
       animate={NAVBAR_ANIMATION.animate}
       className="border-border bg-background/90 sticky top-0 z-30 border-b backdrop-blur-sm"
     >
-      <div className="border-border mx-auto flex max-w-[1200px] items-center justify-between border-x px-6 py-3 sm:px-8">
+      <div className="navbar-frame border-border mx-auto flex max-w-[1200px] items-center justify-between border-x px-6 py-3 sm:px-8">
         <Link
           href="/"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -94,7 +94,7 @@ export default function Navbar() {
                 className={`hover:text-blue relative cursor-pointer text-sm font-normal whitespace-nowrap lowercase transition-colors ${
                   isCurrent(href)
                     ? "text-foreground after:bg-blue font-medium after:absolute after:-bottom-1.5 after:left-0 after:h-[2px] after:w-full after:content-['']"
-                    : "text-gray-600 dark:text-gray-400"
+                    : "text-soft"
                 }`}
               >
                 {name}
@@ -110,14 +110,14 @@ export default function Navbar() {
             }
             whileHover={{ scale: 1.015 }}
             whileTap={{ scale: 0.985 }}
-            className="border-border hover:border-blue group flex w-40 shrink cursor-pointer items-center gap-2 border px-3 py-1.5 text-left text-gray-500 transition-colors lg:w-52"
+            className="border-border hover:border-blue group text-soft flex w-40 shrink cursor-pointer items-center gap-2 border px-3 py-1.5 text-left transition-colors lg:w-52"
           >
             <Search
               size={14}
               className="group-hover:text-blue shrink-0 transition-colors"
             />
             <span className="flex-1 text-xs">search...</span>
-            <kbd className="border-border font-code shrink-0 border px-1.5 py-0.5 text-[10px] leading-none">
+            <kbd className="border-border font-code text-2xs shrink-0 border px-1.5 py-0.5 leading-none">
               ⌘k
             </kbd>
           </motion.button>
@@ -129,7 +129,7 @@ export default function Navbar() {
             aria-label="Toggle theme"
             onClick={toggleTheme}
             {...INTERACTIONS.themeToggle}
-            className="hover:text-blue cursor-pointer text-gray-600 dark:text-gray-400"
+            className="hover:text-blue text-soft cursor-pointer"
           >
             {isDarkMode ? <SunDim size={18} /> : <MoonIcon size={18} />}
           </motion.button>
@@ -143,7 +143,7 @@ export default function Navbar() {
             onClick={() =>
               window.dispatchEvent(new Event("open-command-palette"))
             }
-            className="hover:text-blue text-gray-600 dark:text-gray-400"
+            className="hover:text-blue text-soft"
           >
             <Search size={19} />
           </button>
@@ -154,7 +154,7 @@ export default function Navbar() {
             type="button"
             aria-label="Toggle theme"
             onClick={toggleTheme}
-            className="hover:text-blue text-gray-600 dark:text-gray-400"
+            className="hover:text-blue text-soft"
           >
             {isDarkMode ? <SunDim size={20} /> : <MoonIcon size={19} />}
           </button>

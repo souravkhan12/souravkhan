@@ -344,7 +344,7 @@ export default function SnakeGame() {
         {/* board */}
         <GridCell className="flex flex-col items-center gap-4 sm:gap-5">
           <Rig expanded={expanded} onClose={() => setExpanded(false)}>
-            <div className="font-code flex w-full max-w-[440px] items-center justify-between text-xs text-gray-500">
+            <div className="font-code text-soft flex w-full max-w-[440px] items-center justify-between text-xs">
               <span className="flex items-baseline gap-2">
                 score
                 <span className="font-code text-foreground text-base tabular-nums">
@@ -435,7 +435,7 @@ export default function SnakeGame() {
                   </p>
 
                   {view.status === "over" && (
-                    <p className="font-code text-[11px] text-gray-500">
+                    <p className="font-code text-2xs text-soft">
                       {submit.state === "saving" && "saving…"}
                       {submit.state === "saved" &&
                         (beatRecord ? "new high score 🏆" : "score counted ✓")}
@@ -447,7 +447,7 @@ export default function SnakeGame() {
                   )}
 
                   {view.status !== "over" && target > 0 && (
-                    <p className="font-code text-[11px] text-gray-500">
+                    <p className="font-code text-2xs text-soft">
                       high score to beat ·{" "}
                       <span className="font-code text-blue">{target}</span>
                     </p>
@@ -457,7 +457,7 @@ export default function SnakeGame() {
                     {view.status === "over" ? "play again" : "play"}
                   </span>
 
-                  <p className="font-code flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[11px] text-gray-500">
+                  <p className="font-code text-2xs text-soft flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
                     <span className="hidden sm:inline">arrow keys / wasd</span>
                     <span className="border-blue/40 text-blue bg-blue/5 border px-1.5 py-0.5">
                       📱 on mobile · swipe or tap the d-pad
@@ -490,7 +490,7 @@ export default function SnakeGame() {
               </div>
 
               {scheme === "swipe" ? (
-                <p className="font-code text-[11px] text-gray-500">
+                <p className="font-code text-2xs text-soft">
                   drag anywhere on the board to steer
                 </p>
               ) : (
@@ -510,7 +510,7 @@ export default function SnakeGame() {
                 <button
                   type="button"
                   onClick={() => setExpanded(true)}
-                  className="border-border hover:border-blue hover:text-blue font-code mt-1 inline-flex items-center gap-1.5 border px-3 py-1.5 text-[11px] text-gray-500 transition-colors"
+                  className="border-border hover:border-blue hover:text-blue font-code text-2xs text-soft mt-1 inline-flex items-center gap-1.5 border px-3 py-1.5 transition-colors"
                 >
                   <Maximize2 size={13} />
                   fullscreen
@@ -526,18 +526,18 @@ export default function SnakeGame() {
             <h3 className="ss01 normal-case-force text-base font-bold">
               high score
             </h3>
-            <p className="font-code mt-1 text-[11px] text-gray-500">
+            <p className="font-code text-2xs text-soft mt-1">
               global · anonymous
             </p>
 
             {record === null ? (
-              <p className="mt-6 text-sm text-gray-500">loading…</p>
+              <p className="text-soft mt-6 text-sm">loading…</p>
             ) : record === 0 ? (
               <>
                 <p className="font-code text-blue mt-6 text-6xl leading-none tabular-nums">
                   0
                 </p>
-                <p className="mt-4 text-sm text-gray-500">
+                <p className="text-soft mt-4 text-sm">
                   nobody has scored yet — set the first one 🐍
                 </p>
               </>
@@ -546,7 +546,7 @@ export default function SnakeGame() {
                 <p className="font-code text-blue mt-6 text-6xl leading-none tabular-nums sm:text-7xl">
                   {record}
                 </p>
-                <p className="mt-4 text-sm text-gray-500">
+                <p className="text-soft mt-4 text-sm">
                   {view.best > record
                     ? "that one's yours. hold the line."
                     : view.best > 0
@@ -562,7 +562,7 @@ export default function SnakeGame() {
             <Stat label="runs played" value={plays} />
           </div>
 
-          <div className="font-code flex flex-col gap-1.5 text-[11px] text-gray-500">
+          <div className="font-code text-2xs text-soft flex flex-col gap-1.5">
             <span className="hidden sm:inline">
               arrow keys or wasd to steer
             </span>
@@ -607,7 +607,7 @@ function Rig({
           type="button"
           onClick={onClose}
           aria-label="exit fullscreen"
-          className="border-border hover:border-blue hover:text-blue font-code absolute right-4 flex items-center gap-1.5 border px-3 py-1.5 text-xs text-gray-500 transition-colors"
+          className="border-border hover:border-blue hover:text-blue font-code text-soft absolute right-4 flex items-center gap-1.5 border px-3 py-1.5 text-xs transition-colors"
           style={{ top: "calc(env(safe-area-inset-top) + 0.75rem)" }}
         >
           <X size={14} />
@@ -625,7 +625,7 @@ function Stat({ label, value }: { label: string; value: number }) {
       <span className="font-code text-2xl leading-none tabular-nums">
         {value}
       </span>
-      <span className="font-code text-[11px] text-gray-500">{label}</span>
+      <span className="font-code text-2xs text-soft">{label}</span>
     </div>
   );
 }
@@ -672,7 +672,7 @@ function SchemeTab({
       onClick={onPick}
       aria-pressed={active}
       className={`flex-1 touch-manipulation px-3 py-2 transition-colors ${
-        active ? "bg-blue/10 text-blue" : "text-gray-500"
+        active ? "bg-blue/10 text-blue" : "text-soft"
       }`}
     >
       {label}

@@ -69,10 +69,10 @@ const Section = React.forwardRef<HTMLDivElement, SectionProps>(
           // gray-100, not gray-50: against the paper background gray-50 is a
           // 2% step, which on a long page left headers, tinted cells and
           // plain cells reading as one flat sheet with nothing to chunk it.
-          <div className="screen-line-top border-border flex flex-col gap-1 border-t border-r border-l bg-gray-100 px-6 py-3.5 sm:px-8 dark:bg-black">
+          <div className="screen-line-top border-border rule-strong flex flex-col gap-1 border-t-2 border-r border-l bg-gray-100 px-6 py-3.5 sm:px-8 dark:bg-black">
             <h2
               className={`ss01 text-foreground flex items-baseline gap-3 text-lg font-bold ${
-                preserveTitleCase ? "normal-case-force" : ""
+                preserveTitleCase ? "" : "label-case"
               }`}
             >
               <span
@@ -96,15 +96,13 @@ const Section = React.forwardRef<HTMLDivElement, SectionProps>(
                 title
               )}
               {count !== undefined && (
-                <sup className="font-code -top-1 text-[11px] font-normal text-gray-400 tabular-nums">
+                <sup className="font-code text-2xs text-faint -top-1 font-normal tabular-nums">
                   {count}
                 </sup>
               )}
             </h2>
             {subtitle && (
-              <p className="pl-[18px] text-xs text-gray-600 dark:text-gray-400">
-                {subtitle}
-              </p>
+              <p className="text-soft pl-[18px] text-xs">{subtitle}</p>
             )}
           </div>
         )}

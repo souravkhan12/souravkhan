@@ -8,6 +8,7 @@ import {
   getAllMachineCodingQuestions,
   getMachineCodingCategories,
 } from "@/lib/machine-coding";
+import { FLAVORS, getAllPatterns } from "@/lib/patterns";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = SEO_CONFIG.baseUrl;
@@ -117,6 +118,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
     ...getAllMachineCodingQuestions().map((q) => ({
       url: `${baseUrl}/machine-coding/${q.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
+    /* One index per flavour. /patterns itself is a redirect, so it's left out
+       — listing a URL that 308s only spends crawl budget to arrive here. */
+    ...FLAVORS.map((f) => ({
+      url: `${baseUrl}/patterns/${f.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    })),
+    ...getAllPatterns().map((p) => ({
+      url: `${baseUrl}${p.href}`,
       lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.8,

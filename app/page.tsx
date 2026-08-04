@@ -8,17 +8,16 @@ import { Section, GridBand, GridCell } from "@/components/ui";
 import { GitHubContributions } from "@/components/github-contributions/github-section";
 import Footer from "@/components/footer/footer";
 import HeroTechStack from "@/components/hero/HeroTechStack";
+import { SiteIndex } from "@/components/hero/SiteIndex";
 import { RecentPosts } from "@/components/blog/recent-posts";
-import Setup from "@/components/setup/Setup";
-import { ArcadeTeaser } from "@/components/arcade/ArcadeTeaser";
 import { getAllPosts } from "@/lib/blog";
 import { HERO_TECH_STACK } from "@/config/data";
 
 export default function Page() {
   /* Sections with no content are dropped rather than rendered as an empty
      heading. Each component that owns its own data guards itself (Projects,
-     WorkExperience, Setup); the two bands assembled here
-     have to be checked here, where their content is known. */
+     WorkExperience); the activity band assembled here has to be checked
+     here, where its content is known. */
   const hasPosts = getAllPosts().length > 0;
 
   return (
@@ -36,6 +35,13 @@ export default function Page() {
         )}
 
         <WorkExperience />
+
+        {/* Straight after the experience: by this point a visitor knows who I
+            am, which is the moment they'd start looking for what else is here.
+            Above the fold it competed with the hero; below the projects nobody
+            reached it. */}
+        <SiteIndex />
+
         <Projects />
 
         {/* Activity: contributions graph beside the writing feed. The feed cell
@@ -61,8 +67,10 @@ export default function Page() {
           </GridBand>
         </Section>
 
-        <Setup />
-        <ArcadeTeaser />
+        {/* No setup or arcade band here any more — both are cards in the
+            site index above, and repeating them further down made the page
+            longer without telling a visitor anything the index hadn't. Their
+            own routes are unchanged. */}
         <Contact />
         <Footer />
       </main>

@@ -1,0 +1,102 @@
+---
+title: Observer Pattern
+description: One subject, many subscribers — the shape underneath event emitters, stores, and every reactive library you've used.
+category: behavioural
+categoryLabel: Behavioural
+tags: ["events", "pub-sub", "javascript"]
+order: 10
+published: true
+---
+
+An observable keeps a list of subscribers and calls them all when something
+happens. That's it. Every event emitter, store, and signal implementation is
+this with more features bolted on.
+
+## The mechanism
+
+```js
+function createObservable() {
+  const observers = new Set();
+
+  return {
+    subscribe(fn) {
+      observers.add(fn);
+      // Returning the teardown is the important bit — see below.
+      return () => observers.delete(fn);
+    },
+    notify(data) {
+      for (const fn of observers) fn(data);
+    },
+  };
+}
+
+const clicks = createObservable();
+
+const unsubscribe = clicks.subscribe((e) => console.log("logged", e.target));
+clicks.subscribe((e) => sendAnalytics(e));
+
+document.addEventListener("click", (e) => clicks.notify(e));
+
+unsubscribe(); // the logger stops; analytics keeps going
+```
+
+A `Set` rather than an array, so subscribing the same function twice doesn't
+fire it twice, and removal is O(1) instead of an `indexOf` splice.
+
+## Why the returned unsubscribe matters
+
+If `subscribe` returns nothing, the caller has to hold onto the exact function
+reference to ever remove it — and inline arrow functions make that impossible:
+
+```js
+clicks.subscribe((e) => console.log(e)); // this can never be removed
+```
+
+Handing back a closure that knows how to remove itself is what makes the
+subscription disposable. It's also why React's `useEffect` cleanup and this
+pattern fit together so neatly — the effect returns the unsubscribe.
+
+<Callout type="warn" title="A subscription is a leak until it isn't">
+The subject holds a reference to every subscriber function, and through the
+closure, to everything that function captured. A component that subscribes and
+never unsubscribes keeps its whole scope alive after it's gone.
+</Callout>
+
+## The one thing to fix before shipping it
+
+The naive `notify` above breaks in two ways.
+
+A throwing subscriber kills the rest of the list — subscriber three never runs
+because subscriber two had a bad day. And mutating the set during iteration
+(a subscriber that unsubscribes itself, which is common) is undefined-ish
+behaviour you don't want to reason about.
+
+```js
+notify(data) {
+  // Snapshot, so unsubscribing mid-notify doesn't disturb this pass.
+  for (const fn of [...observers]) {
+    try {
+      fn(data);
+    } catch (error) {
+      // One bad subscriber shouldn't silence the others.
+      console.error("observer failed", error);
+    }
+  }
+}
+```
+
+<Aside>
+Observer and pub/sub get used interchangeably, but they differ in coupling: in
+observer the subject knows its subscribers directly, while pub/sub puts a
+broker in between so publisher and subscriber never meet. The broker is what
+lets them live in different processes.
+</Aside>
+
+## Where you already use it
+
+`addEventListener`. `IntersectionObserver`, `MutationObserver`, `ResizeObserver`
+— named after the pattern. Redux's `store.subscribe`. RxJS, which is this plus
+operators and a contract about completion.
+
+Knowing the shape means you can read any of them the same way: who's the
+subject, who subscribes, and who is responsible for tearing it down.

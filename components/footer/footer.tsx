@@ -14,7 +14,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-border border-x border-t text-sm text-gray-500">
+    <footer className="border-border text-soft border-x border-t text-sm">
       {/* Main band: wordmark left, links right */}
       <div className="flex flex-col items-start justify-between gap-6 px-6 py-8 sm:flex-row sm:items-center sm:px-10">
         <Link href="/" className="group/logo flex items-center gap-2.5">
@@ -44,7 +44,7 @@ export default function Footer() {
 
       {/* Baseline */}
       <div className="border-border border-t px-6 py-4 sm:px-10">
-        <span className="font-code text-xs text-gray-500">
+        <span className="font-code text-soft text-xs">
           © {year} sourav khan
         </span>
       </div>

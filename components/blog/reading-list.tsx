@@ -45,7 +45,7 @@ export function ReadingList({
         <p className="ss01 normal-case-force text-base font-semibold">
           Nothing saved yet.
         </p>
-        <p className="mt-2 max-w-xl text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-soft mt-2 max-w-xl text-sm">
           This is where posts, essays and talks worth my time will land — each
           with a line on why it&apos;s here, rather than just a link dump.
         </p>
@@ -64,23 +64,23 @@ export function ReadingList({
           <button
             type="button"
             onClick={() => setActive(null)}
-            className={`font-code shrink-0 border px-2 py-0.5 text-[11px] whitespace-nowrap transition-colors ${
+            className={`font-code text-2xs shrink-0 border px-2 py-0.5 whitespace-nowrap transition-colors ${
               active === null
                 ? "border-blue text-blue"
-                : "border-border hover:border-blue hover:text-blue text-gray-500"
+                : "border-border hover:border-blue hover:text-blue text-soft"
             }`}
           >
-            all <span className="text-gray-400">{bookmarks.length}</span>
+            all <span className="text-faint">{bookmarks.length}</span>
           </button>
           {tags.map((tag) => (
             <button
               key={tag}
               type="button"
               onClick={() => setActive((t) => (t === tag ? null : tag))}
-              className={`font-code shrink-0 border px-2 py-0.5 text-[11px] whitespace-nowrap transition-colors ${
+              className={`font-code text-2xs shrink-0 border px-2 py-0.5 whitespace-nowrap transition-colors ${
                 active === tag
                   ? "border-blue text-blue"
-                  : "border-border hover:border-blue hover:text-blue text-gray-500"
+                  : "border-border hover:border-blue hover:text-blue text-soft"
               }`}
             >
               {tag}
@@ -108,7 +108,7 @@ export function ReadingList({
         <button
           type="button"
           onClick={() => setExpanded(true)}
-          className="border-border hover:text-blue font-code w-full border-x border-b px-6 py-2.5 text-left text-[11px] text-gray-500 transition-colors hover:bg-gray-50 sm:px-8 dark:hover:bg-black"
+          className="border-border hover:text-blue font-code text-2xs text-soft w-full border-x border-b px-6 py-2.5 text-left transition-colors hover:bg-gray-50 sm:px-8 dark:hover:bg-black"
         >
           show {hidden} more ↓
         </button>

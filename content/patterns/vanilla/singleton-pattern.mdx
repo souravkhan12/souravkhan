@@ -1,0 +1,96 @@
+---
+title: Singleton Pattern
+description: One instance, shared globally — and the reason it's the pattern people regret reaching for.
+category: creational
+categoryLabel: Creational
+tags: ["module", "state", "javascript"]
+order: 10
+published: true
+---
+
+A singleton is a class that can only ever be instantiated once, with that one
+instance shared everywhere. The usual excuse for it is a thing there is
+genuinely only one of: the app's config, a cache, a connection pool.
+
+## The mechanism
+
+The trick is that the constructor doesn't have to return a fresh object. If a
+previous instance is stashed somewhere, return that instead.
+
+```js
+let instance;
+
+class Counter {
+  constructor() {
+    if (instance) return instance;
+    instance = this;
+    this.count = 0;
+  }
+
+  increment() {
+    return ++this.count;
+  }
+}
+
+const a = new Counter();
+const b = new Counter();
+
+a.increment();
+console.log(b.count); // 1 — a and b are the same object
+Object.is(a, b); // true
+```
+
+`new Counter()` twice gives you one object. That's the whole pattern: the
+identity check in the constructor, plus a module-scoped variable holding the
+result.
+
+Freezing it is worth the extra line — otherwise any consumer can reassign
+`increment` and every other consumer silently gets the new behaviour.
+
+```js
+const singletonCounter = Object.freeze(new Counter());
+export default singletonCounter;
+```
+
+## In modern JavaScript you rarely need the class
+
+ES modules are already evaluated once and cached by specifier. A plain object
+exported from a module *is* a singleton, with no constructor games:
+
+```js
+// counter.js
+let count = 0;
+
+export const increment = () => ++count;
+export const getCount = () => count;
+```
+
+Every module that imports this gets the same `count`. That's the version to
+reach for — it's the same guarantee with none of the ceremony, and it doesn't
+pretend to be a class that can be instantiated when it can't.
+
+<Callout type="warn" title="The cost nobody prices in">
+A singleton is global mutable state with a nicer name. Two modules that both
+import it are now coupled through it, which shows up as tests that pass alone
+and fail in a suite — because the previous test left the count at 7.
+</Callout>
+
+## Where it actually bites
+
+- **Testing.** There's no clean instance per test. You need an explicit `reset()`
+  that you must remember to call, and any test that forgets pollutes the next.
+- **Tracing a bug.** When the count is wrong, the culprit is "anything that
+  imported this module", which is not a search you can finish.
+- **Server rendering.** On the server the module registry is shared across
+  requests, so a singleton holding per-user state leaks one user's data into
+  another's render. This one is a security bug, not a style complaint.
+
+## What to reach for instead
+
+Pass the dependency in. If a function needs a cache, take the cache as an
+argument rather than importing the one true cache — you keep the single
+instance at the app's edge where you can see it, and everything below stays
+testable with a throwaway one.
+
+In React the same instinct is a Context provider: one instance, but scoped to a
+tree you control rather than to the process.
