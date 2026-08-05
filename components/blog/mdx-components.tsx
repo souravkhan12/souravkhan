@@ -18,6 +18,14 @@ import {
   ProtocolCheatSheet,
   StatusCodeCheatSheet,
 } from "@/components/mdx/Httpversiondiagrams";
+import {
+  ProxyTrapFlow,
+  TrapCheatSheet,
+  ProxyBasicsDemo,
+  ProxyValidationDemo,
+  ProxyReceiverDemo,
+  ProxyApplyDemo,
+} from "@/components/mdx/ProxyPatternDiagrams";
 
 export const mdxComponents = {
   pre: CodeBlock,
@@ -38,4 +46,10 @@ export const mdxComponents = {
   HandshakeCost,
   ProtocolCheatSheet,
   StatusCodeCheatSheet,
+  ProxyTrapFlow,
+  TrapCheatSheet,
+  ProxyBasicsDemo,
+  ProxyValidationDemo,
+  ProxyReceiverDemo,
+  ProxyApplyDemo,
 };

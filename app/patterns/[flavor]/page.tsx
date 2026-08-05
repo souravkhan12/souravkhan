@@ -73,7 +73,7 @@ export default async function PatternsFlavorPage({
         count={total}
         subtitle={flavor.blurb}
       >
-        <div className="border-border flex flex-wrap items-center gap-2 border-x border-t px-6 py-2.5 sm:px-8">
+        <div className="border-border flex flex-wrap items-center gap-2 border-x border-t border-b px-6 py-2.5 sm:px-8">
           <FlavorSwitcher current={slug} targets={getFlavorTargets()} />
 
           {categories.map((category) => (
@@ -99,27 +99,36 @@ export default async function PatternsFlavorPage({
             </p>
           </div>
         )}
-      </Section>
 
-      {/* One band per category. Adding an .mdx with a new `category` grows this
-          page without touching any of this. */}
-      {categories.map((category) => (
-        <Section
-          key={category.slug}
-          title={category.label.toLowerCase()}
-          id={category.slug}
-          count={category.count}
-        >
-          <RowList
-            rows={category.patterns.map((p) => ({
-              href: p.href,
-              title: p.title,
-              meta: p.tags.slice(0, 3).join(", ") || p.readingTime,
-              hint: p.description,
-            }))}
-          />
-        </Section>
-      ))}
+        {/* Categories are subheadings inside this one band, not a Section
+            each. A Section carries a full-width screen rule, a gray-100
+            header and 4rem of clearance above it — weight that reads as "a
+            new part of the page". Spent on a category holding one pattern it
+            produced four near-identical blocks with gaps between them, and
+            the page looked broken rather than structured. One continuous
+            list, one seam per group. */}
+        {categories.map((category) => (
+          <div key={category.slug}>
+            <h3
+              id={category.slug}
+              className="border-border font-code text-soft flex scroll-mt-24 items-center gap-2 border-x border-b bg-gray-50 px-6 py-2 text-xs lowercase sm:px-8 dark:bg-black"
+            >
+              <span aria-hidden="true" className="bg-blue h-3 w-[2px]" />
+              {category.label.toLowerCase()}
+              <span className="text-faint tabular-nums">{category.count}</span>
+            </h3>
+
+            <RowList
+              rows={category.patterns.map((p) => ({
+                href: p.href,
+                title: p.title,
+                meta: p.tags.slice(0, 3).join(", ") || p.readingTime,
+                hint: p.description,
+              }))}
+            />
+          </div>
+        ))}
+      </Section>
     </div>
   );
 }

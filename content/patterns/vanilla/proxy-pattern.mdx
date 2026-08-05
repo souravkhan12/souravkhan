@@ -1,0 +1,201 @@
+---
+title: Proxy Pattern
+description: A stand-in object that sits in front of the real one and gets to decide what happens on every read and every write.
+category: structural
+categoryLabel: Structural
+tags: ["proxy", "reflect", "metaprogramming", "javascript"]
+order: 10
+published: true
+---
+
+A config object in a service I worked on had a field that was correct at boot
+and wrong by the time the first request came in. Something wrote to it. Nothing
+in the codebase searched for that field name on the left of an `=`, because the
+write was `Object.assign(config, overrides)` four files away.
+
+The fix took ten minutes once I stopped reading code and put a proxy in front of
+the object with a `set` trap that logged a stack trace. The next boot printed the
+exact line. A proxy is the tool for "something is touching this object and I want
+to know what."
+
+## The idea: a stand-in
+
+Say you want to reach someone important. You don't get them directly — you go
+through their assistant. The assistant takes your message, decides whether to
+pass it on, maybe writes it down first, maybe tells you the person is
+unavailable. From your side nothing looks unusual. You spoke, you got an answer.
+
+A `Proxy` is that assistant. You hand it a **target** object and a **handler**,
+and every interaction with the proxy goes through the handler first.
+
+```js
+const person = {
+  name: "John Doe",
+  age: 42,
+  nationality: "American",
+};
+
+const personProxy = new Proxy(person, {});
+```
+
+An empty handler is a pass-through: `personProxy` behaves exactly like `person`.
+The handler is where you buy control back, one interaction type at a time. Each
+of those is called a **trap**, and the two you'll write most are:
+
+- `get` — fires when a property is read
+- `set` — fires when a property is written
+
+Here it is running for real. Edit the code, press run, watch the console.
+
+<ProxyBasicsDemo />
+
+Notice what the trap arguments are: `obj` is the target (the real `person`), and
+`prop` is the key as a string. `set` gets a third, the value being assigned.
+
+## Where the interception actually happens
+
+The syntax gives nothing away. `personProxy.age = 43` is ordinary assignment —
+there's no `.call()`, no wrapper function, no hook registration. That's what
+makes proxies powerful and also what makes them easy to lose track of in a
+codebase.
+
+<ProxyTrapFlow />
+
+## Validation: the first genuinely useful trap
+
+Logging is the demo. Validation is the reason you'd ship one. A `set` trap can
+refuse a write, which is something no amount of discipline elsewhere can
+guarantee.
+
+<ProxyValidationDemo />
+
+<Callout type="warn" title="`set` must return a truthy value">
+That `return true` at the end of every branch is not decoration. In strict mode
+— which every ES module and every `class` body is — a `set` trap that returns a
+falsy value makes the assignment throw a `TypeError`. An arrow function written
+as `(obj, prop, value) => { obj[prop] = value; }` returns `undefined`, so it
+throws even though the write succeeded. Most tutorials on this pattern omit the
+`return` and get away with it only because their example is a non-strict script.
+</Callout>
+
+There is a second design decision hiding in that snippet: on a rejected write, I
+`return true` (a lie: "yes, that was written") rather than `return false`. Both
+are defensible. `return false` throws in strict mode, which is right if a bad
+write is a programmer error you want to hear about immediately. `return true`
+swallows it, which is right if you're sanitising untrusted input and the point is
+that the object stays clean. Pick deliberately — the difference is whether
+callers get an exception or silence.
+
+## Reflect
+
+Inside a handler you constantly need to do the thing you just intercepted:
+read the property, write the property, check whether the key exists. Doing it
+with bracket notation works for simple objects and quietly breaks on the
+interesting ones.
+
+`Reflect` is the built-in that mirrors every trap. Same names, same arguments:
+
+```js
+const personProxy = new Proxy(person, {
+  get: (obj, prop, receiver) => {
+    console.log(`read ${prop}`);
+    return Reflect.get(obj, prop, receiver);
+  },
+  set: (obj, prop, value, receiver) => {
+    console.log(`write ${prop}`);
+    return Reflect.set(obj, prop, value, receiver);
+  },
+});
+```
+
+Two things you get for free here that `obj[prop]` doesn't give you:
+
+**`Reflect.set` returns the boolean the trap needs.** `return Reflect.set(...)`
+is the whole body — you can't forget the `return true` problem above, because
+the correct answer is already the return value.
+
+**The fourth argument, `receiver`, keeps `this` honest.** A getter on the target
+reads other properties through `this`. If you invoke it via `obj[prop]`, `this`
+is the raw target and those nested reads skip the proxy entirely. Pass
+`receiver` and they route back through the proxy, as they should.
+
+<ProxyReceiverDemo />
+
+That difference is invisible until the day it isn't. Use `Reflect` with
+`receiver` by default and you never have to work out which day that is.
+
+## get and set are two of thirteen
+
+Property access is where every tutorial stops, and it leaves the impression that
+a proxy can only wrap objects. It can wrap functions and classes too.
+
+<TrapCheatSheet />
+
+The `apply` trap is the one most worth knowing about after `get`/`set` — it turns
+"time this function" or "memoise this function" into a wrapper that is
+indistinguishable from the original, including its `name`, its `length`, and
+`instanceof`.
+
+<ProxyApplyDemo />
+
+## What I got wrong first
+
+**My `get` trap returned nothing.** My first proxy logged beautifully and broke
+the app, because I wrote this:
+
+```js
+get: (obj, prop) => {
+  console.log(`The value of ${prop} is ${obj[prop]}`);
+}
+```
+
+The log line reads the value, so the console output looked perfect. But the trap
+itself returns `undefined`, and *the trap's return value is what the property
+access evaluates to*. Every read through that proxy produced `undefined`. A trap
+doesn't observe an operation — it **replaces** it. If you don't forward, nothing
+gets forwarded.
+
+<Aside>
+This exact bug is in most of the proxy tutorials you'll find, including the
+canonical one. It survives review because the demo only ever writes
+`personProxy.name;` as a statement and never uses the result.
+</Aside>
+
+**I proxied the wrong thing.** I wrapped an object, handed the proxy out, and
+kept using the original variable inside the module. Half the writes went through
+the trap and half didn't. A proxy only intercepts what goes through *it* — if any
+reference to the target escapes, your guarantees are gone. Create the target and
+the proxy in the same breath and export only the proxy:
+
+```js
+export const config = new Proxy({ retries: 3 }, handler);
+// the raw object has no name anywhere — nothing can reach past the proxy
+```
+
+## Tradeoffs
+
+Proxies are genuinely slow. Every trapped operation is a megamorphic call into
+JS-engine machinery that defeats the inline caches property access normally
+relies on — expect a trapped read to cost roughly an order of magnitude more than
+a plain one. That's irrelevant for a config object read twelve times at boot and
+disqualifying for anything inside a render loop or a hot array traversal.
+
+The subtler cost is legibility. Ordinary syntax now has non-obvious behaviour,
+and the code doing the reading gives no hint that a handler is involved. A
+teammate debugging `user.email` has no reason to suspect there's a validator in
+the middle. That's fine at a boundary — one proxy, created in one place, wrapping
+one well-named thing. It's miserable when proxies are sprinkled through a
+codebase.
+
+So: **reach for a proxy when the interception has to be invisible to the caller**
+— you're instrumenting code you don't want to edit, hardening data at a trust
+boundary, or building a reactivity system (this is exactly how Vue 3's reactive
+objects and MobX work). When you *can* just write a function and have callers
+call it, write the function.
+
+<Callout type="info" title="Where you've already used one">
+Vue 3's `reactive()` returns a proxy: its `get` trap records which component read
+which key, and its `set` trap re-runs the ones that did. That's the observer
+pattern with the subscription step deleted — the proxy notices the dependency
+instead of you declaring it.
+</Callout>

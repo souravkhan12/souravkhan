@@ -447,6 +447,30 @@ html {
   }
 }
 
+/* A console line arriving. The sandbox in the proxy post reveals output one
+   entry at a time, and a line that simply appears reads as a re-render rather
+   than as an event that just happened. */
+@keyframes console-line-in {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.console-line {
+  animation: console-line-in 160ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .console-line {
+    animation: none;
+  }
+}
+
 /* ============================================================
    BLOG TYPOGRAPHY
    The typography plugin ships its own rem/em scale, which raced the site's
@@ -708,6 +732,59 @@ body:has(main > .reading-shell) .navbar-frame {
     --blog-col: var(--blog-measure);
     --blog-rail: 14rem;
     --blog-gutter: 3rem;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Wider tiers for wider screens
+
+   The 82.5rem frame was sized to the smallest viewport that can hold
+   three columns, and then never grew. On a 1700px+ display that left the
+   sidebar, a 40rem measure and the rail huddled in the middle with ~400px
+   of dead paper on each side — and, because `--blog-col` equals the
+   measure up there, no slack for a code block or a diagram panel to break
+   out into either. Both tiers below give the measure and the breakout
+   room separately, so wide content grows faster than the prose does.
+
+   Every number still closes against its frame:
+
+     92.5rem → 280 + 48 + [80 + (704 + 48 + 240)] = 1480  ✓
+     100rem  → 280 + 48 + [80 + (736 + 48 + 256)] = 1600  ✓
+
+   The nav column is deliberately left at 17.5rem in both. It holds one
+   list of pattern titles; widening it would buy nothing but a longer
+   ragged right edge.
+   ------------------------------------------------------------------ */
+@media (min-width: 100rem) {
+  main:has(> .reading-shell) {
+    max-width: 92.5rem;
+  }
+
+  body:has(main > .reading-shell) .navbar-frame {
+    max-width: 92.5rem;
+  }
+
+  .reading-shell {
+    --blog-measure: 44rem;
+    /* 5rem wider than the measure — the slack .blog-breakout expands into. */
+    --blog-col: 49rem;
+    --blog-rail: 15rem;
+  }
+}
+
+@media (min-width: 120rem) {
+  main:has(> .reading-shell) {
+    max-width: 100rem;
+  }
+
+  body:has(main > .reading-shell) .navbar-frame {
+    max-width: 100rem;
+  }
+
+  .reading-shell {
+    --blog-measure: 46rem;
+    --blog-col: 55.5rem;
+    --blog-rail: 16rem;
   }
 }
 
