@@ -41,9 +41,9 @@ export default function Hero() {
           transition={{ duration: MOTION.duration.slow, ease: MOTION.ease }}
           className="ss01 normal-case-force hero-title font-semilight"
         >
-          <span className="font-pixel hero-wordmark">{HERO.name}</span>
+          <span className="hero-wordmark">{HERO.name}</span>
           <br />
-          <span className="text-soft">{HERO.title}</span>
+          <span className="font-pixel text-soft">{HERO.title}</span>
         </motion.h1>
 
         <motion.p
