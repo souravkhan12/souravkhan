@@ -2,7 +2,7 @@ import { Metadata, Viewport } from "next";
 import "@/styles/globals.css";
 import { SEO_CONFIG } from "@/config/seo";
 import { CONTACT_INFO, SOCIAL_LINKS } from "@/config/data";
-import { mono, sans } from "@/utils/fonts";
+import { mono, pixel, sans } from "@/utils/fonts";
 import Providers from "@/components/ui/provider";
 import { ServiceWorker } from "@/components/ui/service-worker";
 import { InstallPrompt } from "@/components/ui/install-prompt";
@@ -174,7 +174,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${sans.variable} ${mono.variable} font-sans antialiased`}
+        className={`${sans.variable} ${mono.variable} ${pixel.variable} font-sans antialiased`}
       >
         <ScrollToTop />
         {/* Horizontal clip lives here, not on <html> or <body>: overflow set

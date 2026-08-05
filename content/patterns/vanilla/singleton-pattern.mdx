@@ -1,6 +1,6 @@
 ---
 title: Singleton Pattern
-description: One instance, shared globally — and the reason it's the pattern people regret reaching for.
+description: One instance, shared globally — why it feels convenient, and why it so often bites you.
 category: creational
 categoryLabel: Creational
 tags: ["module", "state", "javascript"]
@@ -8,14 +8,39 @@ order: 10
 published: true
 ---
 
-A singleton is a class that can only ever be instantiated once, with that one
-instance shared everywhere. The usual excuse for it is a thing there is
-genuinely only one of: the app's config, a cache, a connection pool.
+If you've ever written a class with a `getInstance()` method so that "only one of
+these ever exists," you've built a singleton. It's one of the most reached-for
+patterns in software — and one of the easiest to misuse without realising it.
+
+## What a singleton actually is
+
+Think of it like "the current President." There's only one at a time, and
+instead of creating a new one whenever you need them, you ask "who's the current
+President?" and get the same person back every time.
+
+```js
+class Logger {
+  static #instance;
+
+  static getInstance() {
+    if (!Logger.#instance) {
+      Logger.#instance = new Logger();
+    }
+    return Logger.#instance;
+  }
+
+  info(msg) {
+    console.log(`[INFO] ${msg}`);
+  }
+}
+
+Logger.getInstance().info("app started");
+```
 
 ## The mechanism
 
-The trick is that the constructor doesn't have to return a fresh object. If a
-previous instance is stashed somewhere, return that instead.
+The other way to write it: the constructor doesn't have to return a fresh
+object. If a previous instance is stashed somewhere, return that instead.
 
 ```js
 let instance;
@@ -66,8 +91,8 @@ export const getCount = () => count;
 ```
 
 Every module that imports this gets the same `count`. That's the version to
-reach for — it's the same guarantee with none of the ceremony, and it doesn't
-pretend to be a class that can be instantiated when it can't.
+reach for — same guarantee, none of the ceremony, and it doesn't pretend to be a
+class that can be instantiated when it can't.
 
 <Callout type="warn" title="The cost nobody prices in">
 A singleton is global mutable state with a nicer name. Two modules that both
@@ -75,22 +100,94 @@ import it are now coupled through it, which shows up as tests that pass alone
 and fail in a suite — because the previous test left the count at 7.
 </Callout>
 
-## Where it actually bites
+## Three ways singletons quietly cause problems
 
-- **Testing.** There's no clean instance per test. You need an explicit `reset()`
-  that you must remember to call, and any test that forgets pollutes the next.
-- **Tracing a bug.** When the count is wrong, the culprit is "anything that
-  imported this module", which is not a search you can finish.
-- **Server rendering.** On the server the module registry is shared across
-  requests, so a singleton holding per-user state leaks one user's data into
-  another's render. This one is a security bug, not a style complaint.
+### 1. Shared state leaks across users
 
-## What to reach for instead
+Your app runs on a server handling many people's requests at the same time —
+that's normal for websites: one running process, many visitors. If a singleton
+stores anything specific to a single user (their cart, their session), every
+other user hitting that same server reads and writes the *same object*.
 
-Pass the dependency in. If a function needs a cache, take the cache as an
-argument rather than importing the one true cache — you keep the single
-instance at the app's edge where you can see it, and everything below stays
-testable with a throwaway one.
+Result: "why is user A suddenly seeing user B's data?" That's a security bug,
+not a style complaint, and it traces straight back to singleton misuse.
 
-In React the same instinct is a Context provider: one instance, but scoped to a
-tree you control rather than to the process.
+**Rule of thumb:** singletons are fine for things that are the same for everyone
+(shared config, a logger). They're dangerous for anything tied to one user or
+one request.
+
+### 2. Tests start interfering with each other
+
+A singleton keeps its state around for the life of the program — including
+during your test suite. If test 1 flips a setting, test 2 quietly inherits it,
+even though the two have nothing to do with each other. You get the most
+annoying kind of bug: tests that fail only sometimes, depending on run order.
+
+Fixes:
+
+- Give the singleton a `reset()` method and call it before every test.
+- Better: don't hard-code `MyService.getInstance()` deep inside your code — hand
+  the dependency in instead (next section).
+
+### 3. Hidden dependencies make code hard to trust
+
+This is the sneaky one. Compare two versions of the same function:
+
+```js
+// Version A: hidden dependency
+function processOrder(order) {
+  Logger.getInstance().info("processing " + order.id);
+}
+
+// Version B: explicit dependency
+function processOrder(order, logger) {
+  logger.info("processing " + order.id);
+}
+```
+
+In version A you can't tell what `processOrder` needs from its signature — it
+secretly reaches out for a global logger. Someone reusing it in a new context
+(say, a background job with no logger configured) discovers that requirement the
+hard way, usually via a crash. Tracing the bug is no better: when the state is
+wrong, the culprit is "anything that imported this module", which isn't a search
+you can finish.
+
+In version B the dependency is right there in the parameters. Anyone can see
+what the function needs, and a test can pass in a fake logger.
+
+That single change — passing things in instead of reaching out for them — is
+**dependency injection**, and it's the fix for most singleton pain.
+
+## Better tools for the job
+
+**Backend service?** Use a DI container (tsyringe, InversifyJS). You register
+the service once in one place and the container hands it out everywhere, but
+tests can swap in a fake before resolving it.
+
+**React app?** Use Context. Every component *inside a specific part of your UI*
+gets access to it without it being truly global — and you can mount a different
+value in tests or Storybook without touching production code.
+
+**Shared state that changes over time** (like "is the user logged in")? Use a
+lightweight store like Zustand. It's just a function returning a hook — no
+class, no `getInstance()`, trivially mockable.
+
+## So when is a singleton the right call?
+
+It's fine when all of these hold:
+
+- The data is the same for every user — not per-request, not per-user.
+- You genuinely never need more than one instance, and nothing breaks if there
+  were two.
+- You won't need to swap it out in tests.
+
+If any of them don't hold, reach for dependency injection, Context, or a store.
+The "one instance" guarantee is easy to get from any of them, without the hidden
+coupling and cross-test bleeding.
+
+## The one-line takeaway
+
+A singleton isn't wrong — it's just easy to misuse. **If you find yourself
+hard-coding `getInstance()` deep inside a function, stop and ask whether you
+could pass that dependency in instead.** That one habit avoids most of the pain
+this pattern is known for.

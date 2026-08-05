@@ -361,6 +361,36 @@
   font-feature-settings: "ss01";
 }
 
+/* ============================================================
+   Wordmark — Geist Pixel Square
+   A display face, used for the name and nothing else. Two things it needs
+   that the text faces don't:
+   - `-webkit-font-smoothing: none` + `optimizeSpeed` rendering. The glyphs
+     are axis-aligned squares; antialiasing greys their edges and the whole
+     thing goes soft at exactly the size it's meant to look sharpest.
+   - Positive tracking. Pixel glyphs carry no side bearings to speak of, so
+     at the hero's -0.02em the blocks collide into one another.
+   ============================================================ */
+.font-pixel {
+  font-family:
+    var(--font-geist-pixel-square), var(--font-geist-mono), monospace;
+  font-feature-settings: normal; /* no ss01 — it isn't in this face */
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+  text-rendering: optimizeSpeed;
+}
+
+/* The hero name specifically: the pixel face runs optically small next to
+   Inter at the same size, and its blocky verticals want a touch more leading
+   than the -title line-height gives them. */
+.hero-wordmark {
+  display: inline-block;
+  font-size: 0.92em;
+  line-height: 1.25;
+  padding-block: 0.06em; /* the square ascenders otherwise clip on the blur */
+}
+
 /* Guaranteed to win over Tailwind's .font-mono utility (which maps to the
    system stack, not our loaded webfont) regardless of cascade-layer order. */
 .font-code {
