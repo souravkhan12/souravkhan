@@ -672,9 +672,13 @@ html {
   --blog-rail: 15rem;
   --blog-gutter: 3rem;
   /* Section index on the left of a reading page (patterns.dev's sidebar). */
-  /* 17.5rem = a 15rem list plus the 2.5rem left gutter every other
-     column on the page already has. */
-  --reading-nav: 17.5rem;
+  /* 14rem = an 11.5rem list plus the 2.5rem left gutter every other column
+     on the page already has. It was 17.5rem, sized so the longest pattern
+     title never wrapped — but the list is short and sticky, so on a 1400px
+     screen that bought two dozen unwrapped characters at the cost of a
+     280px column standing empty beside 3000px of article. A wrapped
+     "Container / Presentational Pattern" is the cheaper trade. */
+  --reading-nav: 14rem;
 }
 
 /* A reading page needs a wider frame than the 1200px shell: a sidebar, a
@@ -700,13 +704,13 @@ body:has(main > .reading-shell) .navbar-frame {
    Three-column reading layout (xl+)
 
        section nav │ article + contents rail
-     40 + 240      │  40 + (640 + 48 + 224) + 40
+     40 + 184      │  40 + (704 + 48 + 224) + 40
 
    Every number closes against the 82.5rem (1320px) reading frame:
 
-       280 + 48 + 992 = 1320          columns + gap
-       992 - 80 = 912                 article minus its px-10 gutters
-       640 + 48 + 224 = 912           measure + gap + rail  ✓
+       224 + 40 + 1056 = 1320         columns + gap
+       1056 - 80 = 976                article minus its px-10 gutters
+       704 + 48 + 224 = 976           measure + gap + rail  ✓
 
    So the prose is exactly --blog-measure, the sidebar's text sits on
    the same 40px gutter as the article's, and the contents rail ends
@@ -724,11 +728,17 @@ body:has(main > .reading-shell) .navbar-frame {
   .reading-shell {
     display: grid;
     grid-template-columns: var(--reading-nav) minmax(0, 1fr);
-    column-gap: 3rem;
+    /* 2.5rem, not 3rem: the nav has no right border, so the gap is read
+       against the article's own 2.5rem gutter on the far side of the rule.
+       Matching them centres the divider in its whitespace. */
+    column-gap: 2.5rem;
     align-items: start;
 
     /* Retune the inner two-column layout to the space the nav left behind,
-       rather than forking .blog-layout for this case. */
+       rather than forking .blog-layout for this case. Every pixel the nav
+       gave back goes to the measure — 40rem → 44rem — so the middle column
+       grows instead of the frame just emptying out on the left. */
+    --blog-measure: 44rem;
     --blog-col: var(--blog-measure);
     --blog-rail: 14rem;
     --blog-gutter: 3rem;
@@ -748,12 +758,12 @@ body:has(main > .reading-shell) .navbar-frame {
 
    Every number still closes against its frame:
 
-     92.5rem → 280 + 48 + [80 + (704 + 48 + 240)] = 1480  ✓
-     100rem  → 280 + 48 + [80 + (736 + 48 + 256)] = 1600  ✓
+     92.5rem → 224 + 40 + [80 + (848 + 48 + 240)] = 1480  ✓
+     100rem  → 224 + 40 + [80 + (952 + 48 + 256)] = 1600  ✓
 
-   The nav column is deliberately left at 17.5rem in both. It holds one
-   list of pattern titles; widening it would buy nothing but a longer
-   ragged right edge.
+   The nav column is deliberately left at 14rem in all three tiers. It
+   holds one list of pattern titles; widening it would buy nothing but a
+   longer ragged right edge.
    ------------------------------------------------------------------ */
 @media (min-width: 100rem) {
   main:has(> .reading-shell) {
@@ -765,9 +775,9 @@ body:has(main > .reading-shell) .navbar-frame {
   }
 
   .reading-shell {
-    --blog-measure: 44rem;
-    /* 5rem wider than the measure — the slack .blog-breakout expands into. */
-    --blog-col: 49rem;
+    --blog-measure: 46rem;
+    /* 7rem wider than the measure — the slack .blog-breakout expands into. */
+    --blog-col: 53rem;
     --blog-rail: 15rem;
   }
 }
@@ -782,8 +792,8 @@ body:has(main > .reading-shell) .navbar-frame {
   }
 
   .reading-shell {
-    --blog-measure: 46rem;
-    --blog-col: 55.5rem;
+    --blog-measure: 48rem;
+    --blog-col: 59.5rem;
     --blog-rail: 16rem;
   }
 }
