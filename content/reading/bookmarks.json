@@ -1,5 +1,12 @@
 [
   {
+    "title": "What is a Harness",
+    "url": "https://earendil.com/posts/what-is-a-harness/",
+    "note": "Learn about the what is harness and how it can be used to build agentic AI systems.",
+    "tags": ["AI", "Agentic AI", "Harness"],
+    "date": "2026-08-25"
+  },
+  {
     "title": "How browser rendering works — behind the scenes",
     "url": "https://blog.logrocket.com/how-browser-rendering-works-behind-scenes/",
     "note": "Walks the pipeline from HTML/CSS parsing to the DOM and CSSOM, render tree, layout, paint and compositing. Good mental model for why layout thrashing and non-composited animations are slow.",
