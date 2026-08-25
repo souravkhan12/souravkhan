@@ -1,0 +1,94 @@
+---
+title: "What a coding-agent harness actually does"
+description: "An LLM can't open a file, run a test, or fix its own mistake. The harness is the loop that lets it — here's the whole cycle, with a playground you can pull apart."
+date: "2026-08-25"
+tags: ["ai", "agents", "llm", "developer-tools", "architecture"]
+published: true
+---
+
+I watched an AI agent fix a failing test in my repo — read the file, spot the bad assertion, edit it, re-run the suite, confirm it passed — and I assumed the model did all of that. It didn't. The model wrote some text. Everything else was the **harness**.
+
+## The short answer
+
+A large language model has exactly one capability: given text, it produces text. It cannot touch your filesystem, run a command, or remember your last message. A **harness** is the ordinary program wrapped around the model that turns that stream of text into real actions and feeds the results back — over and over — until the job is done.
+
+```
+loop:
+  prompt  = build_context(system, tools, history, task)
+  reply   = model(prompt)          // the model's whole contribution: text
+  if reply has no tool call: break // ← done
+  result  = run_tool(reply)        // the harness does the actual work
+  history = history + reply + result
+```
+
+That five-line loop is the entire idea. The model is the rented brain; the harness is the body, the memory, and the hands.
+
+## Watch one turn
+
+The confusing part is that all of this happens invisibly between you hitting enter and seeing an answer. So here it is slowed down — one full turn of the loop, with the harness in blue and the model in amber:
+
+<HarnessLoop />
+
+Notice how little the model does. It reads a blob of text and writes a blob of text. Twice, it writes a request to use a tool — but a _request_ is all it can write. Every time something real happens to your machine, that's the blue lane: the harness executing.
+
+## Why it works this way
+
+### The model is a function, not a program
+
+It helps to think of the model as a pure function: `string -> string`. No state, no side effects, no memory. Call it twice with the same input and you get the same distribution out. It has never seen your repo and won't remember this conversation the moment it returns.
+
+Everything you associate with "the agent" — that it knows your files, remembers what it tried, can run your tests — is not in the model. It's in the harness holding state around that stateless function.
+
+<Callout type="note" title="The one-sentence test">
+  If a capability survives swapping the model out for a different one, it lives
+  in the harness. Memory, tools, file access, and knowing when to stop are all
+  harness features. Only the reasoning is the model's.
+</Callout>
+
+### Tools are a text protocol, not magic
+
+"Tool use" sounds like the model reaching out and doing something. It isn't. The harness tells the model, in the prompt, "here are functions you may call and their arguments." The model replies with structured text naming one:
+
+```json
+{ "tool": "read_file", "args": { "path": "login.test.ts" } }
+```
+
+That JSON is still just text the model generated. The harness parses it, runs the _actual_ `fs.readFileSync` with your permissions, captures the output, and pastes it back into the conversation as the next message. The model never left its sandbox. The harness is the only thing that ever touches the real world.
+
+### The prompt is the product
+
+Because the model is stateless, the harness rebuilds its entire worldview from scratch on every single turn — packing the system prompt, the tool definitions, the relevant code, and the history into one blob that has to fit the context window. What you choose to include, trim, or summarise _is_ the quality of the agent.
+
+This is the lever, so here it is as something you can pull. Switch pieces off and read what breaks:
+
+<ContextBuilderPlayground />
+
+Drop the tool schemas and the smartest model on earth can only write you an essay — it has no way to signal an action. Drop the file contents and it edits confidently against functions that don't exist. The harness's real job is assembling this prompt well, every turn, within budget.
+
+### Knowing when to stop
+
+There's no natural end to the loop; something has to decide the task is finished. That something is the harness, and the signal is simple: the model returns a message with **no tool call in it**. Just prose for the human. The harness sees nothing left to execute, breaks the loop, and prints the reply. A missing bracket in that check is how you get an agent that runs forever or quits after one step.
+
+<Callout type="warn" title="Where agents actually fail">
+  Most bad agent behaviour isn't a dumb model — it's a weak harness. Context
+  that overflows and silently truncates the instructions, tool output that never
+  makes it back into history, a stop condition that fires too early. Swap in a
+  better model and these bugs all survive untouched.
+</Callout>
+
+## Who owns what
+
+Zooming out, the division of labour is lopsided in a way that surprised me. The model is the part everyone talks about, but it's responsible for the fewest jobs:
+
+<HarnessAnatomy />
+
+## What I got wrong first
+
+- **"The model runs my code."** It never does. It emits a request; the harness runs the code. That boundary is the whole security story of these tools — the model is sandboxed to text, and the harness decides what it's allowed to actually execute.
+- **"A better model means a better agent."** Only up to a point. Past a certain capability, the difference between a great agent and a frustrating one is almost entirely harness quality: context management, tool design, and error feedback.
+- **"Tool use is a special model feature."** It's a convention — a text format the model was trained to emit and the harness agrees to parse. You could implement it over a model that's never heard the word "tool," just with worse reliability.
+- **"Memory is in the model."** The model forgets everything on return. Every bit of continuity you feel is the harness re-sending history it saved.
+
+## Takeaway
+
+When an AI agent impresses or frustrates you, look at the harness before the model — the loop that assembles the prompt, runs the tools, and decides when to stop is doing most of the work, and it's the part you can actually change.

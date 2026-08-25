@@ -26,6 +26,11 @@ import {
   ProxyReceiverDemo,
   ProxyApplyDemo,
 } from "@/components/mdx/ProxyPatternDiagrams";
+import {
+  HarnessLoop,
+  ContextBuilderPlayground,
+  HarnessAnatomy,
+} from "@/components/mdx/AgentHarnessDiagrams";
 
 export const mdxComponents = {
   pre: CodeBlock,
@@ -52,4 +57,7 @@ export const mdxComponents = {
   ProxyValidationDemo,
   ProxyReceiverDemo,
   ProxyApplyDemo,
+  HarnessLoop,
+  ContextBuilderPlayground,
+  HarnessAnatomy,
 };
