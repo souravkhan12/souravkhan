@@ -6,7 +6,7 @@ tags: ["ai", "agents", "llm", "developer-tools", "architecture"]
 published: true
 ---
 
-I watched an AI agent fix a failing test in my repo — read the file, spot the bad assertion, edit it, re-run the suite, confirm it passed — and I assumed the model did all of that. It didn't. The model wrote some text. Everything else was the **harness**.
+An AI agent fixes a failing test: reads the file, spots the bad assertion, edits it, re-runs the suite, confirms it passed. It looks like the model did all of that. It didn't. The model wrote some text. Everything else was the **harness**.
 
 ## The short answer
 
@@ -82,7 +82,7 @@ Zooming out, the division of labour is lopsided in a way that surprised me. The 
 
 <HarnessAnatomy />
 
-## What I got wrong first
+## What people get wrong
 
 - **"The model runs my code."** It never does. It emits a request; the harness runs the code. That boundary is the whole security story of these tools — the model is sandboxed to text, and the harness decides what it's allowed to actually execute.
 - **"A better model means a better agent."** Only up to a point. Past a certain capability, the difference between a great agent and a frustrating one is almost entirely harness quality: context management, tool design, and error feedback.

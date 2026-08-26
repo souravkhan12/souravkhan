@@ -6,14 +6,14 @@ tags: ["browsers", "performance", "html", "css", "javascript"]
 published: true
 ---
 
-I had a script that found an element and logged it. Worked fine. I tidied the file up, moved the `<script>` from the bottom of `<body>` into `<head>`, and the same line started returning `null`.
+Move a `<script>` from the bottom of `<body>` into `<head>` and a working `getElementById` call starts returning `null`. Nothing about the script changed — only where it sits.
 
 ```js
 let header = document.getElementById("header");
 console.log("header is: ", header); // → null, but only from <head>
 ```
 
-Nothing changed but the position of one tag. Explaining that properly means walking the whole path from the bytes arriving off the network to pixels on the screen — so that's what this is.
+Explaining that properly means walking the whole path from the bytes arriving off the network to pixels on the screen — so that's what this is.
 
 ## The short answer
 
@@ -33,7 +33,7 @@ Everything below is the machinery behind those two lines.
 
 ### Who's actually doing the work
 
-Inside every browser is a **browser engine**: the component that takes the files it receives and decides what to put on screen. Chrome's is Blink, Firefox's is Gecko, Safari's is WebKit (Blink started life as a WebKit fork). They differ in the details, but the pipeline below is common to all of them. When I say "the browser" from here on, this is the part I mean.
+Inside every browser is a **browser engine**: the component that takes the files it receives and decides what to put on screen. Chrome's is Blink, Firefox's is Gecko, Safari's is WebKit (Blink started life as a WebKit fork). They differ in the details, but the pipeline below is common to all of them. "The browser" from here on means this part.
 
 ### The browser never sees your code
 
@@ -118,7 +118,7 @@ document.getElementsByTagName("body")[0].style.backgroundColor = "red";
 
 The browser has no way to know in advance which of those a given script will do. So when the parser reaches a `<script>` tag, it takes the only safe option available: **DOM construction stops** and the script runs to completion first.
 
-That's the whole answer to the bug I opened with. With the tag at the end of `<body>`, the parser has already walked past the markup, `#header` is in the DOM, and the lookup succeeds. Move it into `<head>` and the parser hasn't reached `<body>` yet. `getElementById` isn't failing — it's correctly reporting that no such element exists, because at that instant it really doesn't.
+That's the whole answer to the `null` at the top of this post. With the tag at the end of `<body>`, the parser has already walked past the markup, `#header` is in the DOM, and the lookup succeeds. Move it into `<head>` and the parser hasn't reached `<body>` yet. `getElementById` isn't failing — it's correctly reporting that no such element exists, because at that instant it really doesn't.
 
 Extracting the code into an external file changes nothing; the parser still halts. And if that file has to come over the network, **it halts for the entire round trip**. A script that takes 800ms to arrive is 800ms where your DOM stops growing.
 
@@ -151,7 +151,7 @@ Use `async` for things with no dependency on your markup or on each other — an
 
 The whole sequence — bytes in, pixels out — is called the **critical rendering path**. Optimising a site's perceived speed is mostly optimising this path: getting the render-blocking resources delivered early, and keeping scripts from stalling the middle of it, so the page renders progressively instead of arriving all at once at the end.
 
-## What I got wrong first
+## What people get wrong
 
 - **"`async` and `defer` are roughly the same."** They differ on when execution happens, and it matters. `async` still interrupts parsing the moment the file lands, in nondeterministic order. `defer` waits for a complete DOM and preserves document order.
 - **"CSS only matters at paint time, so it can't slow anything earlier."** CSS blocks CSSOM construction, which blocks the render tree, which blocks layout — and it blocks script execution too.

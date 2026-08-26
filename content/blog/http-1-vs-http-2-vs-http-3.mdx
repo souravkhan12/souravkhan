@@ -1,14 +1,14 @@
 ---
 title: "HTTP 1 vs HTTP 2 vs HTTP 3"
-description: "We turned on HTTP/2 and mobile got slower. The reason sits one layer below HTTP, in a place your server config can't see — and it's also why HTTP/3 isn't the free upgrade everyone assumes."
+description: "Switching to HTTP/2 can make mobile slower. The reason sits one layer below HTTP, in a place your server config can't see — and it's also why HTTP/3 isn't the free upgrade everyone assumes."
 date: "2026-07-31"
 tags: ["http", "networking", "performance", "quic"]
 published: true
 ---
 
-We turned on HTTP/2 expecting the free win everyone promises. Desktop got a little better. Mobile got _worse_, and stayed worse for two weeks before anyone linked it to the change.
+Turning on HTTP/2 is meant to be a free win. On a patchy mobile connection it can make things slower, with nothing misconfigured and HTTP/2 doing exactly what it says it does.
 
-Nothing was misconfigured. HTTP/2 was doing exactly what it says it does. The slow part had just moved one layer down, somewhere HTTP can't see.
+Each version of HTTP fixed the last one's slow part and hit a new one underneath. That's the whole story, and it's why "which version is fastest" has no single answer.
 
 ## The short answer
 
@@ -113,7 +113,7 @@ HTTP/2 landed in 2015, built from Google's SPDY, and changed the format on the w
 
 ### What HTTP/2 didn't fix
 
-Here's our mobile problem.
+Here's the mobile problem.
 
 HTTP/2 stopped requests queueing **inside HTTP**. But it still runs on <Term abbr="TCP" def="Transmission Control Protocol. The layer under HTTP that turns unreliable packets into a reliable, in-order stream of bytes. That in-order promise is exactly what causes the problem here.">TCP</Term>, and TCP hands over data as one strict, in-order stream. TCP has no idea HTTP/2 split that stream into eight separate conversations. It only knows some bytes in the middle went missing, so it holds back everything after them until the missing part is sent again.
 
@@ -121,7 +121,7 @@ One lost packet stalls **every request on that connection** — including the se
 
 And HTTP/1.1's clumsy six-connection approach protects against this by accident. A lost packet stalls one connection and the other five keep working. Flip the packet-loss toggle in the diagram above and switch between the two.
 
-That was our whole regression. On stable office wifi, HTTP/2 wins comfortably. On a patchy mobile connection dropping a couple of percent of packets, one connection carrying everything can be worse than six.
+That is the whole regression. On stable office wifi, HTTP/2 wins comfortably. On a patchy mobile connection dropping a couple of percent of packets, one connection carrying everything can be worse than six.
 
 ### HTTP/3: replace the layer underneath
 
@@ -164,10 +164,10 @@ That last split is the one that matters day to day: **4xx means the client has t
 
 <StatusCodeCheatSheet />
 
-## What I got wrong first
+## What people get wrong
 
-- **"HTTP/2 makes splitting across domains better."** It makes it worse. Splitting exists to get more connections; HTTP/2 wants exactly one, because header compression and priority only work within a single connection. We deleted ours and got faster before we understood why.
-- **"It must be a server config problem."** We spent days in nginx and the load balancer. Nothing there was wrong. The stall was in TCP, one layer below anything HTTP shows you — which is why it hid for two weeks.
+- **"HTTP/2 makes splitting across domains better."** It makes it worse. Splitting exists to get more connections; HTTP/2 wants exactly one, because header compression and priority only work within a single connection. Splitting across domains on HTTP/2 makes a site slower.
+- **"A slowdown after switching must be a server config problem."** Usually nothing in nginx or the load balancer is wrong. The stall is in TCP, one layer below anything HTTP shows you — which is exactly why it hides for weeks.
 - **"Bundle everything into one file."** Right for HTTP/1.1, harmful now. One 400KB bundle is thrown away entirely when one line changes; thirty small files download together fine and cache separately.
 - **"Turn on HTTP/3 and turn HTTP/2 off."** Offer both. `Alt-Svc` lets the browser move up when it can and fall back when the network blocks UDP — which plenty of office firewalls still do.
 

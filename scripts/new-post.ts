@@ -41,7 +41,7 @@ tags: []
 published: false
 ---
 
-The problem, in two sentences. What broke, and what you expected instead.
+The behaviour, in two sentences. What it does, and why that isn't obvious.
 
 ## The short answer
 
@@ -57,9 +57,9 @@ The mechanism. This is the part nobody else writes.
   The thing that will bite you next.
 </Callout>
 
-## What I tried first
+## What people get wrong
 
-The failed attempts, and why they failed.
+The common beliefs, and the corrections.
 
 ## Takeaway
 

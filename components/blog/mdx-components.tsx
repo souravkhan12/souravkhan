@@ -27,6 +27,13 @@ import {
   ProxyApplyDemo,
 } from "@/components/mdx/ProxyPatternDiagrams";
 import {
+  FormatLadder,
+  ResponsivePicker,
+  LoadingRace,
+  PlaceholderPreview,
+  MediaCheatSheet,
+} from "@/components/mdx/MediaOptimizationDiagrams";
+import {
   HarnessLoop,
   ContextBuilderPlayground,
   HarnessAnatomy,
@@ -60,4 +67,9 @@ export const mdxComponents = {
   HarnessLoop,
   ContextBuilderPlayground,
   HarnessAnatomy,
+  FormatLadder,
+  ResponsivePicker,
+  LoadingRace,
+  PlaceholderPreview,
+  MediaCheatSheet,
 };

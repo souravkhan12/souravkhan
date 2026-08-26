@@ -1,6 +1,6 @@
 ---
 name: write-blog-post
-description: Write a new engineering blog post for content/blog in the house style — cold-open incident, mechanism-first explanation, custom interactive MDX diagrams, "what I got wrong first". Use when asked to write, draft, or plan a blog post, add a post about a topic, or extend an existing post with a new section.
+description: Write a new engineering blog post for content/blog in the house style — direct opening (no war stories), mechanism-first explanation, custom interactive MDX diagrams, "what people get wrong". Use when asked to write, draft, or plan a blog post, add a post about a topic, or extend an existing post with a new section.
 ---
 
 # Writing a post for this blog
@@ -12,16 +12,18 @@ are the ground truth.
 
 ## Who you are while writing
 
-A staff engineer explaining something you actually debugged — to one smart
-person, out loud, over coffee. Not teaching a course. Not summarising the docs.
+A staff engineer explaining a mechanism to one smart person, out loud, over
+coffee. Not teaching a course. Not summarising the docs.
 
 That gives you the constraints:
 
-- **First person, past tense, real stakes.** "We turned on HTTP/2 expecting the
-  free win everyone promises." Not "Let's explore HTTP/2."
+- **No war stories.** Don't open with an incident, don't write "we turned this
+  on and it broke", don't invent a first-person past. State the thing directly
+  and get to the mechanism. The post earns attention by being clear, not by
+  dramatising a debugging session.
 - **Every claim is falsifiable.** Numbers, versions, years, browser releases. If
   you don't know, look it up (see Research) or cut the sentence.
-- **Admit what you got wrong.** The "What I got wrong first" section is not
+- **Name the misconceptions.** The "What people get wrong" section is not
   decoration — it's where the writing stops being a tutorial.
 - **British spelling in prose** (`optimising`, `colours`, `behaviour`). Code and
   API names keep their real spelling.
@@ -126,13 +128,14 @@ Every post follows the same skeleton. Don't invent a new one.
 
 ```
 frontmatter
-cold open        — the incident, 2–4 sentences, usually with the code that broke
+opening          — 2–4 sentences: the behaviour in question and why it's not
+                   obvious, usually with the code that shows it
 ## The short answer
                  — the fix, copy-pasteable, before any theory
 ## Why it happens
   ### h3, h3, h3 — the mechanism, built up in order, one idea per heading
-## What I got wrong first
-                 — 3–5 bullets, each a misconception you held, then the correction
+## What people get wrong
+                 — 3–5 bullets, each a common belief, then the correction
 ## Takeaway      — ONE sentence, actionable
 ```
 
@@ -140,21 +143,22 @@ cold open        — the incident, 2–4 sentences, usually with the code that b
 `published: false`. Use it rather than hand-writing frontmatter — the schema in
 `lib/blog.ts` is validated at build time and a bad `date` fails the build.
 
-### The cold open
+### The opening
 
-Open on a specific moment where something behaved wrong, and make the reader
-feel the confusion before you resolve it.
+Two to four sentences. Name the surprising behaviour, show it in code if code
+shows it faster, then one line that says what the post covers.
 
-> I had a script that found an element and logged it. Worked fine. I tidied the
-> file up, moved the `<script>` from the bottom of `<body>` into `<head>`, and
-> the same line started returning `null`.
+> Move a `<script>` from the bottom of `<body>` into `<head>` and a working
+> `getElementById` call starts returning `null`. Nothing about the script
+> changed — only where it sits.
 
-Then a short code block showing the failure, then one line that widens the
-scope: "Explaining that properly means walking the whole path from bytes to
-pixels — so that's what this is."
+Then the failing line, then the scope: "Explaining that properly means walking
+the whole path from bytes to pixels — so that's what this is."
 
-Never open with context-setting ("HTTP is the protocol of the web…"). The reader
-knows.
+Two things to avoid. Don't open with context-setting ("HTTP is the protocol of
+the web…") — the reader knows. And don't open with a story: no "we shipped
+this and it broke", no invented incident, no first-person debugging session.
+Lead with the behaviour itself.
 
 ### The short answer
 
@@ -191,22 +195,24 @@ says which request it belongs to…`. Note the lead-in describes what happens,
   `note | tip | warn | success`. Use `<Aside>` for a tangent that shouldn't
   interrupt the thread.
 
-### What I got wrong first
+### What people get wrong
 
-3–5 bullets. Each starts with the wrong belief in bold quotes, then the
-correction, then — where possible — the cost of having believed it.
+3–5 bullets. Each starts with the common belief in bold quotes, then the
+correction, then — where possible — what believing it costs you.
 
 > - **"HTTP/2 makes splitting across domains better."** It makes it worse.
->   Splitting exists to get more connections; HTTP/2 wants exactly one. We
->   deleted ours and got faster before we understood why.
+>   Splitting exists to get more connections; HTTP/2 wants exactly one, because
+>   header compression and priority only work within a single connection.
 
-Note the plain wording even here — "splitting across domains", not "domain
-sharding". The bullet has to land on someone who's never heard the term.
+State the correction as fact. Don't dress it as a personal discovery ("we
+deleted ours and got faster") — that's the war story sneaking back in. Note the
+plain wording too: "splitting across domains", not "domain sharding". The
+bullet has to land on someone who's never heard the term.
 
 ### Takeaway
 
-One sentence. Something the reader can do on Monday. It restates the opening
-incident's resolution, so the post closes its own loop.
+One sentence. Something the reader can do on Monday. It answers the behaviour
+the opening raised, so the post closes its own loop.
 
 ## Interactive diagrams — the thing that makes these posts
 
@@ -287,6 +293,6 @@ stalled" with a source beats one that says "much faster" with none.
 - Writing to sound senior. The post is impressive because the explanation is
   clear, not because the words are big.
 - Summarising MDN. If the post could be replaced by the docs, it shouldn't exist.
-- Inventing an incident that didn't happen. If the user hasn't given you one,
-  ask what actually broke — that question is worth blocking on, because the cold
-  open is the whole format.
+- Incidents, war stories, and invented first-person history — including in the
+  `description`. "We turned on HTTP/2 and mobile got slower" is exactly the
+  opening this blog no longer uses. Describe the behaviour, not a day you had.

@@ -1,0 +1,307 @@
+---
+title: "Making images and video fast"
+description: "Images are the heaviest thing on most pages, and the standard advice can make them slower. The format rules, the srcset maths, and the lazy-loading trap."
+date: "2026-08-26"
+tags: ["performance", "images", "video", "html", "browsers"]
+published: true
+---
+
+Images are the heaviest thing on almost every page. In HTTP Archive's 2025 Web Almanac, the median desktop page ships **1,054 KB of images against 613 KB of JavaScript** — and unlike the JavaScript, most of that weight is optional.
+
+The usual advice is a list of attributes to bolt on. Bolt all of them on and you can end up slower. `loading="lazy"` on the wrong image delays the exact thing the reader came for. A `srcset` without `sizes` downloads the biggest file on the smallest phone.
+
+This is what each one actually does, and which ones to skip.
+
+## The short answer
+
+```html
+<picture>
+  <!-- sizes goes on every source, not just the img -->
+  <source
+    type="image/avif"
+    srcset="hero-800.avif 800w, hero-1600.avif 1600w"
+    sizes="100vw"
+  />
+  <source
+    type="image/webp"
+    srcset="hero-800.webp 800w, hero-1600.webp 1600w"
+    sizes="100vw"
+  />
+  <img
+    src="hero-1600.jpg"
+    srcset="hero-800.jpg 800w, hero-1600.jpg 1600w"
+    sizes="100vw"
+    alt="Sunrise over the harbour"
+    width="1600"
+    height="900"
+    fetchpriority="high"
+    decoding="async"
+  />
+</picture>
+```
+
+That's the top-of-page image. For anything the reader has to scroll to reach, drop `fetchpriority` and add `loading="lazy"` instead.
+
+Everything below is why each of those attributes is in there.
+
+<Callout type="note" title="About the underlined words">
+  Plain words come first, with the real name in brackets after — the{" "}
+  <Term
+    abbr="LCP"
+    def="Largest Contentful Paint. The moment the biggest thing on screen — usually an image — finishes loading. Google treats anything under 2.5 seconds as good."
+  >
+    biggest thing on screen finishing
+  </Term>{" "}
+  and so on. Hover or tap any underlined word for the definition. You'll meet
+  the short forms everywhere else, so both are worth knowing.
+</Callout>
+
+## Part one: make the file smaller
+
+Nothing else on this page matters as much. A 2 MB photo served perfectly is still a 2 MB photo.
+
+### Compression is a decision about what to throw away
+
+Two kinds. **Lossless** rebuilds the original exactly — it only removes repetition, like a zip file. <Term def="Lossy compression. It permanently deletes information to make the file smaller, choosing the detail human eyes are worst at spotting. JPEG, WebP and AVIF are all lossy by default.">**Lossy**</Term> compression, which is what JPEG, WebP and AVIF do by default, permanently deletes detail your eye is bad at noticing, and that's where the real savings live.
+
+The setting people get wrong is quality. Quality 100 is not "perfect", it's "wasteful": the file roughly doubles for detail nobody can see. Somewhere around **quality 75–80** is where a photo stops looking different and the file stops shrinking usefully. Start there and only go up if you can see a problem on a real screen.
+
+```bash
+# JPEG → WebP, quality 80
+cwebp -q 80 hero.jpg -o hero.webp
+
+# JPEG → AVIF. Lower numbers = better quality, bigger file.
+avifenc --min 24 --max 33 hero.jpg hero.avif
+```
+
+If you'd rather not touch a terminal, [Squoosh](https://squoosh.app) does the same thing in a browser tab and shows you a before/after slider. TinyPNG, Kraken and Optimizilla are the same idea with an upload box.
+
+Four reasons this is worth doing, in the order people actually feel them: pages load faster, your bandwidth bill drops, users on metered data stop paying for pixels they can't see, and Google measures LCP as a ranking signal — which for most pages _is_ an image.
+
+### The formats, and why `<picture>` is the safe way to use them
+
+AVIF is roughly **50% smaller than JPEG** and **10–25% smaller than WebP** at the same visible quality. WebP sits about 30% under JPEG. Those are big enough numbers to be worth some effort.
+
+The catch is support. AVIF landed in Chrome 85 (2020), Firefox 93 (2021), Safari 16.4 (2023) and Edge 121 (2024) — around 93% of users today, which is excellent and still not everyone. So you don't pick one. You offer several and let the browser take the best one it understands:
+
+```html
+<picture>
+  <source srcset="photo.avif" type="image/avif" />
+  <source srcset="photo.webp" type="image/webp" />
+  <img src="photo.jpg" alt="A photo" width="360" height="240" />
+</picture>
+```
+
+The browser walks the `<source>` list top to bottom and stops at the first `type` it can decode. Order matters — smallest format first.
+
+<Callout type="warn" title="The img tag isn't optional">
+  `<picture>` doesn't render anything. It's a wrapper that chooses a URL; the
+  `<img>` inside is what actually appears on the page, and it's where `alt`,
+  `width`, `height`, `loading` and `fetchpriority` have to live. Leave it out and
+  you get nothing at all.
+</Callout>
+
+And "newest format wins" is not a rule. It depends entirely on what's in the picture:
+
+<FormatLadder />
+
+## Part two: make the browser ask for the right one
+
+You now have a small file. The problem is that a phone and a 27-inch monitor need very different small files, and one `src` can only name one.
+
+### `srcset` lists the options, `sizes` does the maths
+
+There are two ways to write `srcset`, and they solve different problems.
+
+**Density descriptors** (`2x`, `3x`) are for images that are always the same size on the page — an avatar, an icon, a logo. You're only asking "how sharp is this screen?"
+
+```html
+<img src="avatar.jpg" srcset="avatar@2x.jpg 2x, avatar@3x.jpg 3x" alt="" />
+```
+
+That number is the <Term abbr="DPR" def="Device pixel ratio. How many real screen dots the device packs into one CSS pixel. A normal monitor is 1, most laptops and phones are 2, and high-end phones are 3 — so a 300px-wide slot needs a 900px image to look sharp.">screen density</Term>, and you can read it in JavaScript as `window.devicePixelRatio`. You almost never need to: `srcset` already does this, before any of your JavaScript has run.
+
+**Width descriptors** (`800w`) are for images that stretch with the layout. Here you're telling the browser how wide each file is in pixels, and it works out which one it needs — but only if you also tell it how wide the image will be on screen:
+
+```html
+<img
+  srcset="a.jpg 400w, b.jpg 800w, c.jpg 1200w"
+  sizes="(min-width: 900px) 31vw, 100vw"
+  src="b.jpg"
+  alt=""
+/>
+```
+
+Here's the part that surprises people. The browser picks the file **before the layout exists** — a <Term def="The preload scanner. A second, simpler parser that races ahead through the raw HTML looking for things to download, so requests start before the main parser gets there.">scanner that runs ahead</Term> pulls downloadable things out of the raw HTML long before CSS is applied and boxes have widths. It genuinely cannot look at the page and measure your image. So if you leave `sizes` out, it falls back to the only assumption it can make: the image fills the whole window.
+
+Drag the slider and switch `sizes` off:
+
+<ResponsivePicker />
+
+<Aside>
+  `sizes` accepts any CSS length, so `sizes="70vmin"` or `sizes="min(100vw,
+  40rem)"` are both fine. There's also `sizes="auto"`, which lets the browser
+  use the real laid-out width — but only for images marked `loading="lazy"`,
+  because those are the ones it requests after layout.
+</Aside>
+
+### Changing the size versus changing the picture
+
+`srcset` sends a different **size** of the same image. `<picture>` with a `media` attribute sends a genuinely **different** image:
+
+```html
+<picture>
+  <source media="(max-width: 600px)" srcset="portrait-crop.jpg" />
+  <img src="wide-landscape.jpg" alt="" width="1600" height="900" />
+</picture>
+```
+
+That's <Term def="Art direction: serving a different crop or composition per screen size, not just a smaller copy. A wide landscape shot with a small subject becomes unreadable on a phone; a tight crop of the subject works.">changing the crop, not the scale</Term>. Use it when a shrunken desktop image would lose the subject. Use `srcset` for everything else — it's less markup and the browser makes a better choice than your breakpoints will.
+
+<Aside>
+  There's a server-side version of all this. The browser can send hints like
+  `Sec-CH-DPR` and `Sec-CH-Viewport-Width`, and your server picks the file. It
+  needs an `Accept-CH` header, careful cache keys, and it isn't supported
+  everywhere. `srcset` gets you the same result with no server involvement at
+  all, so start there.
+</Aside>
+
+## Part three: make it arrive at the right time
+
+Right file, right size, still slow — because the browser fetched it in the wrong order.
+
+### Lazy loading, and the one place it backfires
+
+`loading="lazy"` tells the browser not to request an image until the reader is close to scrolling it into view. On a long page that's an enormous win: images nobody scrolls to are never downloaded at all.
+
+```html
+<img
+  src="far-down-the-page.jpg"
+  loading="lazy"
+  alt=""
+  width="800"
+  height="600"
+/>
+```
+
+One line, no library. The old way was an `IntersectionObserver` watching each image and swapping `data-src` into `src` — still useful when you need to lazy-load something that isn't an image, like a chart or a map, but not for `<img>` any more.
+
+Then there's the trap. Applied to the image at the top of the page, `loading="lazy"` makes things _worse_. Lazy images can only be requested once the browser knows where they'll sit, and that means waiting for CSS and layout — hundreds of milliseconds it didn't have to spend. Chrome's own crawl data puts the 75th-percentile LCP at **2,922 ms for pages without lazy loading and 3,546 ms for pages with it**, and lazy-loading a hero image commonly costs 500 ms on its own.
+
+The fix is the opposite attribute. `fetchpriority="high"` tells the browser this one file matters more than the stylesheet queue:
+
+<LoadingRace />
+
+<Callout type="warn" title="One high-priority image per page">
+  `fetchpriority="high"` works by pushing other things down the queue. Mark five
+  images high and you've marked none of them — you've just reshuffled which
+  things get starved.
+</Callout>
+
+### What the reader looks at while it downloads
+
+An empty white rectangle is the worst answer, and there are three better ones.
+
+**Reserve the space.** `width` and `height` on the tag let the browser work out the shape and hold the box open before any bytes arrive. Without them the image lands and shoves everything below it down the page — <Term abbr="CLS" def="Cumulative Layout Shift. A score for how much content jumps around while a page loads. Anything above 0.1 counts as poor. The usual cause is images and ads with no reserved space.">the page jumping about</Term>. In CSS, `aspect-ratio` does the same job.
+
+**Fill it with the average colour.** One hex value in your HTML, zero extra bytes, and the page looks deliberate instead of broken.
+
+**Or blur up a tiny copy.** Inline a ~20px-wide version as a data URL — a few hundred bytes — stretch it over the box and blur it. The reader sees the rough shape and colours of the real photo immediately.
+
+```css
+.placeholder {
+  filter: blur(14px);
+  transform: scale(1.1); /* hides the soft edges the blur creates */
+}
+```
+
+<PlaceholderPreview />
+
+### Adapting to the device you landed on
+
+The browser will tell you a little about the machine it's running on, if you ask:
+
+```js
+const cores = navigator.hardwareConcurrency ?? 4; // cpu cores
+const ram = navigator.deviceMemory ?? 4; // gb, rounded
+const conn = navigator.connection; // may be undefined
+const frugal = conn?.saveData || /2g/.test(conn?.effectiveType ?? "");
+
+// Leave a core for the main thread.
+const pool = Array.from(
+  { length: Math.max(1, cores - 1) },
+  () => new Worker(url),
+);
+
+if (frugal)
+  video.removeAttribute("autoplay"); // poster only
+else if (conn?.effectiveType === "4g") prefetchNextPage();
+```
+
+Useful for turning off autoplay on a slow connection, or prefetching only on a fast one. But read the support before you lean on it: `navigator.connection` and `saveData` are **Chrome-only** — Safari and Firefox don't implement them at all, so `frugal` is `false` for a large slice of your users.
+
+Treat every one of these as a bonus on top of a page that's already fast, never as the thing that makes it fast. The CSS media query `prefers-reduced-data` is the standards-track version of the same idea and is worth watching.
+
+<Aside>
+  **Sprite sheets are mostly a leftover.** Gluing twenty icons into one image
+  existed to dodge HTTP/1.1's six-connections-per-site limit. On HTTP/2 that
+  limit is gone, and a sprite now has a real cost: change one icon and every
+  visitor re-downloads the whole sheet. Use inline SVG instead. The
+  sliding-window trick is still handy for one thing — animation frames in a
+  single file.
+</Aside>
+
+## Video: the same rules, ten times the weight
+
+Everything above applies, with the numbers multiplied.
+
+**An animated GIF is not a video.** It's a stack of full images with no video compression at all — no reuse between frames. Google's own example turns a 3.7 MB GIF into a 551 KB MP4 or a **341 KB WebM**, a 91% saving for identical output. There is no case left for animated GIFs on the web.
+
+```html
+<video autoplay loop muted playsinline poster="frame1.jpg">
+  <source src="loop.webm" type="video/webm" />
+  <source src="loop.mp4" type="video/mp4" />
+</video>
+```
+
+`muted` and `playsinline` aren't optional decoration — without them, browsers refuse to autoplay at all.
+
+**Send nothing until it's wanted.** `preload` is the single biggest lever on a page with video:
+
+```html
+<video controls preload="none" poster="poster.jpg"></video>
+```
+
+`none` downloads nothing but the poster. `metadata` grabs length and dimensions so the controls render correctly. `auto` lets the browser pull the whole file. Default to `none` for anything decorative, `metadata` for a video the reader came to watch.
+
+**Drop the audio track.** A muted background video still ships an audio stream nobody will ever hear. `ffmpeg -i in.mp4 -an -c:v libvpx-vp9 -crf 34 -b:v 0 out.webm` strips it and re-encodes in one pass.
+
+**Serve a different file per screen.** `<source>` takes `media` just like `<picture>`, so a phone never touches the 1080p file:
+
+```html
+<video controls poster="poster.jpg">
+  <source
+    src="small.webm"
+    type="video/webm"
+    media="all and (max-width: 480px)"
+  />
+  <source src="large.webm" type="video/webm" />
+</video>
+```
+
+**Past about 30 seconds, stop serving one file.** <Term abbr="HLS / DASH" def="The two standards for adaptive streaming. The video is cut into a few seconds per chunk at several quality levels; the player downloads the next chunk at whatever quality the connection can currently manage.">Adaptive streaming</Term> cuts the video into short chunks at several quality levels and lets the player switch between them mid-playback. It starts faster, seeks instantly, and stops a dip in the connection from stalling the whole thing. Every video host does this for you — which is the strongest argument for using one.
+
+<MediaCheatSheet />
+
+## What people get wrong
+
+- **"Lazy-load every image."** Lazy-load every image _below the fold_. Applied to the hero it delays the request until after layout, and the number that measures your page speed gets worse — around 500 ms worse, typically.
+- **"`srcset` on its own saves bandwidth."** Only with `sizes`. Without it the browser assumes the image is as wide as the window, and a 320px phone dutifully downloads the 1600px file. It looks like it's working because it never looks broken.
+- **"Serve AVIF and you're done."** AVIF still misses roughly 7% of users, and it loses to SVG for logos and to plain video for animation. It's the first entry in a `<picture>` list, not a replacement for one.
+- **"`width` and `height` are legacy attributes CSS replaced."** They're how the browser reserves the right-shaped box before the image arrives. Remove them and every image becomes a layout shift.
+- **"Quality 100 is the safe default."** It roughly doubles the file for detail no screen shows. 75–80 is where the eye stops noticing and the bytes stop mattering.
+- **"Check `saveData` to be considerate."** Worth doing, but it's Chrome-only — Safari and Firefox report nothing. Build the fast path for everyone, then use these hints to go further.
+
+## Takeaway
+
+Compress hard, offer AVIF and WebP through `<picture>`, give every image `width`, `height` and a real `sizes`, and lazy-load everything except the one image at the top — which gets `fetchpriority="high"` instead.
