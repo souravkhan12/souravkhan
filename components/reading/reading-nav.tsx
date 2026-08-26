@@ -106,7 +106,7 @@ function NavList({
             </p>
           )}
 
-          <ul className="flex flex-col gap-0.5">
+          <ul className="flex flex-col gap-1">
             {group.items.map((item) => {
               const isCurrent = item.href === currentHref;
 
@@ -119,7 +119,11 @@ function NavList({
                        the label's left edge never shifts between states —
                        swapping a border colour moved every inactive item by
                        a pixel on hover. */
-                    className={`relative block py-1.5 pr-2 pl-3 text-sm leading-snug transition-colors ${
+                    /* text-xs, not text-sm: at 16px a two-word title wrapped
+                       to three lines in a 14rem rail, and the index started
+                       competing with the article for attention. 14px fits ~22
+                       characters, so most titles land on two lines. */
+                    className={`relative block py-2 pr-2 pl-3 text-xs leading-snug text-pretty transition-colors ${
                       isCurrent
                         ? "text-blue bg-blue/5 font-medium"
                         : "hover:text-foreground text-soft hover:bg-gray-50 dark:hover:bg-black"

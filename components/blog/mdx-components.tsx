@@ -34,6 +34,12 @@ import {
   MediaCheatSheet,
 } from "@/components/mdx/MediaOptimizationDiagrams";
 import {
+  FontDisplayTimeline,
+  FontDiscoveryChain,
+  FallbackMatcher,
+  FontCheatSheet,
+} from "@/components/mdx/FontPerformanceDiagrams";
+import {
   HarnessLoop,
   ContextBuilderPlayground,
   HarnessAnatomy,
@@ -72,4 +78,8 @@ export const mdxComponents = {
   LoadingRace,
   PlaceholderPreview,
   MediaCheatSheet,
+  FontDisplayTimeline,
+  FontDiscoveryChain,
+  FallbackMatcher,
+  FontCheatSheet,
 };

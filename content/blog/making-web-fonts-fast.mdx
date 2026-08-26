@@ -1,0 +1,269 @@
+---
+title: "Making web fonts fast"
+description: "A web font can hide your text for three seconds before a single word renders. What font-display really controls, and why preload is the second fix, not the first."
+date: "2026-08-26"
+tags: ["performance", "fonts", "css", "html", "browsers"]
+published: false
+---
+
+Add a `@font-face` rule, open the page on a slow connection, and your text is gone. The markup is there, the colour is right, the layout is done — and the browser is refusing to paint a single word until a font file arrives.
+
+```css
+@font-face {
+  font-family: "MyFont";
+  src: url("myfont.woff2") format("woff2");
+  /* no font-display, so text stays invisible for up to 3 seconds */
+}
+```
+
+That is the default in Chrome, Firefox and Safari. This is what the browser is waiting for, and how to stop it waiting.
+
+## The short answer
+
+```css
+@font-face {
+  font-family: "MyFont";
+  src: url("/fonts/myfont-latin.woff2") format("woff2");
+  font-display: swap;
+  unicode-range: U+0000-00FF;
+}
+
+/* A fallback with the same measurements, so the swap moves nothing. */
+@font-face {
+  font-family: "MyFont Fallback";
+  src: local("Arial");
+  size-adjust: 107%;
+  ascent-override: 90%;
+  descent-override: 22%;
+}
+
+body {
+  font-family: "MyFont", "MyFont Fallback", sans-serif;
+}
+```
+
+```html
+<link
+  rel="preload"
+  as="font"
+  type="font/woff2"
+  href="/fonts/myfont-latin.woff2"
+  crossorigin
+/>
+```
+
+Everything below is why each of those lines is there — and which piece of the usual advice you can now delete.
+
+<Callout type="note" title="About the underlined words">
+  Plain words come first, with the real name in brackets after. Hover or tap any
+  underlined word for the definition — you&apos;ll meet the short forms
+  everywhere else, so both are worth knowing.
+</Callout>
+
+## Why it happens
+
+### The browser is choosing between two bad options
+
+Text can be drawn in the font you asked for, or in a font already on the machine. Drawing it twice is not free: every line changes width, so everything below it moves.
+
+That leaves two options, and both cost something. Paint nothing until the font lands — <Term abbr="FOIT" def="Flash of invisible text. The browser has the text and the layout, and paints neither, because the font it wants hasn't arrived.">a stretch of blank page</Term> — or show the fallback immediately and swap later, so the words <Term abbr="FOUT" def="Flash of unstyled text. The page renders in a system font first, then re-renders in the real one. The reader can read the whole time; the words just change shape mid-read.">change shape mid-read</Term>.
+
+Browsers picked the first. The spec recommends about three seconds, and Chrome, Firefox and Safari all do roughly that. Three seconds is a very long time to show a reader nothing.
+
+### font-display is two timers, not five words
+
+`font-display` is usually taught as five values to memorise. It's simpler than that: two timers, and each value is a different pair of numbers.
+
+The **block period** is how long the browser hides the text. The **swap period** is how long after that the real font is still allowed to take over. Miss both and the font is dropped for this page load — it downloads, it caches, and it goes unused.
+
+Drag the download time and watch which timer the font misses:
+
+<FontDisplayTimeline />
+
+For body text you want `swap`: no block period, and a swap period that never expires. About half of sites that use web fonts have set it. The rest are still on the default.
+
+`block` has one real use — icon fonts, where the fallback isn't a different-looking letter, it's a random letter where a shopping trolley should be. `optional` is the strictest setting: 100ms, no swap, and the fallback keeps the page. It guarantees the text never moves, at the price of frequently not using the font you paid for.
+
+### One format is enough now
+
+The `src` list exists so the browser can pick a format it understands:
+
+```css
+src:
+  url("myfont.woff2") format("woff2"),
+  url("myfont.woff") format("woff");
+```
+
+The browser downloads exactly one file: it walks the list and stops at the first `format()` it can decode. So the second line costs no bytes at runtime. The first one is <Term abbr="WOFF2" def="Web Open Font Format 2. It reshapes the font tables into a more compressible form, then compresses them with Brotli.">the newer container</Term>, about **30% smaller** than the older one — Inter Regular is 316 KB as a raw TTF, 184 KB as WOFF, and 132 KB as WOFF2.
+
+What it costs is a build step and a second file to keep in sync, and it buys almost nothing. WOFF2 has been in every major browser since the end of 2016 and reaches around **95% of users**. The rest — IE11, Chrome under 36, Safari under 10, Android 4.4 — don't break; they render your page in a system font.
+
+Drop the second line. If it's already in a project and WOFF2 comes first, leaving it costs nothing either.
+
+<Callout type="warn" title="Don't inline the font as a data URI">
+  Pasting a base64 font into the `src` looks like it saves a request. Base64 is
+  **33% bigger** than the bytes it encodes, and it compresses worse — one
+  measurement puts gzip at 74.9% efficiency on base64 against 90.4% on the same
+  content as a file. Worse, it now lives in a render-blocking stylesheet, so
+  every visitor waits for the whole font before anything paints. One site cut
+  its compressed CSS from 232 KB to 68 KB by taking the fonts back out.
+</Callout>
+
+### Ship fewer letters
+
+A font file carries every character the designer drew. Most sites use a tiny slice of that. <Term def="Subsetting: rebuilding a font file with only the characters you need. Standard tools are pyftsubset (part of fonttools) and glyphhanger, which crawls a site to work out which characters it actually uses.">Cutting the rest out</Term> is the single largest saving available, and it happens before any of the loading tricks matter.
+
+The numbers are big. Lato Regular goes from 145 KB as a TTF to **28.7 KB** as a subsetted WOFF2. Another font drops from 337 KB to 70 KB with nothing but a Latin subset.
+
+```bash
+pyftsubset myfont.ttf \
+  --unicodes=U+0000-00FF \
+  --flavor=woff2 \
+  --output-file=myfont-latin.woff2
+```
+
+Then there's the version of this that runs at request time. `unicode-range` splits one family across several files and tells the browser which characters live in each:
+
+```css
+@font-face {
+  font-family: "MyFont";
+  src: url("myfont-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF;
+}
+@font-face {
+  font-family: "MyFont";
+  src: url("myfont-greek.woff2") format("woff2");
+  unicode-range: U+0370-03FF;
+}
+```
+
+Same family name, two files. The browser downloads a file only if a character in its range actually appears on the page. An English page never touches the Greek file. This is what Google Fonts has been quietly doing in its stylesheets for years.
+
+### The browser finds out about your font very late
+
+Here is the part that makes preloading make sense.
+
+The browser finds most files by reading your HTML. An `<img src>` or a `<script src>` names the file, and the scanner that runs ahead of the parser starts the download before the parser gets there.
+
+A font is different: nothing in your HTML names it. The URL sits in a stylesheet, and the browser won't fetch a font merely because a stylesheet mentions one. It fetches when it knows an element needs it — which means building the CSSOM, building the render tree and running layout first. (That chain is [how browser rendering works](/blog/how-browser-rendering-works).)
+
+So the font request sits at the end of a queue of things that all have to finish first:
+
+<FontDiscoveryChain />
+
+`rel="preload"` puts the filename back in the HTML, where the scanner can see it. That's the whole trick.
+
+```html
+<link
+  rel="preload"
+  as="font"
+  type="font/woff2"
+  href="/fonts/myfont-latin.woff2"
+  crossorigin
+/>
+```
+
+<Callout type="warn" title="crossorigin is not optional">
+  Fonts are always fetched in anonymous CORS mode, even from your own domain.
+  Leave `crossorigin` off and the preload doesn't match the real request, so the
+  browser downloads the file **twice** — and Chrome logs a warning saying the
+  preloaded resource was unused. Same rule for `as="font"`: without it the
+  request gets the wrong priority.
+</Callout>
+
+Preload one or two fonts, not six. It works by pushing everything else down the queue, so preloading everything reorders nothing. Pick the fonts that are on screen before the reader scrolls — usually one weight of body text, sometimes a heading.
+
+### Getting CSS out of the way
+
+The chain above starts with a stylesheet download, and CSS blocks rendering. For stylesheets that aren't needed for the top of the page, there's a trick:
+
+```html
+<link
+  rel="stylesheet"
+  href="below-the-fold.css"
+  media="print"
+  onload="this.media='all'"
+/>
+<noscript><link rel="stylesheet" href="below-the-fold.css" /></noscript>
+```
+
+A stylesheet marked `media="print"` still downloads, but the browser knows it doesn't apply to the screen, so it doesn't wait for it. The `onload` handler flips it to `all` once it lands, and the `<noscript>` copy gives readers without JavaScript an ordinary render-blocking stylesheet, which is the right outcome for them.
+
+Mind the trap. Move your `@font-face` rules into a deferred stylesheet and font discovery moves back with them — the middle lane above. The page paints sooner in the fallback and the real font lands later. Preload the font separately and you get both.
+
+### If you use a font host, connect early — or stop using one
+
+For a third-party font host, the browser has to do DNS, TCP and TLS to a domain it has never spoken to, and Google Fonts uses two of them. `rel="preconnect"` gets that out of the way early:
+
+```html
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Inter&display=swap"
+/>
+```
+
+`crossorigin` on the second one again, because that's where the font files come from. And `&display=swap` on the URL, because Google's stylesheet writes the `font-display` value and you want to choose it.
+
+The bigger question is whether the host earns its place. The old argument was the shared cache: a visitor who had already loaded Inter somewhere else got yours free. That stopped being true in **Chrome 86, in October 2020**, when browsers started <Term def="Cache partitioning. Cached files are keyed by the top-level site as well as the URL, so a font cached while visiting one site is invisible on the next. Browsers did it to close a class of privacy leak.">keying the cache by which site you're on</Term>. A font cached on one site is now invisible from another.
+
+What's left is 200–300ms of connection setup to two extra domains, for a file you could serve yourself. About 72% of sites now self-host in some form. Copy the files in and delete the preconnects.
+
+### swap has its own bill
+
+Now the plot twist, because `swap` is not free.
+
+You've traded invisible text for text that changes shape mid-read. Every font carries its own measurements: how far letters rise above the baseline, how far they drop below, how wide they run on average. The browser computes line heights from those. Swap in a font with different ones and every line changes height at once, so everything below moves down the page. That's <Term abbr="CLS" def="Cumulative Layout Shift. A score for how much content jumps around while a page loads. Anything above 0.1 counts as poor. Fonts and images are the usual causes.">the page jumping about</Term>, and it's measured.
+
+The fix is to make the fallback the same shape. Four descriptors on a `@font-face` override a font's own measurements:
+
+```css
+@font-face {
+  font-family: "MyFont Fallback";
+  src: local("Arial"); /* a font already on the machine */
+  size-adjust: 107%;
+  ascent-override: 90%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+}
+```
+
+That's a `@font-face` with no download in it. It takes an installed font and stretches it until its measurements match the real one's. The swap then changes the shapes of the letters and nothing else — same line heights, same block of text, nothing moves.
+
+<FallbackMatcher />
+
+`size-adjust` and the three overrides landed in Chrome, Firefox and Edge 92, and in Safari 17 — around **94%** of users. Everyone else gets an ordinary fallback, which is what they'd have had anyway.
+
+You don't work the percentages out by hand. Next.js, Nuxt and Gatsby generate them from the font's metrics when you use their font components, and [Fontaine](https://github.com/unjs/fontaine) does it as a build plugin.
+
+### When you actually need JavaScript
+
+Font Face Observer was how everyone did this: load a font, get a promise, put a class on `<html>`, let CSS do the rest. It's 1.3 KB and it still works. You mostly don't need it, because the browser has the same thing built in:
+
+```js
+// Everything the page needs, loaded and laid out.
+await document.fonts.ready;
+document.documentElement.classList.add("fonts-loaded");
+
+// Or one specific font, on your own terms.
+const f = new FontFace("MyFont", 'url("/fonts/myfont-latin.woff2")');
+await f.load();
+document.fonts.add(f);
+```
+
+Reach for it when JavaScript genuinely has to react to the swap: measuring text, drawing to a canvas, animating something that depends on line breaks. For getting the font on screen, `font-display` plus a matched fallback does the whole job with no script — which also means it works before your bundle has parsed.
+
+<FontCheatSheet />
+
+## What people get wrong
+
+- **"Preloading is the first thing to fix."** It's the third. A preloaded 300 KB font is still a 300 KB font. Subset it, serve it as WOFF2, set `font-display`, and only then argue about when the request starts.
+- **"`font-display: swap` fixes font loading."** It fixes invisible text and creates a layout shift. The pair is `swap` plus a fallback with matched measurements — one without the other is half a fix.
+- **"Keep the WOFF fallback, it costs nothing."** At runtime that's true; the browser only downloads one file. But WOFF2 has covered ~95% of users since 2016, and the browsers it misses render fine in a system font. The line buys a build step, not compatibility.
+- **"Google Fonts is faster because everyone has it cached."** That argument died in October 2020, when browsers started keying the cache per site. What's left is connection setup to two extra domains — and `preconnect` only helps there, never for fonts on your own domain, where the connection already exists.
+- **"Inlining the font as a data URI removes a request."** It adds 33% in encoding, compresses badly, and moves the whole font onto the render-blocking path. Requests are cheap now; render-blocking bytes are not.
+
+## Takeaway
+
+Subset the font, serve one WOFF2, give it `font-display: swap` with a `size-adjust`-matched fallback, and preload only the file the reader sees first — in that order, because the first two decide the size of the problem and the last two only decide when it shows up.
