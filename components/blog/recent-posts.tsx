@@ -1,5 +1,6 @@
 import { getAllPosts } from "@/lib/blog";
 import Link from "next/link";
+import { HoverList, HoverItem } from "@/components/motion/hover-list";
 
 /**
  * Latest three posts as title · dotted leader · date. On a phone the title
@@ -19,14 +20,14 @@ export function RecentPosts() {
 
   return (
     <div className="flex flex-col">
-      <ul className="flex flex-col">
+      <HoverList className="flex flex-col">
         {posts.map((post) => (
-          <li key={post.slug}>
+          <HoverItem key={post.slug} itemKey={post.slug}>
             <Link
               href={`/blog/${post.slug}`}
               className="group flex items-baseline gap-3 py-2.5"
             >
-              <span className="group-hover:text-blue min-w-0 text-sm font-bold text-pretty transition-colors">
+              <span className="min-w-0 text-sm font-bold text-pretty">
                 {post.title}
               </span>
               <span
@@ -37,21 +38,27 @@ export function RecentPosts() {
                 dateTime={post.date}
                 className="font-code text-faint text-2xs shrink-0"
               >
-                {new Date(post.date).toLocaleDateString("en-US", {
+                {new Date(post.date).toLocaleDateString("en-GB", {
                   month: "short",
                   day: "numeric",
                 })}
               </time>
             </Link>
-          </li>
+          </HoverItem>
         ))}
-      </ul>
+      </HoverList>
 
       <Link
         href="/blog"
-        className="hover:text-blue mt-5 text-sm font-semibold transition-colors"
+        className="group mt-5 inline-flex items-center gap-1 self-start text-sm font-semibold"
       >
-        All posts <span aria-hidden="true">→</span>
+        All posts{" "}
+        <span
+          aria-hidden="true"
+          className="transition-transform duration-200 group-hover:translate-x-0.5"
+        >
+          →
+        </span>
       </Link>
     </div>
   );

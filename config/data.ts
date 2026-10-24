@@ -125,7 +125,7 @@ export const HERO = {
   title: "Frontend Engineer",
   headline:
     "Frontend engineer building fast, data-heavy web apps for SaaS products.",
-  headlineMuted: "React, TypeScript & Next.js. Previously Samsung.",
+  headlineMuted: "React, TypeScript & Next.js.",
   bio: "Frontend Engineer with 2+ years of experience building web applications using React, TypeScript, Next.js, and Redux Toolkit. Shipped analytics and data-integration features for SaaS products and cut page load times by up to 70%.",
 };
 
@@ -133,13 +133,29 @@ export const HERO = {
 export const STACK = [
   {
     group: "Frontend",
-    items:
-      "React, Next.js, TypeScript, Redux Toolkit, TanStack Query, Tailwind, Recharts",
+    items: [
+      "React",
+      "Next.js",
+      "TypeScript",
+      "Redux Toolkit",
+      "TanStack Query",
+      "Tailwind",
+      "Recharts",
+    ],
   },
-  { group: "Testing", items: "Jest, React Testing Library, Playwright" },
-  { group: "Backend", items: "Node.js, Express, REST, GraphQL, Supabase" },
-  { group: "Cloud", items: "AWS, Docker, GitHub Actions, CI/CD" },
-  { group: "Core CS", items: "DBMS, OS, Networking, Distributed Systems" },
+  {
+    group: "Testing",
+    items: ["Jest", "React Testing Library", "Playwright"],
+  },
+  {
+    group: "Backend",
+    items: ["Node.js", "Express", "REST", "GraphQL", "Supabase"],
+  },
+  { group: "Cloud", items: ["AWS", "Docker", "GitHub Actions", "CI/CD"] },
+  {
+    group: "Core CS",
+    items: ["DBMS", "OS", "Networking", "Distributed Systems"],
+  },
 ];
 
 export const ACHIEVEMENTS = [

@@ -36,7 +36,7 @@ export default function Page() {
         <SiteIndex />
         <SetupGrid />
         <Contact />
-        <Footer inset={false} />
+        <Footer />
       </main>
     </>
   );

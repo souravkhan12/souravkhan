@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { LuArrowRight } from "react-icons/lu";
-import { Section } from "@/components/ui";
+import { PageHeader } from "@/components/ui";
 import { ReadingList } from "@/components/blog/reading-list";
 import { getBookmarks, getReadingTags } from "@/lib/reading";
 import { SEO_CONFIG } from "@/config/seo";
@@ -17,23 +17,27 @@ export default function ReadingPage() {
   const tags = getReadingTags();
 
   return (
-    <Section
-      title="reading"
-      id="reading"
-      count={bookmarks.length}
-      subtitle="things i didn't write but keep coming back to. each one has a line on why it's here."
-      className="pt-8"
-    >
+    <>
+      <PageHeader
+        eyebrow="Reading"
+        count={bookmarks.length}
+        title="Things I didn't write but keep coming back to."
+        muted="Each one has a line on why it's here."
+      />
+
       <ReadingList bookmarks={bookmarks} tags={tags} />
 
-      <div className="border-border border-x border-b px-6 py-4 sm:px-8">
-        <Link
-          href="/blog"
-          className="hover:text-blue font-code text-soft inline-flex items-center gap-1.5 text-xs lowercase transition-colors"
-        >
-          things i did write <LuArrowRight size={13} aria-hidden="true" />
-        </Link>
-      </div>
-    </Section>
+      <Link
+        href="/blog"
+        className="group text-soft hover:text-foreground mt-8 inline-flex items-center gap-1.5 text-sm transition-colors"
+      >
+        Things I did write
+        <LuArrowRight
+          size={14}
+          aria-hidden="true"
+          className="transition-transform duration-200 group-hover:translate-x-0.5"
+        />
+      </Link>
+    </>
   );
 }

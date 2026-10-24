@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
+import { TechChip } from "@/components/ui/tech";
 import {
   LuDownload,
   LuMail,
@@ -31,27 +33,43 @@ export const metadata = {
  */
 export default function ResumePage() {
   return (
-    <div className="mx-auto max-w-3xl px-6 py-12 sm:px-10 print:max-w-none print:py-0">
-      {/* Header */}
-      <header className="border-border flex flex-wrap items-start justify-between gap-4 border-b pb-6">
-        <div>
-          <h1 className="ss01 normal-case-force page-title">{HERO.name}</h1>
-          <p className="text-blue mt-1 text-base">{HERO.title}</p>
+    <div className="pt-10 pb-4 sm:pt-16 print:py-0">
+      {/* Header — the photo appears here and in the homepage hero only;
+          everywhere else the site is represented by the S mark. */}
+      <header className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="bg-surface relative size-14 shrink-0 overflow-hidden rounded-full print:hidden">
+            <Image
+              src="/sourav.webp"
+              alt={HERO.name}
+              fill
+              priority
+              sizes="168px"
+              quality={90}
+              className="object-cover object-[50%_30%]"
+            />
+          </div>
+          <div>
+            <h1 className="text-[28px] leading-tight font-bold tracking-[-0.03em] sm:text-[34px]">
+              {HERO.name}
+            </h1>
+            <p className="text-soft text-base">{HERO.title}</p>
+          </div>
         </div>
 
         <a
           href={CONTACT_INFO.resume}
           target="_blank"
           rel="noopener noreferrer"
-          className="border-blue text-blue hover:bg-blue/5 font-code inline-flex items-center gap-2 border px-3 py-1.5 text-xs transition-colors print:hidden"
+          className="bg-foreground text-background inline-flex h-10 items-center gap-2 rounded-full px-4 text-sm font-semibold transition-[opacity,transform] hover:opacity-85 active:scale-[0.97] print:hidden"
         >
-          <LuDownload size={13} aria-hidden="true" />
-          pdf
+          <LuDownload size={14} aria-hidden="true" />
+          PDF
         </a>
       </header>
 
       {/* Contact strip */}
-      <div className="font-code text-muted-foreground text-soft mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs">
+      <div className="font-code text-soft mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs">
         <a
           href={`mailto:${CONTACT_INFO.email}`}
           className="hover:text-blue inline-flex items-center gap-1.5 transition-colors"
@@ -93,12 +111,12 @@ export default function ResumePage() {
       <p className="text-soft mt-6 text-sm leading-relaxed">{HERO.bio}</p>
 
       {/* Experience */}
-      <ResumeSection title="experience">
+      <ResumeSection title="Experience">
         <div className="flex flex-col gap-6">
           {WORK_EXPERIENCE.map((job) => (
             <article key={`${job.company}-${job.duration}`}>
               <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                <h3 className="ss01 normal-case-force text-base font-semibold">
+                <h3 className="text-base font-semibold">
                   {job.position} · {job.company}
                   {"via" in job && job.via && (
                     <span className="text-soft font-normal">
@@ -119,7 +137,12 @@ export default function ResumePage() {
                   <li key={i}>{achievement}</li>
                 ))}
               </ul>
-              <p className="font-code text-2xs text-faint mt-2">
+              <div className="mt-3 flex flex-wrap gap-1.5 print:hidden">
+                {job.technologies.map((tech) => (
+                  <TechChip key={tech} label={tech} size="xs" />
+                ))}
+              </div>
+              <p className="font-code text-2xs text-faint mt-2 hidden print:block">
                 {job.technologies.join(" · ")}
               </p>
             </article>
@@ -128,19 +151,26 @@ export default function ResumePage() {
       </ResumeSection>
 
       {/* Skills */}
-      <ResumeSection title="skills">
-        <dl className="grid grid-cols-[100px_minmax(0,1fr)] gap-x-4 gap-y-1.5 text-sm">
+      <ResumeSection title="Skills">
+        <dl className="grid grid-cols-[96px_minmax(0,1fr)] gap-x-4 gap-y-3 text-sm print:gap-y-1.5">
           {STACK.map(({ group, items }) => (
             <div key={group} className="contents">
-              <dt className="font-semibold">{group}</dt>
-              <dd className="text-soft">{items}</dd>
+              <dt className="text-faint pt-1 print:pt-0">{group}</dt>
+              <dd className="text-soft">
+                <span className="flex flex-wrap gap-1.5 print:hidden">
+                  {items.map((item) => (
+                    <TechChip key={item} label={item} />
+                  ))}
+                </span>
+                <span className="hidden print:inline">{items.join(", ")}</span>
+              </dd>
             </div>
           ))}
         </dl>
       </ResumeSection>
 
       {/* Achievements */}
-      <ResumeSection title="achievements">
+      <ResumeSection title="Achievements">
         <ul className="text-soft flex list-disc flex-col gap-1.5 pl-4 text-sm leading-relaxed">
           {ACHIEVEMENTS.map(({ metric, text, href }) => (
             <li key={text}>
@@ -161,9 +191,9 @@ export default function ResumePage() {
       </ResumeSection>
 
       {/* Education */}
-      <ResumeSection title="education">
+      <ResumeSection title="Education">
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-          <h3 className="ss01 normal-case-force text-base font-semibold">
+          <h3 className="text-base font-semibold">
             J.C. Bose University of Science and Technology
           </h3>
           <span className="font-code text-2xs text-soft">
@@ -176,13 +206,11 @@ export default function ResumePage() {
       </ResumeSection>
 
       {/* Selected work */}
-      <ResumeSection title="selected work">
+      <ResumeSection title="Selected work">
         <div className="flex flex-col gap-4">
           {PROJECTS.map((project) => (
             <div key={project.title}>
-              <h3 className="ss01 normal-case-force text-sm font-semibold">
-                {project.title}
-              </h3>
+              <h3 className="text-sm font-semibold">{project.title}</h3>
               <p className="text-soft mt-1 text-sm leading-relaxed">
                 {project.description}
               </p>
@@ -191,15 +219,23 @@ export default function ResumePage() {
         </div>
         <Link
           href="/projects"
-          className="text-blue mt-4 inline-block text-xs transition-opacity hover:opacity-80 print:hidden"
+          className="group mt-4 inline-flex items-center gap-1 text-sm font-semibold print:hidden"
         >
-          full case studies →
+          Full case studies
+          <span
+            aria-hidden="true"
+            className="transition-transform duration-200 group-hover:translate-x-0.5"
+          >
+            →
+          </span>
         </Link>
       </ResumeSection>
     </div>
   );
 }
 
+/** The homepage's label-and-content row, without the scroll reveal — this
+    page gets printed, and print never scrolls anything into view. */
 function ResumeSection({
   title,
   children,
@@ -208,12 +244,11 @@ function ResumeSection({
   children: React.ReactNode;
 }) {
   return (
-    <section className="mt-10 print:break-inside-avoid">
-      <h2 className="ss01 border-border flex items-center gap-3 border-b pb-2 text-sm font-bold">
-        <span aria-hidden="true" className="bg-blue h-3.5 w-[3px]" />
+    <section className="mt-12 md:grid md:grid-cols-[140px_minmax(0,1fr)] md:gap-x-10 print:mt-6 print:block print:break-inside-avoid">
+      <h2 className="font-code text-faint text-2xs mb-4 font-normal md:mb-0 md:pt-0.5 print:mb-2">
         {title}
       </h2>
-      <div className="mt-4">{children}</div>
+      <div className="min-w-0">{children}</div>
     </section>
   );
 }

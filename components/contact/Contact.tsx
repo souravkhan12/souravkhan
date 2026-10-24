@@ -8,7 +8,7 @@ import { HomeSection } from "@/components/home/HomeSection";
 
 // Bottom-rule fields: a boxed form would be the only boxed thing on the page.
 const field =
-  "border-border focus:border-blue placeholder:text-faint w-full border-0 border-b bg-transparent px-0 py-2.5 text-sm outline-none transition-colors focus:ring-0";
+  "bg-surface focus:bg-background focus:border-blue/60 placeholder:text-faint w-full rounded-xl border border-transparent px-4 py-3 text-sm outline-none transition-colors focus:ring-4 focus:ring-blue/10";
 
 export default function Contact() {
   const [formData, setFormData] = useState<FormData>({
@@ -72,7 +72,7 @@ export default function Contact() {
 
       <a
         href={`mailto:${CONTACT_INFO.email}`}
-        className="decoration-blue hover:text-blue mt-5 inline-block text-[22px] leading-snug font-bold tracking-[-0.03em] break-all underline decoration-2 underline-offset-[7px] transition-colors sm:text-[32px] sm:break-normal"
+        className="decoration-blue hover:text-blue mt-5 inline-block text-[22px] leading-snug font-bold tracking-[-0.03em] break-all underline decoration-2 underline-offset-[6px] transition-colors sm:text-[28px] sm:break-normal"
       >
         {CONTACT_INFO.email}
       </a>
@@ -104,7 +104,7 @@ export default function Contact() {
 
       <form
         onSubmit={handleSubmit}
-        className="relative mt-12 flex max-w-xl flex-col gap-5"
+        className="relative mt-12 flex max-w-xl flex-col gap-3"
       >
         <p className="font-code text-faint text-2xs">or leave a message</p>
 
@@ -120,7 +120,7 @@ export default function Contact() {
           className="absolute h-0 w-0 opacity-0"
         />
 
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <label className="block">
             <span className="sr-only">Name</span>
             <input
@@ -167,7 +167,7 @@ export default function Contact() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="bg-foreground text-background inline-flex h-11 cursor-pointer items-center rounded-full px-6 text-sm font-semibold transition-opacity hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-50"
+            className="bg-foreground text-background inline-flex h-11 cursor-pointer items-center rounded-full px-6 text-sm font-semibold transition-[opacity,transform] duration-200 hover:opacity-85 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isSubmitting ? "Sending…" : "Send message"}
           </button>

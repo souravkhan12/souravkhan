@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { HomeSection } from "@/components/home/HomeSection";
+import { HoverList, HoverItem } from "@/components/motion/hover-list";
 import { getAllPosts } from "@/lib/blog";
 import { getAllPatterns } from "@/lib/patterns";
 import { getAllMachineCodingQuestions } from "@/lib/machine-coding";
@@ -76,29 +77,33 @@ export function SiteIndex() {
 
   return (
     <HomeSection id="explore" label="Explore">
-      <ul className="flex flex-col">
+      <HoverList className="flex flex-col">
         {rows.map((row) => (
-          <li key={row.href}>
+          <HoverItem key={row.href} itemKey={row.href}>
             <Link
               href={row.href}
               className="group flex items-baseline justify-between gap-4 py-2.5"
             >
               <span className="min-w-0 text-sm">
-                <span className="group-hover:text-blue font-bold transition-colors">
-                  {row.title}
-                </span>
+                <span className="font-bold">{row.title}</span>
                 <span className="text-soft hidden sm:inline">
                   {" "}
                   — {row.blurb}
                 </span>
               </span>
-              <span className="font-code text-faint text-2xs group-hover:text-blue shrink-0 transition-colors">
-                {row.meta} →
+              <span className="font-code text-faint text-2xs group-hover:text-foreground flex shrink-0 items-center gap-1.5 transition-colors">
+                {row.meta}
+                <span
+                  aria-hidden="true"
+                  className="transition-transform duration-200 group-hover:translate-x-0.5"
+                >
+                  →
+                </span>
               </span>
             </Link>
-          </li>
+          </HoverItem>
         ))}
-      </ul>
+      </HoverList>
     </HomeSection>
   );
 }

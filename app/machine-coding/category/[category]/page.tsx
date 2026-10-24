@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { LuArrowLeft } from "react-icons/lu";
-import { Section, RowList } from "@/components/ui";
+import { PageHeader, RowList } from "@/components/ui";
 import {
   getMachineCodingCategories,
   getMachineCodingCategory,
@@ -49,32 +47,22 @@ export default async function CategoryPage({
   if (!category) notFound();
 
   return (
-    <div className="pt-8">
-      <div className="px-6 pb-4 sm:px-8">
-        <Link
-          href="/machine-coding"
-          className="hover:text-blue font-code text-soft inline-flex items-center gap-1.5 text-xs lowercase transition-colors"
-        >
-          <LuArrowLeft size={13} aria-hidden="true" />
-          machine coding
-        </Link>
-      </div>
+    <>
+      <PageHeader
+        back={{ href: "/machine-coding", label: "Machine coding" }}
+        title={category.label}
+        muted={`${category.count} question${category.count === 1 ? "" : "s"}.`}
+        description="The approach, the solution, and what usually goes wrong."
+      />
 
-      <Section
-        title={category.label.toLowerCase()}
-        id={category.slug}
-        count={category.count}
-        subtitle="the approach, the solution, and what usually goes wrong."
-      >
-        <RowList
-          rows={category.questions.map((q) => ({
-            href: `/machine-coding/${q.slug}`,
-            title: q.title,
-            meta: `${q.difficulty} · ${q.tags.slice(0, 3).join(", ")}`,
-            hint: q.question,
-          }))}
-        />
-      </Section>
-    </div>
+      <RowList
+        rows={category.questions.map((q) => ({
+          href: `/machine-coding/${q.slug}`,
+          title: q.title,
+          meta: `${q.difficulty} · ${q.tags.slice(0, 3).join(", ")}`,
+          hint: q.question,
+        }))}
+      />
+    </>
   );
 }

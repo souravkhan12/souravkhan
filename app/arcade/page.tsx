@@ -1,4 +1,4 @@
-import { Section, RowList } from "@/components/ui";
+import { PageHeader, RowList } from "@/components/ui";
 import { SEO_CONFIG } from "@/config/seo";
 
 export const metadata = {
@@ -14,13 +14,13 @@ export const metadata = {
  */
 export default function ArcadePage() {
   return (
-    <Section
-      title="arcade"
-      id="arcade"
-      count={2}
-      subtitle="two ways to waste two minutes. pick one."
-      className="pt-8"
-    >
+    <>
+      <PageHeader
+        eyebrow="Arcade"
+        count={2}
+        title="Two ways to waste two minutes."
+        muted="Pick one."
+      />
       <RowList
         rows={[
           {
@@ -37,6 +37,6 @@ export default function ArcadePage() {
           },
         ]}
       />
-    </Section>
+    </>
   );
 }

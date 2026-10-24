@@ -77,7 +77,7 @@ export function FlavorSwitcher({
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-haspopup="menu"
-        className="border-border hover:border-blue hover:text-blue font-code text-2xs text-soft inline-flex items-center gap-1.5 border px-2 py-0.5 transition-colors"
+        className="bg-surface hover:bg-surface-hover font-code text-2xs text-soft inline-flex items-center gap-1.5 rounded-full px-3 py-1 transition-[background-color,transform] active:scale-95"
       >
         <span className="text-foreground">
           {active?.flavor.label.toLowerCase() ?? current}
@@ -96,7 +96,7 @@ export function FlavorSwitcher({
           aria-label="Pattern flavour"
           // Solid background, not the page's: the menu overlaps rows, and a
           // transparent panel let the list underneath read straight through it.
-          className="border-border absolute top-[calc(100%+4px)] left-0 z-30 w-56 border bg-white shadow-[4px_4px_0_0_rgba(0,0,0,0.06)] dark:bg-black"
+          className="bg-background shadow-soft animate-in fade-in zoom-in-95 slide-in-from-top-1 absolute top-[calc(100%+6px)] left-0 z-30 w-56 origin-top-left rounded-2xl p-1.5 duration-200"
         >
           {targets.map(({ flavor, href, hasMatch }) => {
             const isCurrent = flavor.slug === current;
@@ -106,7 +106,7 @@ export function FlavorSwitcher({
                 href={href}
                 role="menuitem"
                 onClick={() => setOpen(false)}
-                className="border-border group flex items-start gap-2 border-b px-3 py-2 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-950"
+                className="group hover:bg-surface flex items-start gap-2 rounded-xl px-3 py-2 transition-colors"
               >
                 <LuCheck
                   size={12}
@@ -114,7 +114,7 @@ export function FlavorSwitcher({
                   className={`text-blue mt-[3px] shrink-0 ${isCurrent ? "" : "invisible"}`}
                 />
                 <span className="min-w-0">
-                  <span className="ss01 normal-case-force group-hover:text-blue block text-sm font-medium transition-colors">
+                  <span className="block text-sm font-medium">
                     {flavor.label}
                   </span>
                   <span className="font-code text-2xs text-faint mt-0.5 block">

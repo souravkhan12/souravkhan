@@ -3,7 +3,7 @@
 /**
  * Shared chrome for the MDX diagram components.
  *
- * Matches the site's section-header treatment: squared border, gray-50 /
+ * Matches the site's soft-card treatment: rounded border, surface /
  * black band, thin blue accent bar, lowercase font-code label. `not-prose`
  * stops the typography plugin restyling the internals, and `blog-breakout`
  * (globals.css) lets the panel escape the text measure on wide screens.
@@ -22,7 +22,7 @@ export function Panel({
   footnote?: React.ReactNode;
 }) {
   return (
-    <figure className="not-prose blog-breakout border-border my-10 border bg-gray-50 dark:bg-black">
+    <figure className="not-prose blog-breakout border-border bg-surface my-10 overflow-hidden rounded-2xl border">
       <figcaption className="border-border flex items-center gap-3 border-b px-4 py-2.5 sm:px-5">
         <span aria-hidden="true" className="bg-blue h-3.5 w-[3px]" />
         <span className="font-code text-soft text-xs lowercase">{label}</span>
@@ -48,7 +48,7 @@ export function Chip({
 }) {
   return (
     <span
-      className={`font-code border px-2 py-1 text-xs transition-colors ${
+      className={`font-code rounded-full border px-2.5 py-1 text-xs transition-colors ${
         active
           ? "border-blue/40 bg-blue/5 text-blue"
           : "border-border bg-white text-gray-600 dark:bg-gray-950 dark:text-gray-400"
@@ -103,7 +103,7 @@ export function Tabs<T extends string>({
           type="button"
           onClick={() => onChange(o)}
           aria-pressed={value === o}
-          className={`font-code border px-2.5 py-1.5 text-xs transition-colors ${
+          className={`font-code rounded-full border px-3 py-1.5 text-xs transition-colors ${
             value === o
               ? "border-blue bg-blue/5 text-blue"
               : "border-border text-soft hover:border-gray-400 hover:text-gray-700 dark:hover:text-gray-300"

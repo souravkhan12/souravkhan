@@ -1,179 +1,265 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { SunDim, MoonIcon, Search } from "lucide-react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 import { AccentPicker } from "@/components/theme/AccentPicker";
+import { BrandMark } from "@/components/ui/BrandMark";
+import { HoverList, HoverItem } from "@/components/motion/hover-list";
 import { navLinks } from "@/config/nav-links";
 import { useMounted } from "@/hooks/use-mounted";
-import { INTERACTIONS, NAVBAR_ANIMATION } from "@/config/theme";
-import { usePathname, redirect } from "next/navigation";
+import { useInitialAnimation } from "@/hooks/use-initial-animation";
+import { EASE_OUT, SPRING } from "@/config/theme";
+import { cn } from "@/lib/utils";
 
-export default function Navbar() {
-  const { theme, setTheme } = useTheme();
-  const isDarkMode = theme === "dark";
+/**
+ * A floating pill bar, on the same column as the page under it.
+ *
+ * The brand is the S mark, everywhere. The photo belongs to the hero; on the
+ * homepage a small copy of it slides in beside the mark only once the hero
+ * has scrolled away, so the face is never on screen twice at once.
+ */
+export default function Navbar({ wide = false }: { wide?: boolean }) {
+  const { resolvedTheme, setTheme } = useTheme();
+  const mounted = useMounted();
+  const isDarkMode = mounted && resolvedTheme === "dark";
 
   const pathname = usePathname();
+  const router = useRouter();
   const onHome = pathname === "/";
-
-  const mounted = useMounted();
-  if (!mounted) {
-    return null;
-  }
+  const heroGone = useHeroGone(onHome);
+  // The bar is part of every page, so it remounts on each navigation; it
+  // should only drop in once, on arrival.
+  const shouldAnimate = useInitialAnimation();
 
   const handleSectionNavigation = (
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string,
   ) => {
+    e.preventDefault();
     const id = href.replace("#", "");
-
-    if (pathname === "/") {
-      e.preventDefault();
-
-      const el = document.getElementById(id);
-      if (!el) return;
-
-      el.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+    if (onHome) {
+      document
+        .getElementById(id)
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
-
-    e.preventDefault();
-    redirect(`/#${id}`);
+    router.push(`/#${id}`);
   };
 
   const toggleTheme = () => setTheme(isDarkMode ? "light" : "dark");
+  const openPalette = () =>
+    window.dispatchEvent(new Event("open-command-palette"));
 
-  /* Route links had no current-page state at all, so once you were on /blog
-     or /reading the nav gave you no idea where you were. Section anchors
-     stay unstyled — they're positions on the home page, not destinations. */
+  /* Section anchors stay unstyled — they're positions on the home page, not
+     destinations. */
   const isCurrent = (href: string) =>
     !href.startsWith("#") && href !== "/" && pathname.startsWith(href);
 
   return (
     <motion.nav
-      initial={NAVBAR_ANIMATION.initial}
-      animate={NAVBAR_ANIMATION.animate}
-      className="border-border bg-background/85 sticky top-0 z-30 border-b backdrop-blur-md"
+      initial={shouldAnimate ? { y: -12, opacity: 0 } : false}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5, ease: EASE_OUT }}
+      className="sticky top-0 z-30 pt-3"
     >
-      {/* On the homepage the bar narrows to the 860px reading column and
-          drops the frame's side rules, which only exist on the inner pages. */}
       <div
-        className={
-          onHome
-            ? "mx-auto flex max-w-[860px] items-center justify-between px-5 py-3 sm:px-8"
-            : "navbar-frame border-border mx-auto flex max-w-[1200px] items-center justify-between border-x px-6 py-3 sm:px-8"
-        }
+        className={cn(
+          "mx-auto px-3 sm:px-5",
+          wide ? "max-w-[1100px]" : "max-w-[880px]",
+        )}
       >
-        <Link
-          href="/"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="group/logo flex shrink-0 items-center gap-2.5"
-        >
-          <span className="relative size-7 shrink-0 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-900">
-            <Image
-              src="/sourav.webp"
-              alt=""
-              fill
-              sizes="28px"
-              className="object-cover"
-            />
-          </span>
-          <span className="group-hover/logo:text-blue text-[15px] font-semibold whitespace-nowrap transition-colors">
-            Sourav Khan
-          </span>
-        </Link>
-
-        {/* Desktop: full navigation + utilities */}
-        <div className="hidden min-w-0 flex-row items-center gap-6 md:flex lg:gap-8">
-          {navLinks.map(({ name, href }, i) =>
-            href.startsWith("#") ? (
-              <a
-                key={i}
-                href={href}
-                onClick={(e) => handleSectionNavigation(e, href)}
-                className="text-soft hover:text-foreground cursor-pointer text-sm font-normal whitespace-nowrap transition-colors"
-              >
-                {name}
-              </a>
-            ) : (
-              <Link
-                key={i}
-                href={href}
-                aria-current={isCurrent(href) ? "page" : undefined}
-                className={`hover:text-foreground relative cursor-pointer text-sm font-normal whitespace-nowrap transition-colors ${
-                  isCurrent(href)
-                    ? "text-foreground after:bg-blue font-medium after:absolute after:-bottom-1.5 after:left-0 after:h-[2px] after:w-full after:content-['']"
-                    : "text-soft"
-                }`}
-              >
-                {name}
-              </Link>
-            ),
-          )}
-
-          <motion.button
-            type="button"
-            aria-label="Search"
+        <div className="bg-background/75 shadow-soft flex items-center justify-between gap-3 rounded-full py-1.5 pr-2 pl-2 backdrop-blur-xl backdrop-saturate-150">
+          <Link
+            href="/"
             onClick={() =>
-              window.dispatchEvent(new Event("open-command-palette"))
+              onHome && window.scrollTo({ top: 0, behavior: "smooth" })
             }
-            whileHover={{ scale: 1.015 }}
-            whileTap={{ scale: 0.985 }}
-            className="border-border hover:border-foreground group text-soft flex w-40 shrink cursor-pointer items-center gap-2 rounded-full border px-3.5 py-1.5 text-left transition-colors lg:w-48"
+            aria-label="Sourav Khan — home"
+            className="group/logo flex shrink-0 items-center gap-2 rounded-full pr-2"
           >
-            <Search
-              size={14}
-              className="group-hover:text-foreground shrink-0 transition-colors"
-            />
-            <span className="flex-1 text-xs">Search…</span>
-            <kbd className="border-border font-code text-2xs shrink-0 rounded-full border px-1.5 py-0.5 leading-none">
-              ⌘k
-            </kbd>
-          </motion.button>
+            <motion.span
+              whileHover={{ rotate: -8 }}
+              whileTap={{ scale: 0.92 }}
+              transition={SPRING.bouncy}
+              className="inline-flex"
+            >
+              <BrandMark size={30} />
+            </motion.span>
 
-          <AccentPicker />
+            <AnimatePresence initial={false}>
+              {onHome && heroGone && (
+                <motion.span
+                  key="avatar"
+                  initial={{ width: 0, opacity: 0, scale: 0.6 }}
+                  animate={{ width: 26, opacity: 1, scale: 1 }}
+                  exit={{ width: 0, opacity: 0, scale: 0.6 }}
+                  transition={SPRING.smooth}
+                  className="relative -ml-1 block size-[26px] shrink-0 overflow-hidden rounded-full"
+                >
+                  <Image
+                    src="/sourav.webp"
+                    alt=""
+                    fill
+                    sizes="78px"
+                    quality={90}
+                    className="object-cover object-[50%_30%]"
+                  />
+                </motion.span>
+              )}
+            </AnimatePresence>
 
-          <motion.button
-            type="button"
-            aria-label="Toggle theme"
-            onClick={toggleTheme}
-            {...INTERACTIONS.themeToggle}
-            className="hover:text-blue text-soft cursor-pointer"
-          >
-            {isDarkMode ? <SunDim size={18} /> : <MoonIcon size={18} />}
-          </motion.button>
-        </div>
+            <span className="text-xs font-semibold tracking-tight whitespace-nowrap">
+              Sourav Khan
+            </span>
+          </Link>
 
-        {/* Mobile: quick utilities only — the page links live in the bottom bar */}
-        <div className="flex items-center gap-4 md:hidden">
-          <button
-            type="button"
-            aria-label="Search"
-            onClick={() =>
-              window.dispatchEvent(new Event("open-command-palette"))
-            }
-            className="hover:text-blue text-soft"
-          >
-            <Search size={19} />
-          </button>
+          {/* Desktop: links share one highlight that slides between them */}
+          <div className="hidden min-w-0 items-center gap-1 md:flex">
+            <HoverList as="div" className="flex items-center">
+              {navLinks.map(({ name, href }) => (
+                <HoverItem
+                  key={href}
+                  itemKey={href}
+                  as="div"
+                  highlightClassName="inset-x-0 rounded-full"
+                >
+                  {href.startsWith("#") ? (
+                    <a
+                      href={href}
+                      onClick={(e) => handleSectionNavigation(e, href)}
+                      className="text-soft hover:text-foreground block px-3 py-1.5 text-xs whitespace-nowrap transition-colors"
+                    >
+                      {name}
+                    </a>
+                  ) : (
+                    <Link
+                      href={href}
+                      aria-current={isCurrent(href) ? "page" : undefined}
+                      className={cn(
+                        "block px-3 py-1.5 text-xs whitespace-nowrap transition-colors",
+                        isCurrent(href)
+                          ? "text-foreground font-medium"
+                          : "text-soft hover:text-foreground",
+                      )}
+                    >
+                      {name}
+                      {isCurrent(href) && (
+                        <motion.span
+                          layoutId="nav-current"
+                          transition={SPRING.snappy}
+                          className="bg-blue absolute bottom-0.5 left-1/2 size-1 -translate-x-1/2 rounded-full"
+                        />
+                      )}
+                    </Link>
+                  )}
+                </HoverItem>
+              ))}
+            </HoverList>
 
-          <AccentPicker />
+            <motion.button
+              type="button"
+              aria-label="Search"
+              onClick={openPalette}
+              whileTap={{ scale: 0.96 }}
+              transition={SPRING.snappy}
+              className="bg-surface hover:bg-surface-hover group text-soft ml-1 flex w-40 shrink cursor-pointer items-center gap-2 rounded-full px-3.5 py-1.5 text-left transition-colors lg:w-44"
+            >
+              <Search
+                size={14}
+                className="group-hover:text-foreground shrink-0 transition-colors"
+              />
+              <span className="text-2xs flex-1">Search…</span>
+              <kbd className="border-border bg-background font-code text-2xs shrink-0 rounded-full border px-1.5 py-0.5 leading-none">
+                ⌘k
+              </kbd>
+            </motion.button>
 
-          <button
-            type="button"
-            aria-label="Toggle theme"
-            onClick={toggleTheme}
-            className="hover:text-blue text-soft"
-          >
-            {isDarkMode ? <SunDim size={20} /> : <MoonIcon size={19} />}
-          </button>
+            <AccentPicker />
+
+            <ThemeButton dark={isDarkMode} onClick={toggleTheme} />
+          </div>
+
+          {/* Mobile: quick utilities only — page links live in the bottom dock */}
+          <div className="flex items-center gap-1 md:hidden">
+            <button
+              type="button"
+              aria-label="Search"
+              onClick={openPalette}
+              className="text-soft hover:text-foreground hover:bg-surface flex size-10 items-center justify-center rounded-full transition-colors"
+            >
+              <Search size={18} />
+            </button>
+
+            <AccentPicker />
+
+            <ThemeButton dark={isDarkMode} onClick={toggleTheme} />
+          </div>
         </div>
       </div>
     </motion.nav>
   );
+}
+
+function ThemeButton({
+  dark,
+  onClick,
+}: {
+  dark: boolean;
+  onClick: () => void;
+}) {
+  // Both icons are always mounted and stacked; the switch is a 160ms
+  // crossfade with a quarter turn. The old version waited for one icon to
+  // leave before the next came in, which left the button empty mid-switch.
+  const icon =
+    "absolute inset-0 m-auto transition-[opacity,transform] duration-150 ease-out";
+  return (
+    <motion.button
+      type="button"
+      aria-label="Toggle theme"
+      onClick={onClick}
+      whileTap={{ scale: 0.9 }}
+      className="text-soft hover:text-foreground hover:bg-surface relative flex size-10 cursor-pointer items-center justify-center rounded-full transition-colors"
+    >
+      <SunDim
+        size={18}
+        aria-hidden="true"
+        className={cn(
+          icon,
+          dark ? "rotate-0 opacity-100" : "scale-50 -rotate-90 opacity-0",
+        )}
+      />
+      <MoonIcon
+        size={18}
+        aria-hidden="true"
+        className={cn(
+          icon,
+          dark ? "scale-50 rotate-90 opacity-0" : "rotate-0 opacity-100",
+        )}
+      />
+    </motion.button>
+  );
+}
+
+/** True once the homepage hero (#about) has scrolled out of view. */
+function useHeroGone(enabled: boolean) {
+  const [gone, setGone] = useState(false);
+
+  useEffect(() => {
+    if (!enabled) return;
+    const hero = document.getElementById("about");
+    if (!hero) return;
+    const io = new IntersectionObserver(
+      ([entry]) => setGone(!entry.isIntersecting),
+      { rootMargin: "-64px 0px 0px 0px" },
+    );
+    io.observe(hero);
+    return () => io.disconnect();
+  }, [enabled]);
+
+  return enabled && gone;
 }

@@ -194,9 +194,9 @@ export function CodeQuiz({
       : null;
 
   return (
-    <div className="border-border border">
+    <div className="bg-background shadow-soft overflow-hidden rounded-2xl">
       {/* Header */}
-      <div className="border-border flex flex-wrap items-center justify-between gap-3 border-b bg-gray-50 px-4 py-2.5 dark:bg-black">
+      <div className="border-border flex flex-wrap items-center justify-between gap-3 border-b px-5 py-3">
         <span className="font-code text-2xs text-soft lowercase">
           guess the output · daily
         </span>
@@ -214,7 +214,7 @@ export function CodeQuiz({
       <div className="p-5 sm:p-6">
         <p className="text-sm font-medium">{question.prompt}</p>
 
-        <pre className="border-border font-code text-2xs mt-4 overflow-x-auto border bg-gray-50 p-4 leading-relaxed dark:bg-black">
+        <pre className="bg-surface font-code text-2xs mt-4 overflow-x-auto rounded-xl p-4 leading-relaxed">
           <code>{question.snippet}</code>
         </pre>
 
@@ -242,7 +242,7 @@ export function CodeQuiz({
                 onClick={() => choose(i)}
                 disabled={revealed}
                 aria-pressed={isPicked}
-                className={`font-code text-2xs flex items-center justify-between gap-3 border px-4 py-2.5 text-left transition-colors ${tone}`}
+                className={`font-code text-2xs flex items-center justify-between gap-3 rounded-xl border px-4 py-2.5 text-left transition-[color,background-color,border-color,transform] active:scale-[0.99] ${tone}`}
               >
                 <span className="min-w-0 break-words">{option}</span>
                 {revealed && isAnswer && (
@@ -292,7 +292,7 @@ export function CodeQuiz({
                 <button
                   type="button"
                   onClick={share}
-                  className="border-border hover:border-blue hover:text-blue font-code text-2xs inline-flex cursor-pointer items-center gap-1.5 border px-3 py-1.5 text-gray-600 lowercase transition-colors dark:text-gray-400"
+                  className="border-border hover:border-blue hover:text-blue font-code text-2xs inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-gray-600 lowercase transition-[color,border-color,transform] active:scale-95 dark:text-gray-400"
                 >
                   {copied ? (
                     <LuCheck size={12} aria-hidden="true" />

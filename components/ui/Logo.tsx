@@ -24,7 +24,7 @@ export function Logo({
       <path
         d="M76 26C76 14 24 14 24 36C24 54 76 46 76 66C76 88 24 88 24 74"
         stroke="currentColor"
-        strokeWidth="8"
+        strokeWidth="10"
         strokeLinecap="round"
       />
     </svg>

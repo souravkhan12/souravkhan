@@ -1,23 +1,26 @@
 import { ACHIEVEMENTS } from "@/config/data";
 import { HomeSection } from "@/components/home/HomeSection";
+import { HoverList, HoverItem } from "@/components/motion/hover-list";
+import { CountUp } from "@/components/motion/count-up";
 
 export function Achievements() {
   if (ACHIEVEMENTS.length === 0) return null;
 
   return (
     <HomeSection id="achievements" label="Achievements">
-      <ul className="flex flex-col">
+      <HoverList className="flex flex-col">
         {ACHIEVEMENTS.map(({ metric, text, href }) => (
-          <li key={text}>
+          <HoverItem key={text} itemKey={text}>
             <a
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-baseline gap-4 py-2 text-sm"
+              className="group flex items-baseline gap-4 py-2.5 text-sm"
             >
-              <span className="w-14 shrink-0 font-bold tabular-nums">
-                {metric}
-              </span>
+              <CountUp
+                value={metric}
+                className="w-14 shrink-0 font-bold tabular-nums"
+              />
               <span className="text-soft group-hover:text-foreground min-w-0 transition-colors">
                 {text}
                 <span
@@ -28,9 +31,9 @@ export function Achievements() {
                 </span>
               </span>
             </a>
-          </li>
+          </HoverItem>
         ))}
-      </ul>
+      </HoverList>
     </HomeSection>
   );
 }

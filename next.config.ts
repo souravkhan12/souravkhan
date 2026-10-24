@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
     viewTransition: true,
   },
   images: {
+    // 90 is for the small portrait crops (hero, navbar, résumé), where 75
+    // visibly smears the face at 48px.
+    qualities: [75, 90],
     remotePatterns: [
       {
         protocol: "https",

@@ -1,9 +1,8 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import { LuArrowLeft } from "react-icons/lu";
 import { getAllTags, getPostsByTag, toSummary } from "@/lib/blog";
-import { Section } from "@/components/ui";
+import { PageHeader } from "@/components/ui";
 import { PostList } from "@/components/blog/post-list";
+import { TagTabs } from "@/components/blog/tag-tabs";
 import { SEO_CONFIG } from "@/config/seo";
 
 export async function generateStaticParams() {
@@ -39,25 +38,15 @@ export default async function TagPage({
 
   return (
     <>
-      <Section
+      <PageHeader
+        back={{ href: "/blog", label: "All writing" }}
         title={match.tag}
-        subtitle={`${match.count} post${match.count === 1 ? "" : "s"} tagged “${match.tag}”.`}
-        className="pt-8"
+        muted={`${match.count} post${match.count === 1 ? "" : "s"}.`}
       >
-        {/* A compact strip inside the grid. As a bare `mb-6` block it sat in
-            its own full-height band and read as an empty section. */}
-        <div className="border-border border-x border-t px-6 py-2.5 sm:px-8">
-          <Link
-            href="/blog"
-            className="hover:text-blue font-code text-2xs text-soft inline-flex items-center gap-1.5 lowercase transition-colors"
-          >
-            <LuArrowLeft size={12} aria-hidden="true" />
-            all writing
-          </Link>
-        </div>
+        <TagTabs active={tag} />
+      </PageHeader>
 
-        <PostList posts={posts} showSearch={false} showLatestBadge={false} />
-      </Section>
+      <PostList posts={posts} showSearch={false} showLatestBadge={false} />
     </>
   );
 }

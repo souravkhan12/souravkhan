@@ -5,6 +5,7 @@ import {
 import { MinimalContributionGraph } from "@/components/github-contributions/graph";
 import { HomeSection } from "@/components/home/HomeSection";
 import { SOCIAL_LINKS } from "@/config/data";
+import { CountUp } from "@/components/motion/count-up";
 
 export async function GitHubActivity() {
   const [contributions, repos] = await Promise.all([
@@ -27,24 +28,26 @@ export async function GitHubActivity() {
       >
         {contributions.length > 0 && (
           <span>
-            <strong className="text-foreground font-bold tabular-nums">
-              {total.toLocaleString()}
-            </strong>{" "}
+            <CountUp
+              value={total.toLocaleString("en-US")}
+              className="text-foreground font-bold tabular-nums"
+            />{" "}
             contributions in the last year
           </span>
         )}
         {repos !== null && (
           <span>
-            <strong className="text-foreground font-bold tabular-nums">
-              {repos}
-            </strong>{" "}
+            <CountUp
+              value={String(repos)}
+              className="text-foreground font-bold tabular-nums"
+            />{" "}
             repositories
           </span>
         )}
       </a>
 
       {contributions.length > 0 && (
-        <div className="mt-5">
+        <div className="mt-4">
           <MinimalContributionGraph contributions={contributions} />
         </div>
       )}

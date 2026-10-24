@@ -16,6 +16,40 @@ export const MOTION = {
 };
 
 // ======================================================
+// SPRINGS — the Linear-style layer
+// Anything that follows the pointer or reacts to a press uses a spring, not a
+// duration: it can be interrupted mid-flight and still lands smoothly.
+// ======================================================
+export const SPRING = {
+  /** Hover highlights, tab indicators — has to keep up with the pointer. */
+  snappy: { type: "spring", stiffness: 500, damping: 35, mass: 0.6 },
+  /** Cards lifting, sheets opening. */
+  smooth: { type: "spring", stiffness: 300, damping: 30 },
+  /** Small playful feedback — a chip popping on hover. */
+  bouncy: { type: "spring", stiffness: 400, damping: 18 },
+} as const;
+
+/** Long, soft tail — entrances settle instead of stopping. */
+export const EASE_OUT = [0.22, 1, 0.36, 1] as const;
+
+/** Scroll reveal: rise, un-blur, fade. Used by <Reveal> / <RevealGroup>. */
+export const REVEAL = {
+  item: {
+    hidden: { opacity: 0, y: 12, filter: "blur(4px)" },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: { duration: 0.5, ease: EASE_OUT },
+    },
+  },
+  group: {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.05, delayChildren: 0.04 } },
+  },
+} as const;
+
+// ======================================================
 // ENTRY ANIMATIONS (page load / section load)
 // Very subtle — user should not notice animation
 // ======================================================

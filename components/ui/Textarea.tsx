@@ -38,7 +38,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     );
 
     const textareaClasses = [
-      "w-full border border-border bg-background px-4 py-3 text-sm",
+      "w-full rounded-xl border border-border bg-background px-4 py-3 text-sm",
       "placeholder-gray-400 transition-colors resize-none",
       "focus:border-focus focus:outline-none",
       "dark:placeholder-gray-600",

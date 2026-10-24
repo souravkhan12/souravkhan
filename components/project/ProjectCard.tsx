@@ -1,81 +1,95 @@
 import Link from "next/link";
-import { LuArrowUpRight } from "react-icons/lu";
-import { SiGithub } from "react-icons/si";
-import { Project } from "@/types";
-import { GridCell } from "@/components/ui";
+import Image from "next/image";
+import { LuArrowUpRight, LuGithub } from "react-icons/lu";
+import type { Project } from "@/lib/projects";
+import { TechChip } from "@/components/ui/tech";
 
-export default function ProjectCard({
+/**
+ * A soft rounded card: artwork on top, then title, blurb and tech. The whole
+ * card lifts on hover with a slight overshoot and the image eases in; live
+ * and source links sit outside the main link so each stays its own target.
+ */
+export function ProjectCard({
   project,
-  tinted = false,
+  compact = false,
 }: {
   project: Project;
-  tinted?: boolean;
+  /** Homepage size: no blurb, fewer chips. */
+  compact?: boolean;
 }) {
-  const href = project.slug ? `/project/${project.slug}` : "#";
-
   return (
-    <GridCell padded={false} tinted={tinted} className="group flex flex-col">
-      {/* terminal title bar */}
-      <div className="border-border text-soft flex items-center justify-between gap-3 border-b px-4 py-2.5">
-        <span className="font-code truncate text-xs">
-          ~/projects/{project.slug}
-        </span>
-        <span aria-hidden="true" className="flex shrink-0 gap-1.5">
-          <span className="size-2 rounded-full border border-gray-300 dark:border-gray-700" />
-          <span className="size-2 rounded-full border border-gray-300 dark:border-gray-700" />
-          <span className="size-2 rounded-full border border-gray-300 dark:border-gray-700" />
-        </span>
-      </div>
+    <article className="group bg-background shadow-soft relative flex h-full flex-col overflow-hidden rounded-2xl transition-transform duration-500 ease-[cubic-bezier(0.34,1.4,0.64,1)] hover:-translate-y-1">
+      <Link
+        href={`/project/${project.slug}`}
+        className="flex flex-1 flex-col focus-visible:outline-none"
+      >
+        {project.image && (
+          <div className="bg-surface relative aspect-[16/10] w-full overflow-hidden">
+            <Image
+              src={project.image}
+              alt=""
+              fill
+              sizes={
+                compact
+                  ? "(max-width: 640px) 100vw, 280px"
+                  : "(max-width: 768px) 100vw, 520px"
+              }
+              className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
+            />
+          </div>
+        )}
 
-      <div className="flex flex-1 flex-col gap-5 p-8 sm:p-10">
-        {/* stack, printed like a shell command */}
-        <p className="font-code text-soft text-xs leading-relaxed">
-          <span className="text-faint">$ </span>
-          stack:{" "}
-          <span className="text-gray-700 dark:text-gray-300">
-            {project.technologies.join(" · ")}
-          </span>
-        </p>
+        <div
+          className={`flex flex-1 flex-col ${compact ? "p-4" : "p-5 sm:p-6"}`}
+        >
+          <h3 className="flex items-center gap-1.5 text-base font-bold tracking-tight">
+            {project.title}
+            <LuArrowUpRight
+              size={15}
+              aria-hidden="true"
+              className="text-faint group-hover:text-foreground transition-[transform,color] duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            />
+          </h3>
+          {!compact && (
+            <p className="text-soft mt-2 line-clamp-3 text-sm leading-relaxed">
+              {project.description}
+            </p>
+          )}
 
-        <div>
-          <Link href={href}>
-            <h3 className="ss01 normal-case-force hover:text-blue text-lg font-semibold transition-colors">
-              {project.title}
-            </h3>
-          </Link>
-          <p className="text-soft mt-2 line-clamp-3 text-sm leading-relaxed text-pretty">
-            {project.description}
-          </p>
+          <div
+            className={`flex flex-wrap gap-1.5 ${compact ? "mt-3" : "mt-auto pt-5"}`}
+          >
+            {project.technologies.slice(0, compact ? 3 : 6).map((tech) => (
+              <TechChip key={tech} label={tech} size="xs" />
+            ))}
+          </div>
         </div>
+      </Link>
 
-        {/* actions */}
-        <div className="border-border font-code mt-auto flex items-center gap-3 border-t pt-5 text-xs">
-          <a
-            href={project.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`${project.title} live demo`}
-            className="border-border hover:border-blue hover:text-blue inline-flex items-center gap-1.5 border px-3 py-1.5 transition-colors"
-          >
-            live <LuArrowUpRight size={13} />
-          </a>
-          <a
-            href={project.code}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`${project.title} source code`}
-            className="border-border hover:border-blue hover:text-blue inline-flex items-center gap-1.5 border px-3 py-1.5 transition-colors"
-          >
-            <SiGithub size={13} /> source
-          </a>
-          <Link
-            href={href}
-            className="hover:text-blue text-soft ml-auto inline-flex items-center gap-1 transition-colors"
-          >
-            details <LuArrowUpRight size={13} />
-          </Link>
+      {!compact && (project.link || project.code) && (
+        <div className="font-code text-2xs flex items-center gap-1 px-4 pb-4 sm:px-5">
+          {project.link && (
+            <a
+              href={project.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-soft hover:text-foreground hover:bg-surface inline-flex items-center gap-1 rounded-full px-2.5 py-1.5 transition-colors"
+            >
+              live <LuArrowUpRight size={12} aria-hidden="true" />
+            </a>
+          )}
+          {project.code && (
+            <a
+              href={project.code}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-soft hover:text-foreground hover:bg-surface inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 transition-colors"
+            >
+              <LuGithub size={12} aria-hidden="true" /> source
+            </a>
+          )}
         </div>
-      </div>
-    </GridCell>
+      )}
+    </article>
   );
 }

@@ -73,8 +73,15 @@
   --focus: #e4521b;
   --ring: #e4521b;
 
-  /* Sharp edges — paper uses hairline borders, not rounding */
-  --radius: 0px;
+  --radius: 14px;
+
+  /* Soft surfaces: the raised-card fill and the hover pill that slides
+     between list rows. Depth comes from these, not from hairline boxes. */
+  --surface: var(--color-gray-50);
+  --surface-hover: #f1f1ee;
+  --soft-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.05), 0 1px 2px rgb(0 0 0 / 0.04),
+    0 8px 24px -12px rgb(0 0 0 / 0.12);
 }
 
 .dark {
@@ -101,6 +108,12 @@
   --blue: #ff7a45;
   --focus: #ff7a45;
   --ring: #ff7a45;
+
+  --surface: #1f1f1f;
+  --surface-hover: #242424;
+  --soft-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.06), 0 1px 2px rgb(0 0 0 / 0.3),
+    0 8px 24px -12px rgb(0 0 0 / 0.6);
 }
 
 @theme inline {
@@ -129,14 +142,17 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* Sharp: every radius token collapses to 0 */
-  --radius-sm: 0px;
-  --radius-md: 0px;
-  --radius-lg: 0px;
-  --radius-xl: 0px;
-  --radius-2xl: 0px;
-  --radius-3xl: 0px;
-  --radius-4xl: 0px;
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --shadow-soft: var(--soft-shadow);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
+  --radius-3xl: 36px;
+  --radius-4xl: 44px;
 
   /* paper.design type scale */
   --text-2xs: 13px;
@@ -187,11 +203,11 @@
     font-feature-settings: "ss01";
   }
 
-  /* Reserve room for the fixed mobile bottom nav (see BottomNav) so the
+  /* Reserve room for the floating mobile dock (see BottomNav) so the
      footer and last section never sit under it. Desktop has no bottom bar. */
   @media (max-width: 767px) {
     body {
-      padding-bottom: calc(3.5rem + env(safe-area-inset-bottom));
+      padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
     }
   }
 
@@ -302,50 +318,6 @@
   text-transform: none;
 }
 
-/* Section boundaries get a heavier rule than cell edges — one border weight
-   for all 177 boundaries meant a section break and a row divider read as the
-   same event. */
-.rule-strong {
-  border-top-color: var(--color-gray-300);
-}
-.dark .rule-strong {
-  border-top-color: var(--color-gray-800);
-}
-
-/* ============================================================
-   SCREEN LINES
-   A hairline that runs the full width of the viewport, not just the content
-   column. Section boundaries stop being a seam you have to look for and
-   become a rule across the whole page — the cheapest possible way to make a
-   long page chunk on sight.
-   ============================================================ */
-.screen-line-top,
-.screen-line-bottom {
-  position: relative;
-}
-
-.screen-line-top::before,
-.screen-line-bottom::after {
-  content: "";
-  position: absolute;
-  /* Escapes the content column without widening it — the parent must not
-     clip, and `left/right` beat a 100vw width when a scrollbar is present. */
-  left: -50vw;
-  right: -50vw;
-  height: 0;
-  border-top: 1px solid var(--border);
-  pointer-events: none;
-  z-index: 1;
-}
-
-.screen-line-top::before {
-  top: -1px;
-}
-
-.screen-line-bottom::after {
-  bottom: -1px;
-}
-
 /* ============================================================
    PAGE TITLES
    Every detail page had invented its own ladder — the resume sat at a flat
@@ -402,6 +374,13 @@
   padding-block: 0.06em; /* the square ascenders otherwise clip on the blur */
 }
 
+/* Handwriting for the margin notes (components/motion/annotation.tsx). */
+.font-hand {
+  font-family: var(--font-hand), "Comic Sans MS", cursive;
+  font-feature-settings: normal;
+  letter-spacing: 0;
+}
+
 /* Guaranteed to win over Tailwind's .font-mono utility (which maps to the
    system stack, not our loaded webfont) regardless of cascade-layer order. */
 .font-code {
@@ -415,11 +394,6 @@ html {
     background-color 0.3s,
     color 0.3s;
 }
-
-/* The screen-line rules overhang the viewport by design; the wrapper div in
-   app/layout.tsx clips them. It can't be done here on `html` or `body` —
-   overflow on either propagates to the viewport, leaving the element itself
-   computing to `visible` and clipping nothing. */
 
 /* View Transitions (Next.js experimental.viewTransition) */
 ::view-transition-old(root),
@@ -563,7 +537,7 @@ html {
 
 .prose pre code {
   font-size: inherit;
-  line-height: 1.6;
+  line-height: inherit;
 }
 
 /* The plugin renders inline code with literal backticks via ::before/::after. */
@@ -577,6 +551,7 @@ html {
   border: 1px solid var(--border);
   color: var(--foreground);
   padding: 0.1em 0.35em;
+  border-radius: var(--radius-sm);
   font-weight: 400;
 }
 
@@ -658,286 +633,102 @@ html {
 }
 
 /* ============================================================
-   BLOG MEASURE
-   The title band put its padding on the outer <header> and capped an
-   inner div at max-w-3xl (a true 768px column), while the body put
-   padding *and* max-w-[42rem] on the same element — border-box shrank
-   that text column to 672 − 80 = 592px. The h1 and the paragraphs under
-   it differed by 176px in width and stepped in by 88px at 1440px wide.
+   READING LAYOUT
+   Every long-form page — posts, patterns, machine coding, setup guides —
+   sits in the same 860px column as the homepage. The prose keeps a
+   readable measure inside it, left-aligned to the title; diagrams, code
+   and tables break out to the column's full width; and from `wide` up the
+   contents rail hangs in the right margin, outside the column, so it never
+   costs the article any width.
 
-   Two measures, declared once, used by every band:
-
-     --blog-measure  40rem / 640px  → prose. ~72 characters at the 17px
-                                      body size.
-     --blog-wide     56rem / 896px  → things that shouldn't be trapped
-                                      in the measure: diagram panels,
-                                      the related-posts grid.
+     --blog-measure  42rem / 672px → prose, ~75 characters at 17px.
+     --blog-col      the column's content box (860 minus its gutters).
    ============================================================ */
 
 :root {
-  --blog-measure: 40rem;
-  --blog-wide: 56rem;
-  /* The article column on lg+. Wider than the measure so code and diagrams
-     have somewhere to break out to that still stops short of the rail. */
-  --blog-col: 52rem;
-  --blog-rail: 15rem;
-  --blog-gutter: 3rem;
-  /* Section index on the left of a reading page (patterns.dev's sidebar). */
-  /* 14rem = an 11.5rem list plus the 2.5rem left gutter every other column
-     on the page already has. It was 17.5rem, sized so the longest pattern
-     title never wrapped — but the list is short and sticky, so on a 1400px
-     screen that bought two dozen unwrapped characters at the cost of a
-     280px column standing empty beside 3000px of article. A wrapped
-     "Container / Presentational Pattern" is the cheaper trade. */
-  --reading-nav: 14rem;
+  --blog-measure: 42rem;
+  --blog-col: calc(min(100vw, 860px) - 2.5rem);
 }
 
-/* A reading page needs a wider frame than the 1200px shell: a sidebar, a
-   40rem measure and a contents rail don't fit in it without squeezing the
-   prose, which was the whole reason the sidebar looked cramped. `:has` lets
-   the shell widen itself for exactly these pages without threading a prop
-   through four layouts. */
-main:has(> .reading-shell) {
-  max-width: 82.5rem;
-}
-
-/* The navbar is a sibling of <main>, so it can't inherit the widened frame —
-   match it from the body instead, or the top bar's hairline edges sit 80px
-   inside the article's and the whole page looks misregistered. */
-body:has(main > .reading-shell) .navbar-frame {
-  max-width: 82.5rem;
-  /* px-10 to match the article gutter, so the wordmark lines up with the
-     sidebar's first item instead of sitting 8px inside it. */
-  padding-inline: 2.5rem;
-}
-
-/* ------------------------------------------------------------------
-   Three-column reading layout (xl+)
-
-       section nav │ article + contents rail
-     40 + 184      │  40 + (704 + 48 + 224) + 40
-
-   Every number closes against the 82.5rem (1320px) reading frame:
-
-       224 + 40 + 1056 = 1320         columns + gap
-       1056 - 80 = 976                article minus its px-10 gutters
-       704 + 48 + 224 = 976           measure + gap + rail  ✓
-
-   So the prose is exactly --blog-measure, the sidebar's text sits on
-   the same 40px gutter as the article's, and the contents rail ends
-   flush with the frame's right edge. The earlier 85rem frame left 80px
-   of dead space to the right of the rail, which is what made it read as
-   misaligned. Below `wide` the nav drops out (it re-renders as a
-   <details> strip above the article) and .blog-layout's own two-column
-   rule takes over unchanged.
-   ------------------------------------------------------------------ */
-.reading-shell {
-  display: block;
-}
-
-@media (min-width: 82.5rem) {
-  .reading-shell {
-    display: grid;
-    grid-template-columns: var(--reading-nav) minmax(0, 1fr);
-    /* 2.5rem, not 3rem: the nav has no right border, so the gap is read
-       against the article's own 2.5rem gutter on the far side of the rule.
-       Matching them centres the divider in its whitespace. */
-    column-gap: 2.5rem;
-    align-items: start;
-
-    /* Retune the inner two-column layout to the space the nav left behind,
-       rather than forking .blog-layout for this case. Every pixel the nav
-       gave back goes to the measure — 40rem → 44rem — so the middle column
-       grows instead of the frame just emptying out on the left. */
-    --blog-measure: 44rem;
-    --blog-col: var(--blog-measure);
-    --blog-rail: 14rem;
-    --blog-gutter: 3rem;
+@media (min-width: 40rem) {
+  :root {
+    --blog-col: calc(min(100vw, 860px) - 4rem);
   }
-}
-
-/* ------------------------------------------------------------------
-   Wider tiers for wider screens
-
-   The 82.5rem frame was sized to the smallest viewport that can hold
-   three columns, and then never grew. On a 1700px+ display that left the
-   sidebar, a 40rem measure and the rail huddled in the middle with ~400px
-   of dead paper on each side — and, because `--blog-col` equals the
-   measure up there, no slack for a code block or a diagram panel to break
-   out into either. Both tiers below give the measure and the breakout
-   room separately, so wide content grows faster than the prose does.
-
-   Every number still closes against its frame:
-
-     92.5rem → 224 + 40 + [80 + (848 + 48 + 240)] = 1480  ✓
-     100rem  → 224 + 40 + [80 + (952 + 48 + 256)] = 1600  ✓
-
-   The nav column is deliberately left at 14rem in all three tiers. It
-   holds one list of pattern titles; widening it would buy nothing but a
-   longer ragged right edge.
-   ------------------------------------------------------------------ */
-@media (min-width: 100rem) {
-  main:has(> .reading-shell) {
-    max-width: 92.5rem;
-  }
-
-  body:has(main > .reading-shell) .navbar-frame {
-    max-width: 92.5rem;
-  }
-
-  .reading-shell {
-    --blog-measure: 46rem;
-    /* 7rem wider than the measure — the slack .blog-breakout expands into. */
-    --blog-col: 53rem;
-    --blog-rail: 15rem;
-  }
-}
-
-@media (min-width: 120rem) {
-  main:has(> .reading-shell) {
-    max-width: 100rem;
-  }
-
-  body:has(main > .reading-shell) .navbar-frame {
-    max-width: 100rem;
-  }
-
-  .reading-shell {
-    --blog-measure: 48rem;
-    --blog-col: 59.5rem;
-    --blog-rail: 16rem;
-  }
-}
-
-/* Full viewport height so the rule on its right reads as a column edge
-   rather than a box that stops halfway down the article. */
-.reading-nav-rail {
-  position: sticky;
-  top: 4.5rem;
-  max-height: calc(100vh - 6rem);
-  overflow-y: auto;
-  overscroll-behavior: contain;
 }
 
 .blog-measure {
-  margin-inline: auto;
   width: 100%;
   max-width: var(--blog-measure);
-}
-
-/* ------------------------------------------------------------------
-   Two-column reading layout (lg+)
-   Below lg the article is a centred single column and the floating TOC
-   widget handles navigation. From lg the column moves left and the
-   recovered space becomes a sticky contents rail — which is what that
-   ~480px of dead margin on a 1200px shell was doing before.
-
-   Both the title band and the body use .blog-layout, so the h1 and the
-   paragraphs under it keep one left edge whichever mode is active.
-   ------------------------------------------------------------------ */
-.blog-layout > .blog-measure {
-  margin-inline: auto;
-}
-
-@media (min-width: 64rem) {
-  .blog-layout {
-    display: grid;
-    grid-template-columns: minmax(0, var(--blog-col)) var(--blog-rail);
-    column-gap: var(--blog-gutter);
-    justify-content: start;
-  }
-
-  /* Left-aligned inside its column now, not centred in the shell. */
-  .blog-layout > .blog-measure {
-    margin-inline: 0;
-  }
+  /* The space beside the measure that wide content can grow into. Zero on
+     phones, where the measure already fills the column. */
+  --blog-slack: max(0px, calc(var(--blog-col) - var(--blog-measure)));
 }
 
 .blog-wide {
-  margin-inline: auto;
   width: 100%;
-  max-width: var(--blog-wide);
 }
 
-/* Once the article goes left-aligned, a centred 56rem band under it starts
-   112px in from the h1's left edge. Match the full two-column span instead. */
-@media (min-width: 64rem) {
-  .blog-wide {
-    margin-inline: 0;
-    max-width: calc(var(--blog-col) + var(--blog-gutter) + var(--blog-rail));
-  }
-}
-
-/* The typography plugin sets `max-width: 65ch` on .prose — a utility, same
-   specificity as `max-w-[42rem]`, so which one won came down to emit order.
-   Scoped to the pairing so .blog-measure is the single owner of the width
-   here. It must NOT be a bare `.prose { max-width: none }`: this file is
-   unlayered, so that would outrank the `max-w-3xl` utilities that /project,
-   /machine-coding and /setup use and send those articles full-bleed. */
-.prose.blog-measure {
-  max-width: var(--blog-measure);
-}
-
-/* Let wide content — diagrams, code blocks, tables — escape the measure
-   without the text following it out.
- *
- * Sized off available space rather than a `min-width: 80rem` breakpoint.
- * The shell caps at 1200px, so a hard 1280px query left a laptop viewport
- * rendering 640px code blocks that scrolled horizontally while ~240px of
- * column sat empty on either side. `max(100%, …)` means this collapses to
- * a plain full-width block on phones, where 100% always wins. */
+/* Wide content grows to the RIGHT from a left edge flush with the text, so
+   the article keeps one left edge and one reading rhythm. */
 .blog-breakout {
   width: 100%;
-}
-
-/* Wide content grows to the RIGHT from a left edge flush with the text.
- * Centring it instead (margin-left: 50% + translateX(-50%)) is the usual
- * trick, but it puts every code block and diagram on its own left edge —
- * the article ends up with two ragged margins and reads as broken rather
- * than deliberate. One left edge, one reading rhythm.
- *
- * --blog-slack is the empty space on one side of the measure inside the
- * 1200px shell, so the block stops exactly at the shell's inner padding
- * and can never overflow. It goes to 0 on narrow viewports, where
- * max(100%, …) collapses this to an ordinary full-width block.
- *
- * Scoped to .blog-measure on purpose: mdxComponents (and so CodeBlock) is
- * shared with /setup/[slug] and /machine-coding/[slug], whose columns are
- * 768px and 672px. Unscoped, this would push code straight through the
- * shell border on those routes. */
-.blog-measure {
-  --blog-slack: max(
-    0px,
-    calc((min(100vw, 1200px) - 5rem - var(--blog-measure)) / 2)
-  );
-}
-
-/* In two-column mode the slack is whatever the article column has spare over
-   the measure — a fixed 12rem, so wide content lands on the column's right
-   edge and never runs under the rail. */
-@media (min-width: 64rem) {
-  .blog-layout > .blog-measure {
-    --blog-slack: calc(var(--blog-col) - var(--blog-measure));
-  }
 }
 
 .blog-measure .blog-breakout {
   width: max(100%, calc(100% + var(--blog-slack)));
 }
 
+/* The contents rail: positioned off the column's right edge. The column is
+   860px, the rail 13rem plus a 2rem gap, so it only has room from the
+   `wide` breakpoint (82.5rem) up. Below that BlogProgress's floating
+   "contents" pill takes over. */
+.reading-rail {
+  display: none;
+}
+
+@media (min-width: 82.5rem) {
+  .reading-rail {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(100% + 2rem);
+    width: 13rem;
+  }
+}
+
+/* The typography plugin sets `max-width: 65ch` on .prose; scoped to the
+   pairing so .blog-measure is the single owner of the width here. */
+.prose.blog-measure {
+  max-width: var(--blog-measure);
+}
+
 /* ============================================================
    CODE BLOCKS
-   --radius is 0px site-wide and every radius-* token collapses to 0,
-   but the typography plugin hardcodes `border-radius: 0.375rem` on pre
-   in its own CSS — so code blocks were the one rounded element on an
-   otherwise square site.
+   The typography plugin hardcodes its own radius on pre; pinned to the
+   site's --radius-lg so code matches every other card.
    ============================================================ */
 
 .prose pre {
-  border-radius: 0;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border);
+  /* The typography plugin paints pre dark with light text; both are reset
+     to the site's surface and ink so un-highlighted code stays legible. */
+  background: var(--surface);
+  color: var(--foreground);
   padding: 1rem 1.15rem;
   overflow-x: auto;
+}
+
+/* Dual-theme highlighting (lib/code-theme.ts): Shiki writes both palettes
+   onto each token as --shiki-light / --shiki-dark; pick one per theme. */
+.prose code[data-theme*=" "],
+.prose code[data-theme*=" "] span {
+  color: var(--shiki-light);
+}
+.dark .prose code[data-theme*=" "],
+.dark .prose code[data-theme*=" "] span {
+  color: var(--shiki-dark);
 }
 
 /* Tables have the same problem code does — they don't reflow, so in a 40rem
@@ -961,12 +752,15 @@ body:has(main > .reading-shell) .navbar-frame {
   color: var(--muted-foreground);
   border: 1px solid var(--border);
   border-bottom: 0;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   padding: 0.5rem 1.15rem;
   margin-bottom: 0;
 }
 
 .prose [data-rehype-pretty-code-title] + pre {
   margin-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
 /* ============================================================
@@ -988,3 +782,119 @@ body:has(main > .reading-shell) .navbar-frame {
 /* The --text-*--line-height pairs that go with this live in the @theme inline
    block at the top of the file — Tailwind reads the paired token at build
    time, so they can't be declared down here. */
+
+/* ============================================================
+   SCROLL FADE
+   Sideways-scrolling rows (tag filters on phones) fade at both edges so the
+   cut-off chip reads as "more this way" rather than as a layout bug.
+   ============================================================ */
+@media (max-width: 639px) {
+  .scroll-fade {
+    scrollbar-width: none;
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 1.25rem,
+      black calc(100% - 1.25rem),
+      transparent
+    );
+  }
+  .scroll-fade::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ============================================================
+   TECH CHIPS
+   Hover is a colour wash, not a movement: the chip's fill blends a little
+   of the brand colour into the surface and a hairline ring of the same hue
+   fades in. Chips with no brand colour (Next.js, Express) blend in the
+   text colour instead, so they still answer the pointer.
+   ============================================================ */
+.tech-chip:hover {
+  background-color: color-mix(
+    in oklab,
+    var(--brand, var(--foreground)) 12%,
+    var(--surface)
+  );
+  box-shadow: inset 0 0 0 1px
+    color-mix(in oklab, var(--brand, var(--foreground)) 22%, transparent);
+}
+
+/* ============================================================
+   CONTRIBUTION GRAPH
+   Levels are mixed from the accent, so the grid follows the accent picker.
+   Level 0 is the plain surface: empty days read as structure, not as a
+   fifth shade of the accent.
+   ============================================================ */
+.contrib rect,
+.contrib-swatch {
+  fill: var(--surface-hover);
+  transition:
+    fill 0.3s,
+    opacity 0.2s;
+}
+.contrib rect[data-level="1"],
+.contrib-swatch[data-level="1"] {
+  fill: color-mix(in oklab, var(--blue) 28%, var(--surface));
+}
+.contrib rect[data-level="2"],
+.contrib-swatch[data-level="2"] {
+  fill: color-mix(in oklab, var(--blue) 52%, var(--surface));
+}
+.contrib rect[data-level="3"],
+.contrib-swatch[data-level="3"] {
+  fill: color-mix(in oklab, var(--blue) 76%, var(--surface));
+}
+.contrib rect[data-level="4"],
+.contrib-swatch[data-level="4"] {
+  fill: var(--blue);
+}
+
+/* The hovered day gets a ring; the rest step back a little so it stands
+   out without anything moving. */
+.contrib:hover rect {
+  opacity: 0.55;
+}
+.contrib rect:hover {
+  opacity: 1;
+  stroke: var(--foreground);
+  stroke-width: 1.5;
+}
+
+/* Ripple in column by column the first time the grid is seen. */
+@keyframes contrib-in {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+.contrib[data-play] rect {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: contrib-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--w, 0) * 9ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contrib[data-play] rect {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   FOCUS + SELECTION
+   One keyboard focus ring for every link and button, offset so it reads as
+   part of the soft UI. Outlines follow each element's own border-radius,
+   so pills get a pill-shaped ring. Mouse clicks don't trigger it
+   (:focus-visible). Selected text takes
+   a wash of the accent, so even highlighting follows the accent picker.
+   ============================================================ */
+:where(a, button, [role="tab"], summary):focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--blue) 24%, transparent);
+}

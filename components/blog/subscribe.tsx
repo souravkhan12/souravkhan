@@ -43,10 +43,9 @@ export function Subscribe() {
   }
 
   return (
-    <section className="border-border border-t bg-gray-50 px-6 py-10 sm:px-10 dark:bg-black">
-      <div className="mx-auto max-w-3xl">
-        <h2 className="ss01 flex items-center gap-3 text-sm font-bold">
-          <span aria-hidden="true" className="bg-blue h-3.5 w-[3px]" />
+    <section className="bg-surface rounded-2xl px-6 py-8 sm:px-8">
+      <div>
+        <h2 className="flex items-center gap-3 text-base font-bold">
           get new posts by email
         </h2>
         <p className="text-soft mt-3 max-w-xl text-sm leading-relaxed">
@@ -80,12 +79,12 @@ export function Subscribe() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="border-border focus:border-blue min-w-0 flex-1 border bg-transparent px-3 py-2 text-sm transition-colors outline-none"
+              className="border-border bg-background focus:border-blue/60 focus:ring-blue/10 min-w-0 flex-1 rounded-full border px-4 py-2.5 text-sm transition-colors outline-none focus:ring-4"
             />
             <button
               type="submit"
               disabled={state === "loading"}
-              className="border-blue bg-blue inline-flex shrink-0 items-center gap-1.5 border px-4 py-2 text-sm text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+              className="bg-foreground text-background inline-flex shrink-0 items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-semibold transition-[opacity,transform] hover:opacity-85 active:scale-[0.97] disabled:opacity-60"
             >
               {state === "loading" ? (
                 <LuLoader

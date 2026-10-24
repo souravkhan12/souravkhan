@@ -67,10 +67,6 @@ export default function BottomNav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [onHome]);
 
-  useEffect(() => {
-    if (pathname.startsWith("/blog")) setActive("blog");
-  }, [pathname]);
-
   if (!mounted) return null;
 
   const isActive = (item: Item) =>
@@ -94,34 +90,37 @@ export default function BottomNav() {
 
   return (
     <motion.nav
-      initial={{ y: 24, opacity: 0 }}
+      initial={{ y: 32, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       aria-label="primary"
-      className="border-border bg-background/90 fixed inset-x-0 bottom-0 z-40 border-t backdrop-blur-md md:hidden"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-4 md:hidden"
+      style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 0.75rem)" }}
     >
-      <ul className="mx-auto flex max-w-[1200px] items-stretch">
+      {/* A floating dock rather than a full-width bar: it reads as part of
+          the page instead of the browser chrome, and the active tab's pill
+          springs between items. */}
+      <ul className="bg-background/80 shadow-soft pointer-events-auto mx-auto flex max-w-sm items-stretch rounded-full p-1.5 backdrop-blur-xl backdrop-saturate-150">
         {ITEMS.map((item) => {
           const activeNow = isActive(item);
           const Icon = item.icon;
           const inner = (
-            <span className="relative flex flex-col items-center gap-1 py-2.5">
+            <span className="relative flex h-12 w-full flex-col items-center justify-center gap-0.5 rounded-full">
               {activeNow && (
                 <motion.span
                   layoutId="bottomnav-active"
-                  className="bg-blue absolute -top-px left-1/2 h-[2px] w-6 -translate-x-1/2"
-                  transition={{ type: "spring", stiffness: 500, damping: 40 }}
+                  className="bg-surface-hover absolute inset-0 rounded-full"
+                  transition={{ type: "spring", stiffness: 500, damping: 38 }}
                 />
               )}
               <Icon
-                size={20}
-                strokeWidth={activeNow ? 2.4 : 1.8}
-                className={activeNow ? "text-blue" : "text-soft"}
+                size={19}
+                strokeWidth={activeNow ? 2.3 : 1.8}
+                className={`relative ${activeNow ? "text-foreground" : "text-soft"}`}
               />
               <span
-                className={`font-code text-2xs lowercase ${
-                  activeNow ? "text-blue" : "text-soft"
+                className={`font-code relative text-[11px] leading-none lowercase ${
+                  activeNow ? "text-foreground" : "text-faint"
                 }`}
               >
                 {item.name}
@@ -132,19 +131,20 @@ export default function BottomNav() {
           return (
             <li key={item.name} className="flex-1">
               {item.href.startsWith("#") || item.href === "/" ? (
-                <button
+                <motion.button
                   type="button"
+                  whileTap={{ scale: 0.9 }}
                   onClick={() => goToSection(item.match)}
                   aria-current={activeNow ? "page" : undefined}
                   className="flex w-full cursor-pointer items-center justify-center"
                 >
                   {inner}
-                </button>
+                </motion.button>
               ) : (
                 <Link
                   href={item.href}
                   aria-current={activeNow ? "page" : undefined}
-                  className="flex w-full items-center justify-center"
+                  className="flex w-full items-center justify-center transition-transform active:scale-90"
                 >
                   {inner}
                 </Link>

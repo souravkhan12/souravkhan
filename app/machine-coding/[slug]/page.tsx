@@ -5,11 +5,11 @@ import { MDXRemote, type MDXRemoteProps } from "next-mdx-remote/rsc";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode from "rehype-pretty-code";
+import { prettyCodeOptions } from "@/lib/code-theme";
 import remarkGfm from "remark-gfm";
 import {
   getAllMachineCodingQuestions,
   getMachineCodingBySlug,
-  getMachineCodingCategories,
   getMachineCodingCategory,
   getSolutionFiles,
   type SolutionFile,
@@ -38,7 +38,7 @@ const MDX_OPTIONS: MDXRemoteProps["options"] = {
         rehypeAutolinkHeadings,
         { behavior: "wrap", properties: { className: "heading-anchor" } },
       ],
-      [rehypePrettyCode, { theme: "github-dark" }],
+      [rehypePrettyCode, prettyCodeOptions],
     ],
   },
 };
@@ -145,25 +145,13 @@ export default async function MachineCodingQuestionPage({
       />
 
       <ReadingPage
-        nav={{
-          title: "Machine coding",
-          href: "/machine-coding",
-          groups: getMachineCodingCategories().map((c) => ({
-            label: c.label.toLowerCase(),
-            items: c.questions.map((q) => ({
-              href: `/machine-coding/${q.slug}`,
-              title: q.title,
-            })),
-          })),
-          currentHref: `/machine-coding/${slug}`,
-        }}
         back={
           category
             ? {
                 href: `/machine-coding/category/${category.slug}`,
-                label: category.label.toLowerCase(),
+                label: category.label,
               }
-            : { href: "/machine-coding", label: "machine coding" }
+            : { href: "/machine-coding", label: "Machine coding" }
         }
         chips={question.tags.map((tag) => ({ label: tag }))}
         title={question.title}

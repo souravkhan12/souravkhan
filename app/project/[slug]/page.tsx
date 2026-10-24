@@ -2,9 +2,11 @@ import { notFound } from "next/navigation";
 import { getAllProjects, getProjectBySlug } from "@/lib/projects";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import Image from "next/image";
-import { LuExternalLink } from "react-icons/lu";
-import { SiGithub } from "react-icons/si";
-import { Button } from "@/components/ui";
+import { LuGithub } from "react-icons/lu";
+import { PageHeader } from "@/components/ui";
+import { Pill } from "@/components/motion/pill";
+import { TechChip } from "@/components/ui/tech";
+import { SEO_CONFIG } from "@/config/seo";
 
 export async function generateStaticParams() {
   const projects = getAllProjects();
@@ -23,6 +25,7 @@ export async function generateMetadata({
   return {
     title: project.title,
     description: project.description,
+    alternates: { canonical: `${SEO_CONFIG.baseUrl}/project/${slug}` },
     openGraph: {
       title: project.title,
       description: project.description,
@@ -42,55 +45,58 @@ export default async function ProjectPage({
   if (!project) notFound();
 
   return (
-    <article className="prose prose-gray dark:prose-invert prose-p:leading-relaxed prose-lg mx-auto max-w-3xl px-6 pt-16 pb-12 sm:px-8">
-      <header>
-        <h1 className="ss01 normal-case-force page-title">{project.title}</h1>
-      </header>
+    <article className="pb-8">
+      <PageHeader
+        back={{ href: "/projects", label: "All projects" }}
+        title={project.title}
+        description={project.description}
+      >
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-wrap gap-1.5">
+            {project.technologies.map((tech) => (
+              <TechChip key={tech} label={tech} />
+            ))}
+          </div>
+          {(project.link || project.code) && (
+            <div className="flex flex-wrap gap-2.5">
+              {project.link && (
+                <Pill
+                  href={project.link}
+                  external
+                  variant="solid"
+                  magnetic
+                  arrow="up-right"
+                >
+                  Live demo
+                </Pill>
+              )}
+              {project.code && (
+                <Pill href={project.code} external magnetic>
+                  <LuGithub size={15} aria-hidden="true" />
+                  Source
+                </Pill>
+              )}
+            </div>
+          )}
+        </div>
+      </PageHeader>
+
       {project.image && (
-        <div className="border-border relative mb-10 h-64 w-full overflow-hidden border sm:h-80">
+        <div className="bg-surface shadow-soft relative mb-12 aspect-[16/9] w-full overflow-hidden rounded-2xl">
           <Image
             src={project.image}
             alt={project.title}
             fill
             priority
+            sizes="(max-width: 860px) 100vw, 800px"
             className="object-cover"
           />
         </div>
       )}
-      <div className="mb-8 flex flex-wrap gap-4">
-        {project.link && (
-          <Button asChild variant="default">
-            <a href={project.link} target="_blank" rel="noopener noreferrer">
-              <LuExternalLink className="h-4 w-4" />
-              Live Demo
-            </a>
-          </Button>
-        )}
-        {project.code && (
-          <Button asChild variant="outline">
-            <a href={project.code} target="_blank" rel="noopener noreferrer">
-              <SiGithub className="h-4 w-4" />
-              Source Code
-            </a>
-          </Button>
-        )}
+
+      <div className="prose prose-a:text-blue prose-a:no-underline hover:prose-a:underline blog-measure">
+        <MDXRemote source={project.content} />
       </div>
-      <p className="text-muted-foreground">{project.description}</p>
-      <div className="mt-6">
-        <h3 className="mb-3 text-sm font-semibold">Technologies</h3>
-        <div className="flex flex-wrap gap-2">
-          {project.technologies.map((tech) => (
-            <span
-              key={tech}
-              className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600 dark:bg-gray-800 dark:text-gray-400"
-            >
-              {tech}
-            </span>
-          ))}
-        </div>
-      </div>
-      <hr className="my-8" />
-      <MDXRemote source={project.content} />
     </article>
   );
 }

@@ -22,10 +22,11 @@ export function BlogSchemaMarkup({ post }: { post: BlogPost }) {
       : `${url}/opengraph-image`,
     keywords: post.tags.join(", "),
     wordCount: post.content.trim().split(/\s+/).length,
-    inLanguage: "en-US",
+    inLanguage: "en",
     isAccessibleForFree: true,
     author: {
       "@type": "Person",
+      "@id": `${SEO_CONFIG.baseUrl}/#person`,
       name: SEO_CONFIG.author,
       url: SEO_CONFIG.baseUrl,
     },

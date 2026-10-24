@@ -1,10 +1,12 @@
+import { Reveal } from "@/components/motion/reveal";
+
 /**
  * One row of the homepage: a small mono label in a fixed left column and the
  * content beside it. Below `md` the label stacks above the content — a
  * 160px gutter on a 390px screen would leave the content a sliver.
  *
- * The inner pages still use `Section`; this is the homepage's quieter,
- * résumé-like rhythm, with no grid borders.
+ * The content rises in as it scrolls into view; the label stays put so the
+ * left column never flickers.
  */
 export function HomeSection({
   id,
@@ -31,7 +33,7 @@ export function HomeSection({
           label
         )}
       </h2>
-      <div className="min-w-0">{children}</div>
+      <Reveal className="min-w-0">{children}</Reveal>
     </section>
   );
 }

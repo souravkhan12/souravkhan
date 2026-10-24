@@ -1,4 +1,4 @@
-import { Inter } from "next/font/google";
+import { Caveat, Inter } from "next/font/google";
 import { GeistMono } from "geist/font/mono";
 import { GeistPixelSquare } from "geist/font/pixel";
 
@@ -15,4 +15,15 @@ export const sans = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
   axes: ["opsz"],
+});
+
+/* Handwriting, for the margin notes only (components/motion/annotation.tsx).
+   Not preloaded: the notes are desktop-only decoration, never above-the-fold
+   text a visitor waits on. */
+export const hand = Caveat({
+  subsets: ["latin"],
+  variable: "--font-hand",
+  weight: ["600"],
+  preload: false,
+  display: "swap",
 });

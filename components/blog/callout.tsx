@@ -46,7 +46,7 @@ export function Callout({
   const { icon: Icon, label, tone } = VARIANTS[type] ?? VARIANTS.note;
 
   return (
-    <div className={cn("not-prose my-6 border px-5 py-4", tone)}>
+    <div className={cn("not-prose my-6 rounded-2xl border px-5 py-4", tone)}>
       <div className="flex items-center gap-2">
         <Icon size={15} aria-hidden="true" />
         <span className="font-code text-2xs tracking-wide uppercase">

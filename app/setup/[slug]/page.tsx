@@ -3,6 +3,7 @@ import { MDXRemote, type MDXRemoteProps } from "next-mdx-remote/rsc";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode from "rehype-pretty-code";
+import { prettyCodeOptions } from "@/lib/code-theme";
 import remarkGfm from "remark-gfm";
 import { getAllSetupGuides, getSetupBySlug } from "@/lib/setup";
 import { extractHeadings } from "@/lib/content";
@@ -26,7 +27,7 @@ const MDX_OPTIONS: MDXRemoteProps["options"] = {
         rehypeAutolinkHeadings,
         { behavior: "wrap", properties: { className: "heading-anchor" } },
       ],
-      [rehypePrettyCode, { theme: "github-dark" }],
+      [rehypePrettyCode, prettyCodeOptions],
     ],
   },
 };
@@ -62,22 +63,9 @@ export default async function SetupGuidePage({
 
   return (
     <ReadingPage
-      nav={{
-        title: "Setup & tools",
-        href: "/setup",
-        groups: [
-          {
-            items: guides.map((g) => ({
-              href: `/setup/${g.slug}`,
-              title: g.title,
-            })),
-          },
-        ],
-        currentHref: `/setup/${slug}`,
-      }}
       /* Was /#setup, which stopped resolving when the homepage's setup band
          was folded into the site index. */
-      back={{ href: "/setup", label: "all setup" }}
+      back={{ href: "/setup", label: "All setup guides" }}
       title={guide.title}
       description={guide.description}
       meta={[<span key="time">{guide.readingTime}</span>]}

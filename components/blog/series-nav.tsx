@@ -20,15 +20,15 @@ export function SeriesNav({
   return (
     <nav
       aria-label={`Posts in the ${series} series`}
-      className="not-prose border-border mb-10 border"
+      className="not-prose bg-surface mb-10 overflow-hidden rounded-2xl p-1.5"
     >
-      <div className="border-border flex items-center justify-between gap-3 border-b bg-gray-50 px-4 py-2.5 dark:bg-black">
-        <span className="ss01 text-sm font-semibold">{series}</span>
+      <div className="flex items-center justify-between gap-3 px-3.5 pt-2 pb-2.5">
+        <span className="text-sm font-semibold">{series}</span>
         <span className="font-code text-2xs text-soft">
           part {index + 1} of {posts.length}
         </span>
       </div>
-      <ol className="divide-border divide-y">
+      <ol className="flex flex-col gap-0.5">
         {posts.map((post, i) => {
           const isCurrent = post.slug === currentSlug;
           return (
@@ -36,19 +36,17 @@ export function SeriesNav({
               {isCurrent ? (
                 <div
                   aria-current="page"
-                  className="bg-blue/5 flex items-center gap-3 px-4 py-2.5"
+                  className="bg-background shadow-soft flex items-center gap-3 rounded-xl px-3.5 py-2.5"
                 >
                   <span className="font-code text-blue text-2xs w-5 shrink-0">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <span className="text-blue text-sm font-medium">
-                    {post.title}
-                  </span>
+                  <span className="text-sm font-semibold">{post.title}</span>
                 </div>
               ) : (
                 <Link
                   href={`/blog/${post.slug}`}
-                  className="hover:text-blue flex items-center gap-3 px-4 py-2.5 text-sm transition-colors hover:bg-gray-50 dark:hover:bg-black"
+                  className="text-soft hover:text-foreground hover:bg-background/60 flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm transition-colors"
                 >
                   <span className="font-code text-2xs text-faint w-5 shrink-0">
                     {String(i + 1).padStart(2, "0")}

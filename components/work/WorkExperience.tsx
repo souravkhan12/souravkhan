@@ -10,9 +10,19 @@ export default function WorkExperience() {
 
   return (
     <HomeSection id="experience" label="Experience">
-      <ol className="flex flex-col gap-9">
-        {WORK_EXPERIENCE.map((job) => (
-          <li key={`${job.company}-${job.duration}`}>
+      {/* A thin timeline: one rule down the left and a dot per role. The
+          current role's dot carries the accent; the rest pick it up on hover. */}
+      <ol className="border-border relative ml-1 flex flex-col gap-9 border-l pl-6">
+        {WORK_EXPERIENCE.map((job, i) => (
+          <li key={`${job.company}-${job.duration}`} className="group relative">
+            <span
+              aria-hidden="true"
+              className={`ring-background absolute top-[9px] -left-[29px] size-2.5 rounded-full ring-4 transition-[background-color,transform] duration-300 group-hover:scale-125 ${
+                i === 0
+                  ? "bg-blue"
+                  : "group-hover:bg-blue bg-gray-300 dark:bg-gray-700"
+              }`}
+            />
             <div className="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
               <h3 className="text-base font-bold tracking-tight">
                 {job.company}

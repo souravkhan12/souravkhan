@@ -5,13 +5,13 @@ import { useReadingProgress } from "@/hooks/use-reading-progress";
 import { cn } from "@/lib/utils";
 
 /**
- * Sticky table of contents for the right rail, desktop only.
+ * Sticky table of contents for the right rail (.reading-rail), which only
+ * exists from the `wide` breakpoint up.
  *
  * The rail is a single hairline with a blue segment tracking the active
  * section, rather than a border per item — same idea as the reading bar at
- * the top of the page, so the two indicators read as one system. Below `lg`
- * this renders nothing and BlogProgress's floating widget takes over; there
- * isn't room for a rail and a 40rem measure at the same time.
+ * the top of the page, so the two indicators read as one system. Below
+ * `wide` BlogProgress's floating widget takes over.
  */
 export function BlogToc({
   headings,
@@ -31,14 +31,12 @@ export function BlogToc({
   );
 
   return (
-    <div className="sticky top-24 hidden max-h-[calc(100vh-8rem)] overflow-y-auto lg:block">
+    <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
       {/* A post with no H2s still gets the rail — just the share block in it,
           rather than a percentage divided by zero. */}
       {headings.length > 0 && (
         <nav aria-label="On this page">
-          <p className="font-code text-faint mb-3 text-xs lowercase">
-            on this page
-          </p>
+          <p className="font-code text-faint text-2xs mb-3">On this page</p>
 
           <div className="relative">
             {/* The rail itself, and the segment of it you've reached. */}
@@ -48,7 +46,7 @@ export function BlogToc({
             />
             <span
               aria-hidden="true"
-              className="bg-blue absolute left-0 w-px transition-all duration-200 ease-out"
+              className="bg-blue absolute left-0 w-[2px] -translate-x-[0.5px] rounded-full transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
               style={{
                 top: `${(activeIndex / headings.length) * 100}%`,
                 height: `${(1 / headings.length) * 100}%`,
@@ -65,11 +63,11 @@ export function BlogToc({
                       onClick={() => scrollToHeading(heading.id)}
                       aria-current={isActive ? "location" : undefined}
                       className={cn(
-                        "normal-case-force text-2xs block w-full py-1.5 pr-2 text-left leading-snug transition-colors",
+                        "text-2xs block w-full cursor-pointer py-1.5 pr-2 text-left leading-snug transition-colors",
                         heading.depth === 3 ? "pl-6" : "pl-4",
                         isActive
-                          ? "text-blue"
-                          : "hover:text-foreground text-soft",
+                          ? "text-foreground font-medium"
+                          : "hover:text-foreground text-faint",
                       )}
                     >
                       {heading.text}

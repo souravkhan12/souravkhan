@@ -13,6 +13,47 @@ const HAIRLINE = "#e5e5e0";
 /** Tint behind snippet panels — the OG equivalent of the site's gray-50. */
 const PANEL = "#f4f4ef";
 
+/** The S mark — same drawing as public/icon.svg and the navbar's BrandMark. */
+function Mark({ size = 44 }: { size?: number }): ReactElement {
+  return (
+    <svg width={size} height={size} viewBox="0 0 100 100">
+      <rect width="100" height="100" rx="42" fill={INK} />
+      <g transform="translate(19 19) scale(0.62)">
+        <path
+          d="M76 26C76 14 24 14 24 36C24 54 76 46 76 66C76 88 24 88 24 74"
+          fill="none"
+          stroke={PAPER}
+          strokeWidth="10"
+          strokeLinecap="round"
+        />
+      </g>
+    </svg>
+  );
+}
+
+/** Byline for every card's footer: the mark, the name, and optionally the photo. */
+function Byline({ avatar }: { avatar?: string }): ReactElement {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+      {avatar ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={avatar}
+          width={56}
+          height={56}
+          alt=""
+          style={{ borderRadius: 999, objectFit: "cover" }}
+        />
+      ) : (
+        <Mark />
+      )}
+      <div style={{ display: "flex", color: INK, fontWeight: 600 }}>
+        Sourav Khan
+      </div>
+    </div>
+  );
+}
+
 /**
  * Social card for one quiz puzzle: the snippet *is* the hook, so it gets the
  * centre of the card instead of a headline. A card that shows the code gets
@@ -26,10 +67,12 @@ export function OgCodeCard({
   eyebrow,
   snippet,
   meta,
+  avatar,
 }: {
   eyebrow: string;
   snippet: string;
   meta?: string[];
+  avatar?: string;
 }): ReactElement {
   // Long snippets need to step down or they overflow the panel.
   const lines = snippet.split("\n");
@@ -102,9 +145,7 @@ export function OgCodeCard({
           color: MUTED,
         }}
       >
-        <div style={{ display: "flex", color: INK, fontWeight: 600 }}>
-          Sourav Khan
-        </div>
+        <Byline avatar={avatar} />
         {meta && meta.length > 0 && (
           <div style={{ display: "flex", gap: 14 }}>
             {meta.map((item, i) => (
@@ -128,10 +169,13 @@ export function OgCard({
   eyebrow,
   title,
   meta,
+  avatar,
 }: {
   eyebrow: string;
   title: string;
   meta?: string[];
+  /** A data: URL of the photo — only the homepage card uses it. */
+  avatar?: string;
 }): ReactElement {
   return (
     <div
@@ -185,9 +229,7 @@ export function OgCard({
           color: MUTED,
         }}
       >
-        <div style={{ display: "flex", color: INK, fontWeight: 600 }}>
-          Sourav Khan
-        </div>
+        <Byline avatar={avatar} />
         {meta && meta.length > 0 && (
           <div style={{ display: "flex", gap: 14 }}>
             {meta.map((item, i) => (

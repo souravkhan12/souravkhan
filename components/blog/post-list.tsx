@@ -3,8 +3,11 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { AnimatePresence, motion } from "motion/react";
 import { LuArrowRight, LuSearch } from "react-icons/lu";
-import { GridBand, GridCell } from "@/components/ui";
+import { HoverList, HoverItem } from "@/components/motion/hover-list";
+import { SPRING } from "@/config/theme";
+import { formatDate as fmtPostDate } from "@/lib/utils";
 
 /** Serializable slice of BlogPost — the MDX body never crosses to the client. */
 export type PostSummary = {
@@ -24,6 +27,7 @@ export function PostList({
 }: {
   posts: PostSummary[];
   showSearch?: boolean;
+  /** Pulls the newest post out into a featured card above the list. */
   showLatestBadge?: boolean;
 }) {
   const [query, setQuery] = useState("");
@@ -39,10 +43,13 @@ export function PostList({
     );
   }, [posts, query]);
 
+  const featured = showLatestBadge && !query ? filtered[0] : undefined;
+  const rest = featured ? filtered.slice(1) : filtered;
+
   return (
     <>
       {showSearch && posts.length > 2 && (
-        <div className="border-border relative mb-px border">
+        <div className="relative mb-8">
           <LuSearch
             size={15}
             aria-hidden="true"
@@ -56,90 +63,123 @@ export function PostList({
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="search posts…"
-            className="w-full bg-transparent py-3 pr-4 pl-11 text-sm outline-none"
+            placeholder="Search posts…"
+            className="bg-surface focus:bg-background focus:border-blue/60 focus:ring-blue/10 w-full rounded-full border border-transparent py-3 pr-4 pl-11 text-sm transition-colors outline-none focus:ring-4"
           />
         </div>
       )}
 
+      {featured && <FeaturedPost post={featured} />}
+
       {filtered.length === 0 ? (
-        <p className="border-border font-code text-soft border px-6 py-10 text-center text-sm">
-          nothing matches “{query}”.
-        </p>
+        <p className="text-soft py-10 text-sm">Nothing matches “{query}”.</p>
       ) : (
-        <GridBand cols="grid-cols-1">
-          {filtered.map((post, index) => (
-            <GridCell
-              key={post.slug}
-              padded={false}
-              tinted={index % 2 === 1}
-              className="group transition-colors hover:bg-gray-50 dark:hover:bg-black"
-            >
-              <Link
-                href={`/blog/${post.slug}`}
-                className="flex gap-5 p-6 sm:gap-7 sm:p-8"
+        <HoverList as="div" className="flex flex-col">
+          <AnimatePresence initial={false}>
+            {rest.map((post) => (
+              <motion.div
+                key={post.slug}
+                layout="position"
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={SPRING.smooth}
               >
-                {post.image && (
-                  <div className="border-border relative hidden aspect-[4/3] w-40 shrink-0 overflow-hidden border sm:block">
-                    <Image
-                      src={post.image}
-                      alt=""
-                      fill
-                      sizes="160px"
-                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                    />
-                  </div>
-                )}
-
-                <div className="flex min-w-0 flex-1 flex-col">
-                  <div className="flex items-center gap-2">
-                    {showLatestBadge && index === 0 && !query && (
-                      <span className="border-blue text-blue text-2xs inline-flex shrink-0 items-center border px-1.5 py-0.5 font-medium tracking-wide uppercase">
-                        latest
-                      </span>
-                    )}
-                    <div className="font-code text-2xs text-faint flex items-center gap-2">
-                      <time dateTime={post.date}>
-                        {new Date(post.date).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </time>
-                      <span aria-hidden="true">·</span>
-                      <span>{post.readingTime}</span>
-                    </div>
-                  </div>
-
-                  <h3 className="ss01 normal-case-force group-hover:text-blue mt-2 text-lg font-semibold tracking-[-0.01em] transition-colors">
-                    {post.title}
-                  </h3>
-                  <p className="text-soft mt-1.5 line-clamp-2 text-sm">
-                    {post.description}
-                  </p>
-
-                  <div className="mt-auto flex items-center justify-between gap-3 pt-4">
-                    <div className="flex flex-wrap gap-2">
-                      {post.tags.slice(0, 3).map((tag) => (
-                        <span
-                          key={tag}
-                          className="border-border font-code text-2xs text-soft border px-2 py-0.5"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                    <LuArrowRight
-                      size={16}
-                      className="group-hover:text-blue shrink-0 text-gray-300 transition-all group-hover:translate-x-0.5 dark:text-gray-600"
-                    />
-                  </div>
-                </div>
-              </Link>
-            </GridCell>
-          ))}
-        </GridBand>
+                <HoverItem itemKey={post.slug} as="div">
+                  <PostRow post={post} />
+                </HoverItem>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </HoverList>
       )}
     </>
+  );
+}
+
+function PostRow({ post }: { post: PostSummary }) {
+  return (
+    <Link
+      href={`/blog/${post.slug}`}
+      className="group flex items-start gap-5 py-4"
+    >
+      <div className="min-w-0 flex-1">
+        <h3 className="text-base font-bold tracking-tight text-pretty">
+          {post.title}
+        </h3>
+        <p className="text-soft mt-1 line-clamp-2 text-sm">
+          {post.description}
+        </p>
+        <p className="font-code text-faint text-2xs mt-2 flex flex-wrap items-center gap-x-2">
+          <time dateTime={post.date}>{fmtPostDate(post.date)}</time>
+          <span aria-hidden="true">·</span>
+          <span>{post.readingTime}</span>
+          {post.tags.slice(0, 2).map((tag) => (
+            <span key={tag} className="hidden sm:inline">
+              <span aria-hidden="true">· </span>
+              {tag}
+            </span>
+          ))}
+        </p>
+      </div>
+
+      {post.image && (
+        <div className="bg-surface relative hidden aspect-[4/3] w-28 shrink-0 overflow-hidden rounded-xl sm:block">
+          <Image
+            src={post.image}
+            alt=""
+            fill
+            sizes="112px"
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.05]"
+          />
+        </div>
+      )}
+    </Link>
+  );
+}
+
+function FeaturedPost({ post }: { post: PostSummary }) {
+  return (
+    <Link
+      href={`/blog/${post.slug}`}
+      className="group bg-background shadow-soft mb-6 block overflow-hidden rounded-2xl transition-transform duration-500 ease-[cubic-bezier(0.34,1.4,0.64,1)] hover:-translate-y-1"
+    >
+      {post.image && (
+        <div className="bg-surface relative aspect-[2/1] w-full overflow-hidden">
+          <Image
+            src={post.image}
+            alt=""
+            fill
+            priority
+            sizes="(max-width: 860px) 100vw, 800px"
+            className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+          />
+        </div>
+      )}
+      <div className="p-5 sm:p-7">
+        <p className="font-code text-2xs text-faint flex items-center gap-2">
+          <span className="bg-blue/10 text-blue rounded-full px-2 py-0.5">
+            latest
+          </span>
+          <time dateTime={post.date}>{fmtPostDate(post.date)}</time>
+          <span aria-hidden="true">·</span>
+          <span>{post.readingTime}</span>
+        </p>
+        <h2 className="mt-3 text-lg font-bold tracking-[-0.02em] text-balance">
+          {post.title}
+        </h2>
+        <p className="text-soft mt-2 line-clamp-2 text-sm leading-relaxed">
+          {post.description}
+        </p>
+        <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold">
+          Read post
+          <LuArrowRight
+            size={15}
+            aria-hidden="true"
+            className="transition-transform duration-200 group-hover:translate-x-0.5"
+          />
+        </span>
+      </div>
+    </Link>
   );
 }
