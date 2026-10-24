@@ -1,16 +1,16 @@
 {
   "id": "/",
-  "name": "Sourav Khan — Software Engineer",
+  "name": "Sourav Khan — Frontend Engineer",
   "short_name": "sourav khan",
-  "description": "Portfolio of Sourav Khan — software engineer. Work, writing, and a game of snake.",
+  "description": "Portfolio of Sourav Khan — frontend engineer. Work, writing, and a game of snake.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
   "dir": "auto",
   "lang": "en",
-  "theme_color": "#fcfcf9",
-  "background_color": "#fcfcf9",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
   "categories": ["portfolio"],
   "icons": [
     {

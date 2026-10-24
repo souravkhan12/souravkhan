@@ -25,7 +25,7 @@ export default async function Image({
       meta={
         post
           ? [
-              new Date(post.date).toLocaleDateString("en-US", {
+              new Date(post.date).toLocaleDateString("en-GB", {
                 year: "numeric",
                 month: "short",
                 day: "numeric",

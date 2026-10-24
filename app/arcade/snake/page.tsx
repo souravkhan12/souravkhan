@@ -12,16 +12,18 @@ export const metadata = {
 
 export default function SnakePage() {
   return (
-    <div className="pt-8">
-      <div className="px-6 pb-4 sm:px-8">
-        <Link
-          href="/arcade"
-          className="hover:text-blue font-code text-soft inline-flex items-center gap-1.5 text-xs lowercase transition-colors"
-        >
-          <LuArrowLeft size={13} aria-hidden="true" />
-          arcade
-        </Link>
-      </div>
+    <div className="pt-10 sm:pt-16">
+      <Link
+        href="/arcade"
+        className="font-code text-faint hover:text-foreground group/back text-2xs inline-flex items-center gap-1.5 transition-colors"
+      >
+        <LuArrowLeft
+          size={13}
+          aria-hidden="true"
+          className="transition-transform group-hover/back:-translate-x-0.5"
+        />
+        Arcade
+      </Link>
 
       <SnakeGame />
     </div>

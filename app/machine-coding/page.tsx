@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { LuGithub } from "react-icons/lu";
-import { Section, RowList } from "@/components/ui";
+import { PageHeader, RowList } from "@/components/ui";
+import { Reveal } from "@/components/motion/reveal";
 import {
   getAllMachineCodingQuestions,
   getMachineCodingCategories,
@@ -28,22 +29,22 @@ export default function MachineCodingPage() {
   const total = getAllMachineCodingQuestions().length;
 
   return (
-    <div className="pt-8">
-      <Section
-        title="machine coding"
-        id="machine-coding"
+    <>
+      <PageHeader
+        eyebrow="Machine coding"
         count={total}
-        subtitle="questions from frontend machine coding rounds — the approach, the solution, and what usually goes wrong."
+        title="Frontend machine coding rounds."
+        muted="The approach, the solution, and what usually goes wrong."
       >
-        <div className="border-border flex flex-wrap items-center gap-2 border-x border-t px-6 py-2.5 sm:px-8">
+        <div className="flex flex-wrap items-center gap-1.5">
           {categories.map((category) => (
             <Link
               key={category.slug}
               href={`/machine-coding/category/${category.slug}`}
-              className="border-border hover:border-blue hover:text-blue font-code text-2xs text-soft shrink-0 border px-2 py-0.5 whitespace-nowrap transition-colors"
+              className="bg-surface text-soft hover:text-foreground hover:bg-surface-hover shrink-0 rounded-full px-3 py-1 text-xs whitespace-nowrap transition-colors"
             >
-              {category.label.toLowerCase()}{" "}
-              <span className="text-faint">{category.count}</span>
+              {category.label}{" "}
+              <span className="font-code text-faint">{category.count}</span>
             </Link>
           ))}
 
@@ -51,33 +52,44 @@ export default function MachineCodingPage() {
             href={MC_REPO_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="border-border hover:border-blue hover:text-blue font-code text-2xs text-soft ml-auto inline-flex shrink-0 items-center gap-1.5 border px-2 py-0.5 transition-colors"
+            className="text-soft hover:text-foreground hover:bg-surface inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-xs transition-colors"
           >
-            <LuGithub size={11} aria-hidden="true" />
-            source
+            <LuGithub size={12} aria-hidden="true" />
+            Source
           </a>
         </div>
-      </Section>
+      </PageHeader>
 
-      {/* One band per category. Adding an .mdx with a new `category` grows this
-          page and creates its route without touching any of this. */}
+      {/* One label-and-list row per category. Adding an .mdx with a new
+          `category` grows this page and creates its route without touching
+          any of this. */}
       {categories.map((category) => (
-        <Section
+        <section
           key={category.slug}
-          title={category.label.toLowerCase()}
           id={category.slug}
-          count={category.count}
+          className="scroll-mt-24 py-6 md:grid md:grid-cols-[160px_minmax(0,1fr)] md:gap-x-10"
         >
-          <RowList
-            rows={category.questions.map((q) => ({
-              href: `/machine-coding/${q.slug}`,
-              title: q.title,
-              meta: `${q.difficulty} · ${q.tags.slice(0, 3).join(", ")}`,
-              hint: q.question,
-            }))}
-          />
-        </Section>
+          <h2 className="font-code text-faint text-2xs mb-3 font-normal md:mb-0 md:pt-3.5">
+            <Link
+              href={`/machine-coding/category/${category.slug}`}
+              className="hover:text-foreground transition-colors"
+            >
+              {category.label}
+            </Link>{" "}
+            <span className="tabular-nums">· {category.count}</span>
+          </h2>
+          <Reveal className="min-w-0">
+            <RowList
+              rows={category.questions.map((q) => ({
+                href: `/machine-coding/${q.slug}`,
+                title: q.title,
+                meta: `${q.difficulty} · ${q.tags.slice(0, 3).join(", ")}`,
+                hint: q.question,
+              }))}
+            />
+          </Reveal>
+        </section>
       ))}
-    </div>
+    </>
   );
 }

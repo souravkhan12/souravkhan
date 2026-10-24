@@ -26,7 +26,10 @@ export function CodeBlock({
       <pre
         ref={preRef}
         className={cn(
-          "font-code text-2xs! leading-relaxed sm:text-sm!",
+          // 13px everywhere: a step under the 16–17px body, the same size as
+          // the site's other mono text. It used to jump to 16px from `sm`
+          // up, which made code read louder than the prose around it.
+          "font-code text-[13px]! leading-[1.7]!",
           className,
         )}
         {...props}
@@ -38,8 +41,8 @@ export function CodeBlock({
         onClick={handleCopy}
         aria-label="Copy code"
         className={cn(
-          "absolute top-2.5 right-2.5 rounded-md border border-white/10 bg-white/5 p-1.5",
-          "text-faint opacity-0 transition-all group-hover:opacity-100 hover:text-gray-100",
+          "border-border bg-background absolute top-2.5 right-2.5 rounded-lg border p-1.5",
+          "text-faint hover:text-foreground opacity-0 transition-all group-hover:opacity-100 focus-visible:opacity-100",
         )}
       >
         {copied ? <Check size={14} /> : <Copy size={14} />}

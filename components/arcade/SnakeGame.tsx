@@ -337,8 +337,8 @@ export default function SnakeGame() {
   return (
     <Section
       id="snake"
-      title="snake"
-      subtitle="one number to beat. no names, no sign-up — just snake."
+      title="Snake"
+      subtitle="One number to beat. No names, no sign-up — just snake."
     >
       <GridBand cols="grid-cols-1 lg:grid-cols-[1.3fr_1fr]">
         {/* board */}
@@ -384,7 +384,7 @@ export default function SnakeGame() {
               // touch-action is only locked down while a game is actually in
               // play. Locking it always turned the board — nearly a full phone
               // screen — into a dead zone you couldn't scroll past.
-              className={`border-border relative aspect-square w-full max-w-[440px] border outline-none select-none focus-visible:ring-1 focus-visible:ring-[var(--focus)] ${
+              className={`border-border relative aspect-square w-full max-w-[440px] overflow-hidden rounded-2xl border outline-none select-none focus-visible:ring-1 focus-visible:ring-[var(--focus)] ${
                 running ? "touch-none" : "touch-auto"
               }`}
             >
@@ -453,13 +453,13 @@ export default function SnakeGame() {
                     </p>
                   )}
 
-                  <span className="border-border bg-background pointer-events-none inline-flex h-11 items-center border px-6 text-sm">
+                  <span className="bg-foreground text-background shadow-soft pointer-events-none inline-flex h-11 items-center rounded-full px-6 text-sm font-semibold">
                     {view.status === "over" ? "play again" : "play"}
                   </span>
 
                   <p className="font-code text-2xs text-soft flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
                     <span className="hidden sm:inline">arrow keys / wasd</span>
-                    <span className="border-blue/40 text-blue bg-blue/5 border px-1.5 py-0.5">
+                    <span className="border-blue/40 text-blue bg-blue/5 rounded-full border px-2 py-0.5">
                       📱 on mobile · swipe or tap the d-pad
                     </span>
                   </p>
@@ -475,7 +475,7 @@ export default function SnakeGame() {
               <div
                 role="group"
                 aria-label="touch controls"
-                className="border-border font-code flex w-full max-w-[260px] border text-xs"
+                className="border-border font-code flex w-full max-w-[260px] overflow-hidden rounded-full border text-xs"
               >
                 <SchemeTab
                   label="swipe"
@@ -510,7 +510,7 @@ export default function SnakeGame() {
                 <button
                   type="button"
                   onClick={() => setExpanded(true)}
-                  className="border-border hover:border-blue hover:text-blue font-code text-2xs text-soft mt-1 inline-flex items-center gap-1.5 border px-3 py-1.5 transition-colors"
+                  className="border-border hover:border-blue hover:text-blue font-code text-2xs text-soft mt-1 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 transition-[color,border-color,transform] active:scale-95"
                 >
                   <Maximize2 size={13} />
                   fullscreen
@@ -607,7 +607,7 @@ function Rig({
           type="button"
           onClick={onClose}
           aria-label="exit fullscreen"
-          className="border-border hover:border-blue hover:text-blue font-code text-soft absolute right-4 flex items-center gap-1.5 border px-3 py-1.5 text-xs transition-colors"
+          className="border-border hover:border-blue hover:text-blue font-code text-soft absolute right-4 flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-[color,border-color,transform] active:scale-95"
           style={{ top: "calc(env(safe-area-inset-top) + 0.75rem)" }}
         >
           <X size={14} />
@@ -650,7 +650,7 @@ function DPad({
         onPress();
       }}
       onContextMenu={(e) => e.preventDefault()}
-      className="border-border hover:border-blue hover:text-blue active:border-blue active:bg-blue/10 active:text-blue flex h-20 w-full touch-manipulation items-center justify-center border text-2xl transition-colors select-none"
+      className="border-border hover:border-blue hover:text-blue active:border-blue active:bg-blue/10 active:text-blue flex h-20 w-full touch-manipulation items-center justify-center rounded-2xl border text-2xl transition-[color,background-color,border-color,transform] select-none active:scale-95"
     >
       {char}
     </button>

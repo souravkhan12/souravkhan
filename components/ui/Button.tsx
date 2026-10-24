@@ -5,17 +5,16 @@ import { Slot } from "radix-ui";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus aria-invalid:border-destructive",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-[color,background-color,border-color,transform] duration-200 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus aria-invalid:border-destructive",
   {
     variants: {
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/85",
         destructive: "bg-destructive text-white hover:bg-destructive/90",
-        outline:
-          "border border-border bg-background hover:bg-gray-50 dark:hover:bg-black",
+        outline: "border border-border bg-background hover:bg-surface",
         secondary:
-          "bg-secondary text-secondary-foreground border border-border hover:bg-gray-100 dark:hover:bg-gray-950",
-        ghost: "hover:bg-gray-50 dark:hover:bg-black",
+          "bg-secondary text-secondary-foreground border border-border hover:bg-surface-hover",
+        ghost: "hover:bg-surface",
         link: "text-primary underline-offset-4 hover:text-blue hover:underline",
       },
       size: {

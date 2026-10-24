@@ -1,24 +1,14 @@
 "use client";
 
-import {
-  CheckCircle,
-  LucideLinkedin,
-  LucideMail,
-  LucideMapPin,
-  LucidePhone,
-} from "lucide-react";
+import { CheckCircle } from "lucide-react";
 import { useState } from "react";
-import Link from "next/link";
-import { CONTACT_INFO } from "@/config/data";
+import { CONTACT_INFO, SOCIAL_LINKS } from "@/config/data";
 import { FormData } from "@/types";
-import {
-  Button,
-  Input,
-  Textarea,
-  Section,
-  GridBand,
-  GridCell,
-} from "@/components/ui";
+import { HomeSection } from "@/components/home/HomeSection";
+
+// Bottom-rule fields: a boxed form would be the only boxed thing on the page.
+const field =
+  "bg-surface focus:bg-background focus:border-blue/60 placeholder:text-faint w-full rounded-xl border border-transparent px-4 py-3 text-sm outline-none transition-colors focus:ring-4 focus:ring-blue/10";
 
 export default function Contact() {
   const [formData, setFormData] = useState<FormData>({
@@ -74,123 +64,126 @@ export default function Contact() {
   };
 
   return (
-    <Section id="contact" title="get in touch">
-      <GridBand cols="grid-cols-1 md:grid-cols-2">
-        {/* Contact Information */}
-        <GridCell className="flex flex-col gap-6">
-          <p className="text-soft text-base text-pretty">
-            I&apos;d love to hear from you — feel free to reach out via email,
-            phone, or connect on LinkedIn.
-          </p>
+    <HomeSection id="contact" label="Contact">
+      <p className="text-soft text-base text-pretty">
+        Open to full-time roles, freelance projects, and interesting
+        conversations.
+      </p>
 
-          <div className="flex flex-col gap-3 text-sm">
-            <div className="flex items-center gap-3">
-              <LucideMail className="text-faint h-4 w-4 shrink-0" />
-              <Link
-                href={`mailto:${CONTACT_INFO.email}`}
-                className="hover:text-blue transition-colors"
-              >
-                {CONTACT_INFO.email}
-              </Link>
-            </div>
+      <a
+        href={`mailto:${CONTACT_INFO.email}`}
+        className="decoration-blue hover:text-blue mt-5 inline-block text-[22px] leading-snug font-bold tracking-[-0.03em] break-all underline decoration-2 underline-offset-[6px] transition-colors sm:text-[28px] sm:break-normal"
+      >
+        {CONTACT_INFO.email}
+      </a>
 
-            <div className="flex items-center gap-3">
-              <LucidePhone className="text-faint h-4 w-4 shrink-0" />
-              <Link
-                href={`tel:${CONTACT_INFO.phone}`}
-                className="hover:text-blue transition-colors"
-              >
-                {CONTACT_INFO.phone}
-              </Link>
-            </div>
+      <div className="text-soft mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+        <a
+          href={`tel:${CONTACT_INFO.phone.replace(/\s/g, "")}`}
+          className="hover:text-foreground transition-colors"
+        >
+          {CONTACT_INFO.phone}
+        </a>
+        <a
+          href={SOCIAL_LINKS.linkedin}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-foreground transition-colors"
+        >
+          LinkedIn ↗
+        </a>
+        <a
+          href={SOCIAL_LINKS.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-foreground transition-colors"
+        >
+          GitHub ↗
+        </a>
+      </div>
 
-            <div className="flex items-center gap-3">
-              <LucideMapPin className="text-faint h-4 w-4 shrink-0" />
-              <span>{CONTACT_INFO.location}</span>
-            </div>
+      <form
+        onSubmit={handleSubmit}
+        className="relative mt-12 flex max-w-xl flex-col gap-3"
+      >
+        <p className="font-code text-faint text-2xs">or leave a message</p>
 
-            <div className="flex items-center gap-3">
-              <LucideLinkedin className="text-faint h-4 w-4 shrink-0" />
-              <a
-                href={CONTACT_INFO.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-blue transition-colors"
-              >
-                LinkedIn Profile
-              </a>
-            </div>
-          </div>
-        </GridCell>
+        {/* Honeypot: hidden from users, irresistible to bots. */}
+        <input
+          type="text"
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          value={honeypot}
+          onChange={(e) => setHoneypot(e.target.value)}
+          className="absolute h-0 w-0 opacity-0"
+        />
 
-        {/* Contact Form */}
-        <GridCell tinted>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            {/* Honeypot: hidden from users, irresistible to bots. */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <label className="block">
+            <span className="sr-only">Name</span>
             <input
-              type="text"
-              name="website"
-              tabIndex={-1}
-              autoComplete="off"
-              aria-hidden="true"
-              value={honeypot}
-              onChange={(e) => setHoneypot(e.target.value)}
-              className="absolute h-0 w-0 opacity-0"
-            />
-            <Input
               id="name"
               type="text"
               value={formData.name}
               onChange={handleChange}
-              placeholder="Your Name"
-              label="name"
-              fullWidth
+              placeholder="Your name"
+              autoComplete="name"
               required
+              className={field}
             />
-            <Input
+          </label>
+          <label className="block">
+            <span className="sr-only">Email</span>
+            <input
               id="email"
               type="email"
               value={formData.email}
               onChange={handleChange}
               placeholder="your@email.com"
-              label="email"
-              icon={<LucideMail size={16} />}
-              fullWidth
+              autoComplete="email"
               required
+              className={field}
             />
-            <Textarea
-              id="message"
-              rows={4}
-              value={formData.message}
-              onChange={handleChange}
-              placeholder="Your Message"
-              label="message"
-              charCountMax={1000}
-              fullWidth
-              required
-            />
-            <Button
-              type="submit"
-              variant="default"
-              className="w-full"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "sending..." : "send message"}
-            </Button>
-          </form>
+          </label>
+        </div>
+
+        <label className="block">
+          <span className="sr-only">Message</span>
+          <textarea
+            id="message"
+            rows={3}
+            maxLength={1000}
+            value={formData.message}
+            onChange={handleChange}
+            placeholder="What's on your mind?"
+            required
+            className={`${field} resize-y`}
+          />
+        </label>
+
+        <div className="flex flex-wrap items-center gap-4">
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="bg-foreground text-background inline-flex h-11 cursor-pointer items-center rounded-full px-6 text-sm font-semibold transition-[opacity,transform] duration-200 hover:opacity-85 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {isSubmitting ? "Sending…" : "Send message"}
+          </button>
 
           {isSuccess && (
-            <div className="mt-4 flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400">
+            <span className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400">
               <CheckCircle className="h-4 w-4" />
-              Message sent successfully!
-            </div>
+              Message sent. I&apos;ll reply soon.
+            </span>
           )}
 
           {errorMsg && (
-            <p className="text-destructive mt-4 text-sm">Error: {errorMsg}</p>
+            <span className="text-destructive text-sm">Error: {errorMsg}</span>
           )}
-        </GridCell>
-      </GridBand>
-    </Section>
+        </div>
+      </form>
+    </HomeSection>
   );
 }

@@ -4,6 +4,7 @@ import { MDXRemote, type MDXRemoteProps } from "next-mdx-remote/rsc";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode from "rehype-pretty-code";
+import { prettyCodeOptions } from "@/lib/code-theme";
 import remarkGfm from "remark-gfm";
 import { mdxComponents } from "@/components/blog/mdx-components";
 import { FlavorSwitcher } from "@/components/patterns/flavor-switcher";
@@ -11,7 +12,6 @@ import {
   ReadingPage,
   ReadingPrevNext,
 } from "@/components/reading/reading-page";
-import { patternNavGroups } from "@/components/patterns/nav";
 import {
   getAllPatterns,
   getFlavor,
@@ -41,7 +41,7 @@ const MDX_OPTIONS: MDXRemoteProps["options"] = {
         rehypeAutolinkHeadings,
         { behavior: "wrap", properties: { className: "heading-anchor" } },
       ],
-      [rehypePrettyCode, { theme: "github-dark" }],
+      [rehypePrettyCode, prettyCodeOptions],
     ],
   },
 };
@@ -89,7 +89,6 @@ export default async function PatternPage({
   const pattern = getPattern(flavor, slug);
   if (!pattern) notFound();
 
-  const flavorMeta = getFlavor(flavor)!;
   const { prev, next } = getPatternSiblings(pattern);
   const url = `${SEO_CONFIG.baseUrl}${pattern.href}`;
 
@@ -111,13 +110,10 @@ export default async function PatternPage({
       />
 
       <ReadingPage
-        nav={{
-          title: `${flavorMeta.label} patterns`,
+        back={{
           href: `/patterns/${flavor}`,
-          groups: patternNavGroups(flavor),
-          currentHref: pattern.href,
+          label: `All ${getFlavor(flavor)!.label} patterns`,
         }}
-        back={{ href: `/patterns/${flavor}`, label: "all patterns" }}
         chips={pattern.tags.map((tag) => ({ label: tag }))}
         title={pattern.title}
         description={pattern.description}

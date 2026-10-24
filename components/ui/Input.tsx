@@ -33,7 +33,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     ref,
   ) => {
     const inputClasses = [
-      "w-full border border-border bg-background px-4 py-3 text-sm",
+      "w-full rounded-xl border border-border bg-background px-4 py-3 text-sm",
       "placeholder-gray-400 transition-colors",
       "focus:border-focus focus:outline-none",
       "dark:placeholder-gray-600",

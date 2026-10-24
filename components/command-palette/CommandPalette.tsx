@@ -322,7 +322,7 @@ export default function CommandPalette({
             onClick={close}
           />
           <motion.div
-            className="border-border bg-background relative z-10 flex max-h-[70vh] w-full max-w-xl flex-col overflow-hidden border shadow-2xl"
+            className="border-border bg-background/95 relative z-10 flex max-h-[70vh] w-full max-w-xl flex-col overflow-hidden rounded-2xl border shadow-2xl backdrop-blur-xl"
             initial={{ y: -14, scale: 0.96 }}
             animate={{ y: 0, scale: 1 }}
             exit={{ y: -10, scale: 0.98 }}
@@ -337,7 +337,7 @@ export default function CommandPalette({
                 placeholder="type a command or search..."
                 className="w-full bg-transparent text-sm outline-none placeholder:text-gray-400"
               />
-              <kbd className="border-border font-code text-2xs text-faint shrink-0 border px-1.5 py-0.5">
+              <kbd className="border-border font-code text-2xs text-faint shrink-0 rounded-md border px-1.5 py-0.5">
                 esc
               </kbd>
             </div>
@@ -345,7 +345,7 @@ export default function CommandPalette({
             <div
               ref={listRef}
               data-lenis-prevent
-              className="min-h-0 flex-1 overflow-y-auto overscroll-contain py-2"
+              className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-2"
             >
               {filtered.length === 0 && (
                 <p className="text-faint px-4 py-6 text-center text-sm">
@@ -357,7 +357,7 @@ export default function CommandPalette({
                 if (!items.length) return null;
                 return (
                   <div key={g} className="mb-1">
-                    <p className="font-code text-2xs text-faint px-4 py-1.5 tracking-wide uppercase">
+                    <p className="font-code text-2xs text-faint px-3 py-1.5 tracking-wide uppercase">
                       {g}
                     </p>
                     {items.map((c) => {
@@ -370,8 +370,8 @@ export default function CommandPalette({
                           data-idx={idx}
                           onMouseMove={() => setActive(idx)}
                           onClick={() => c.run()}
-                          className={`flex w-full items-center gap-3 px-4 py-2 text-left text-sm transition-colors ${
-                            isActive ? "bg-gray-100 dark:bg-gray-900" : ""
+                          className={`flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm transition-colors ${
+                            isActive ? "bg-surface-hover" : ""
                           }`}
                         >
                           <span

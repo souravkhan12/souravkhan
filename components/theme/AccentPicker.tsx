@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 
 export const ACCENTS = [
+  { id: "orange", label: "orange", swatch: "#e4521b" },
   { id: "indigo", label: "indigo", swatch: "#5b5bd6" },
   { id: "emerald", label: "emerald", swatch: "#0e9f6e" },
   { id: "ocean", label: "ocean", swatch: "#2563eb" },
@@ -18,7 +19,7 @@ const KEY = "accent";
 /** Applies the accent by flipping one attribute — the CSS does the rest. */
 function apply(id: AccentId) {
   const root = document.documentElement;
-  if (id === "indigo") root.removeAttribute("data-accent");
+  if (id === "orange") root.removeAttribute("data-accent");
   else root.setAttribute("data-accent", id);
   localStorage.setItem(KEY, id);
 }
@@ -30,7 +31,7 @@ function apply(id: AccentId) {
 export function AccentPicker({ inline = false }: { inline?: boolean }) {
   // Server renders the default; the real accent is read from the DOM after
   // mount (the pre-paint script in the layout has already applied it).
-  const [active, setActive] = useState<AccentId>("indigo");
+  const [active, setActive] = useState<AccentId>("orange");
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
   useOutsideClick({ ref, callback: () => setOpen(false) });
@@ -39,7 +40,7 @@ export function AccentPicker({ inline = false }: { inline?: boolean }) {
     const id = requestAnimationFrame(() =>
       setActive(
         (document.documentElement.getAttribute("data-accent") as AccentId) ??
-          "indigo",
+          "orange",
       ),
     );
     return () => cancelAnimationFrame(id);

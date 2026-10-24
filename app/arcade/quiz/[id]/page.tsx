@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { LuArrowLeft, LuArrowRight, LuCheck } from "react-icons/lu";
-import { Section } from "@/components/ui";
+import { LuArrowRight, LuCheck } from "react-icons/lu";
+import { PageHeader } from "@/components/ui";
+import { ReadingPrevNext } from "@/components/reading/reading-page";
 import { CopyLink } from "@/components/arcade/CopyLink";
 import {
   getAllQuestions,
@@ -93,27 +94,21 @@ export default async function PuzzlePage({
   };
 
   return (
-    <div className="pt-8">
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="px-6 pb-4 sm:px-8">
-        <Link
-          href="/arcade/quiz"
-          className="hover:text-blue font-code text-soft inline-flex items-center gap-1.5 text-xs lowercase transition-colors"
-        >
-          <LuArrowLeft size={13} aria-hidden="true" />
-          daily puzzle
-        </Link>
-      </div>
+      <PageHeader
+        back={{ href: "/arcade/quiz", label: "Daily puzzle" }}
+        title={title}
+      />
 
-      {/* Titles carry code identifiers, so they must not be lowercased. */}
-      <Section title={title} id="puzzle" preserveTitleCase>
-        <div className="border-border border-x border-b p-6 sm:p-8">
-          <div className="border-border border">
-            <div className="border-border flex flex-wrap items-center justify-between gap-3 border-b bg-gray-50 px-4 py-2.5 dark:bg-black">
+      <section id="puzzle" className="scroll-mt-20">
+        <div>
+          <div className="bg-surface overflow-hidden rounded-2xl">
+            <div className="flex flex-wrap items-center justify-between gap-3 px-5 pt-4 sm:px-6">
               <span className="font-code text-2xs text-soft lowercase">
                 puzzle {String(index + 1).padStart(2, "0")} · javascript
               </span>
@@ -123,7 +118,7 @@ export default async function PuzzlePage({
             <div className="p-5 sm:p-6">
               <p className="text-sm font-medium">{question.prompt}</p>
 
-              <pre className="border-border font-code text-2xs mt-4 overflow-x-auto border bg-gray-50 p-4 leading-relaxed dark:bg-black">
+              <pre className="border-border bg-background font-code text-2xs mt-4 overflow-x-auto rounded-xl border p-4 leading-relaxed">
                 <code>{question.snippet}</code>
               </pre>
 
@@ -133,7 +128,7 @@ export default async function PuzzlePage({
                   return (
                     <div
                       key={i}
-                      className={`font-code text-2xs flex items-center justify-between gap-3 border px-4 py-2.5 ${
+                      className={`font-code text-2xs flex items-center justify-between gap-3 rounded-xl border px-4 py-2.5 ${
                         isAnswer
                           ? "border-emerald-500/50 bg-emerald-500/5 text-emerald-700 dark:text-emerald-400"
                           : "border-border text-soft opacity-60"
@@ -153,7 +148,7 @@ export default async function PuzzlePage({
               </div>
 
               <div className="border-border mt-5 border-t pt-4">
-                <h2 className="font-code text-2xs text-soft lowercase">why</h2>
+                <h2 className="font-code text-2xs text-soft">Why</h2>
                 <p className="text-soft mt-2 text-sm leading-relaxed">
                   {question.explanation}
                 </p>
@@ -175,10 +170,10 @@ export default async function PuzzlePage({
               they arrived for one answer, this is the reason to come back. */}
           <Link
             href="/arcade/quiz"
-            className="border-border hover:border-blue hover:bg-blue/5 group mt-6 flex items-center justify-between gap-4 border px-5 py-4 transition-colors"
+            className="group bg-background shadow-soft mt-6 flex items-center justify-between gap-4 rounded-2xl px-5 py-4 transition-transform duration-500 ease-[cubic-bezier(0.34,1.4,0.64,1)] hover:-translate-y-0.5"
           >
             <span className="min-w-0">
-              <span className="ss01 group-hover:text-blue block text-sm font-medium transition-colors">
+              <span className="block text-sm font-semibold">
                 Today&apos;s puzzle
               </span>
               <span className="font-code text-2xs text-soft mt-0.5 block">
@@ -188,38 +183,27 @@ export default async function PuzzlePage({
             <LuArrowRight
               size={15}
               aria-hidden="true"
-              className="group-hover:text-blue shrink-0 text-gray-300 transition-transform group-hover:translate-x-0.5 dark:text-gray-600"
+              className="text-faint group-hover:text-foreground shrink-0 transition-transform group-hover:translate-x-0.5"
             />
           </Link>
         </div>
 
         {/* Prev/next keeps crawlers walking the whole archive from any entry. */}
-        <nav className="border-border font-code flex items-stretch border-x border-b text-xs">
-          {prev ? (
-            <Link
-              href={`/arcade/quiz/${prev.id}`}
-              rel="prev"
-              className="hover:text-blue text-soft flex min-w-0 flex-1 items-center gap-2 px-6 py-3.5 transition-colors hover:bg-gray-50 sm:px-8 dark:hover:bg-black"
-            >
-              <LuArrowLeft size={13} aria-hidden="true" className="shrink-0" />
-              <span className="truncate">{questionTitle(prev)}</span>
-            </Link>
-          ) : (
-            <span className="flex-1" />
-          )}
-
-          {next && (
-            <Link
-              href={`/arcade/quiz/${next.id}`}
-              rel="next"
-              className="hover:text-blue border-border text-soft flex min-w-0 flex-1 items-center justify-end gap-2 border-l px-6 py-3.5 text-right transition-colors hover:bg-gray-50 sm:px-8 dark:hover:bg-black"
-            >
-              <span className="truncate">{questionTitle(next)}</span>
-              <LuArrowRight size={13} aria-hidden="true" className="shrink-0" />
-            </Link>
-          )}
-        </nav>
-      </Section>
-    </div>
+        <ReadingPrevNext
+          prev={
+            prev && {
+              href: `/arcade/quiz/${prev.id}`,
+              title: questionTitle(prev),
+            }
+          }
+          next={
+            next && {
+              href: `/arcade/quiz/${next.id}`,
+              title: questionTitle(next),
+            }
+          }
+        />
+      </section>
+    </>
   );
 }

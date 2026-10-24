@@ -2,10 +2,11 @@
 
 import { useMemo, useState } from "react";
 import { RowList } from "@/components/ui";
+import { AnimatedTabs } from "@/components/motion/animated-tabs";
 import type { Bookmark } from "@/lib/reading";
 
 const fmtDate = (d: string) =>
-  new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "short" });
+  new Date(d).toLocaleDateString("en-GB", { year: "numeric", month: "short" });
 
 /**
  * Things worth reading that I didn't write. Uses the same compact RowList as
@@ -41,10 +42,8 @@ export function ReadingList({
   // occupies the space a bookmark would rather than floating in it.
   if (bookmarks.length === 0) {
     return (
-      <div className="border-border border-x border-b p-6 sm:p-8">
-        <p className="ss01 normal-case-force text-base font-semibold">
-          Nothing saved yet.
-        </p>
+      <div className="py-4">
+        <p className="text-base font-semibold">Nothing saved yet.</p>
         <p className="text-soft mt-2 max-w-xl text-sm">
           This is where posts, essays and talks worth my time will land — each
           with a line on why it&apos;s here, rather than just a link dump.
@@ -56,37 +55,19 @@ export function ReadingList({
   return (
     <>
       {tags.length > 0 && (
-        // Its own bordered strip: as a bare flex row it sat outside the grid
-        // and read as 4px further left than every rule on the page. Phones
-        // scroll it on one line instead of stacking it into a block that
-        // pushes the list below the fold.
-        <div className="border-border flex gap-2 overflow-x-auto border-x border-t px-6 py-2.5 sm:flex-wrap sm:overflow-visible sm:px-8">
-          <button
-            type="button"
-            onClick={() => setActive(null)}
-            className={`font-code text-2xs shrink-0 border px-2 py-0.5 whitespace-nowrap transition-colors ${
-              active === null
-                ? "border-blue text-blue"
-                : "border-border hover:border-blue hover:text-blue text-soft"
-            }`}
-          >
-            all <span className="text-faint">{bookmarks.length}</span>
-          </button>
-          {tags.map((tag) => (
-            <button
-              key={tag}
-              type="button"
-              onClick={() => setActive((t) => (t === tag ? null : tag))}
-              className={`font-code text-2xs shrink-0 border px-2 py-0.5 whitespace-nowrap transition-colors ${
-                active === tag
-                  ? "border-blue text-blue"
-                  : "border-border hover:border-blue hover:text-blue text-soft"
-              }`}
-            >
-              {tag}
-            </button>
-          ))}
-        </div>
+        <AnimatedTabs
+          label="Filter bookmarks by tag"
+          size="xs"
+          className="mb-4"
+          active={active ?? "all"}
+          onChange={(value) =>
+            setActive(value === "all" || value === active ? null : value)
+          }
+          tabs={[
+            { value: "all", label: "all", count: bookmarks.length },
+            ...tags.map((tag) => ({ value: tag, label: tag })),
+          ]}
+        />
       )}
 
       <RowList
@@ -108,9 +89,9 @@ export function ReadingList({
         <button
           type="button"
           onClick={() => setExpanded(true)}
-          className="border-border hover:text-blue font-code text-2xs text-soft w-full border-x border-b px-6 py-2.5 text-left transition-colors hover:bg-gray-50 sm:px-8 dark:hover:bg-black"
+          className="font-code text-2xs text-soft hover:text-foreground bg-surface hover:bg-surface-hover mt-3 rounded-full px-4 py-2 transition-colors active:scale-[0.97]"
         >
-          show {hidden} more ↓
+          Show {hidden} more ↓
         </button>
       )}
     </>

@@ -1,8 +1,8 @@
 import { Metadata, Viewport } from "next";
 import "@/styles/globals.css";
 import { SEO_CONFIG } from "@/config/seo";
-import { CONTACT_INFO, SOCIAL_LINKS } from "@/config/data";
-import { mono, pixel, sans } from "@/utils/fonts";
+import { ACHIEVEMENTS, CONTACT_INFO, SOCIAL_LINKS } from "@/config/data";
+import { hand, mono, pixel, sans } from "@/utils/fonts";
 import Providers from "@/components/ui/provider";
 import { ServiceWorker } from "@/components/ui/service-worker";
 import { InstallPrompt } from "@/components/ui/install-prompt";
@@ -17,7 +17,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 // Chrome paints the browser/status bar with this; matches the paper background.
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fcfcf9" },
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
     { media: "(prefers-color-scheme: dark)", color: "#181818" },
   ],
   width: "device-width",
@@ -32,8 +32,11 @@ export const metadata: Metadata = {
   },
   manifest: "/manifest.json",
   icons: {
+    // One mark everywhere: these are all rendered from public/icon.svg, the
+    // same drawing as the navbar's BrandMark.
     icon: [
-      { url: "/favicon.ico" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "32x32" },
       { url: "/icons/icon192.png", sizes: "192x192", type: "image/png" },
     ],
     apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180" }],
@@ -46,7 +49,6 @@ export const metadata: Metadata = {
     },
   ],
   creator: SEO_CONFIG.creator,
-  keywords: SEO_CONFIG.keywords,
   referrer: "strict-origin-when-cross-origin",
   formatDetection: {
     email: true,
@@ -70,21 +72,11 @@ export const metadata: Metadata = {
     description: SEO_CONFIG.ogDescription,
     siteName: SEO_CONFIG.siteName,
     locale: SEO_CONFIG.ogLocale,
-    images: [
-      {
-        url: SEO_CONFIG.ogImage,
-        width: 1200,
-        height: 630,
-        alt: "Sourav Khan Portfolio",
-        type: "image/png",
-      },
-    ],
   },
   twitter: {
     card: SEO_CONFIG.twitterCardType as "summary_large_image",
     title: SEO_CONFIG.ogTitle,
     description: SEO_CONFIG.ogDescription,
-    images: [SEO_CONFIG.ogImage],
   },
   robots: {
     index: true,
@@ -101,6 +93,9 @@ export const metadata: Metadata = {
   },
   verification: {
     google: SEO_CONFIG.googleVerification || undefined,
+    other: SEO_CONFIG.bingVerification
+      ? { "msvalidate.01": SEO_CONFIG.bingVerification }
+      : undefined,
   },
   appleWebApp: {
     capable: true,
@@ -121,60 +116,78 @@ export default function RootLayout({
   }));
 
   // Structured Data (JSON-LD) for SEO
+  // Every public profile, so search engines can tie them to one person and
+  // show them together in a knowledge panel. Profile links only — the AWS
+  // certificate is a Drive file, not an identity.
+  const profiles = ACHIEVEMENTS.map((a) => a.href).filter(
+    (href) => !href.includes("drive.google.com"),
+  );
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
+    "@id": `${SEO_CONFIG.baseUrl}/#person`,
     name: "Sourav Khan",
     alternateName: "Sourav",
     url: SEO_CONFIG.baseUrl,
-    jobTitle: "Software Engineer",
+    jobTitle: "Frontend Engineer",
     description: SEO_CONFIG.description,
     image: `${SEO_CONFIG.baseUrl}/sourav.webp`,
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Ambala",
+      addressLocality: "Noida",
       addressCountry: "IN",
     },
     email: CONTACT_INFO.email,
     telephone: CONTACT_INFO.phone,
-    sameAs: [SOCIAL_LINKS.linkedin, SOCIAL_LINKS.github],
+    sameAs: [SOCIAL_LINKS.linkedin, SOCIAL_LINKS.github, ...profiles],
     knowsAbout: [
       "Software Engineering",
       "React",
       "Next.js",
-      "Node.js",
       "TypeScript",
       "JavaScript",
-      "C++",
-      "Web Development",
+      "Redux Toolkit",
+      "Frontend Engineering",
+      "Web Performance",
     ],
     alumniOf: {
-      "@type": "Organization",
-      name: "Software Engineer",
+      "@type": "CollegeOrUniversity",
+      name: "J.C. Bose University of Science and Technology",
     },
+  };
+
+  const websiteLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${SEO_CONFIG.baseUrl}/#website`,
+    url: SEO_CONFIG.baseUrl,
+    name: SEO_CONFIG.siteName,
+    inLanguage: "en",
+    author: { "@id": `${SEO_CONFIG.baseUrl}/#person` },
   };
 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <meta
-          name="google-site-verification"
-          content="7M2IRTHlc59zkkjF36MIfj5bhCWGfDIwUUawU1wB7hI"
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteLd) }}
+        />
         {/* Restore the saved accent before first paint so the swatch colours
-            never flash indigo on the way in. */}
+            never flash orange on the way in. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var a=localStorage.getItem("accent");if(a&&a!=="indigo")document.documentElement.setAttribute("data-accent",a)}catch(e){}`,
+            __html: `try{var a=localStorage.getItem("accent");if(a&&a!=="orange")document.documentElement.setAttribute("data-accent",a)}catch(e){}`,
           }}
         />
       </head>
       <body
-        className={`${sans.variable} ${mono.variable} ${pixel.variable} font-sans antialiased`}
+        className={`${sans.variable} ${mono.variable} ${pixel.variable} ${hand.variable} font-sans antialiased`}
       >
         <ScrollToTop />
         {/* Horizontal clip lives here, not on <html> or <body>: overflow set

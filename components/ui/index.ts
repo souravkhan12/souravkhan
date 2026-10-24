@@ -9,11 +9,5 @@ export { Textarea, type TextareaProps } from "./Textarea";
 export { Section, type SectionProps } from "./Section";
 export { RowList, type Row } from "./RowList";
 export { Logo } from "./Logo";
-export {
-  GridBand,
-  GridCell,
-  VertexSquare,
-  DiagonalLine,
-  DotGrid,
-  GridRules,
-} from "./grid";
+export { GridBand, GridCell, DotGrid } from "./grid";
+export { PageHeader } from "./PageHeader";

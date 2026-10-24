@@ -1,4 +1,4 @@
-import { Section, RowList } from "@/components/ui";
+import { PageHeader, RowList } from "@/components/ui";
 import { getAllSetupGuides } from "@/lib/setup";
 import { SEO_CONFIG } from "@/config/seo";
 
@@ -20,13 +20,13 @@ export default function SetupPage() {
   const guides = getAllSetupGuides();
 
   return (
-    <Section
-      title="setup"
-      id="setup"
-      count={guides.length}
-      subtitle="the tools i actually use, and why."
-      className="pt-8"
-    >
+    <>
+      <PageHeader
+        eyebrow="Setup"
+        count={guides.length}
+        title="The tools I actually use."
+        muted="And why."
+      />
       <RowList
         rows={guides.map((guide) => ({
           href: `/setup/${guide.slug}`,
@@ -35,6 +35,6 @@ export default function SetupPage() {
           hint: guide.description,
         }))}
       />
-    </Section>
+    </>
   );
 }

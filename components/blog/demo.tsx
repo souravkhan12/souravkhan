@@ -20,8 +20,8 @@ export function Demo({
   const [runId, setRunId] = useState(0);
 
   return (
-    <div className="not-prose border-border my-8 border">
-      <div className="border-border flex items-center justify-between border-b bg-gray-50 px-4 py-2 dark:bg-black">
+    <div className="not-prose border-border my-8 overflow-hidden rounded-2xl border">
+      <div className="border-border bg-surface flex items-center justify-between border-b px-4 py-2">
         <span className="font-code text-2xs text-soft lowercase">{title}</span>
         <button
           type="button"

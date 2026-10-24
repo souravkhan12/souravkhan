@@ -19,7 +19,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
       url: baseUrl,
-      lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 1,
     },
@@ -31,37 +30,31 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${baseUrl}/reading`,
-      lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.6,
     },
     {
       url: `${baseUrl}/projects`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${baseUrl}/arcade`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.6,
     },
     {
       url: `${baseUrl}/arcade/quiz`,
-      lastModified: new Date(),
       changeFrequency: "daily",
       priority: 0.6,
     },
     {
       url: `${baseUrl}/arcade/snake`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.6,
     },
     {
       url: `${baseUrl}/resume`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.7,
     },
@@ -79,19 +72,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
     ...getAllProjects().map((project) => ({
       url: `${baseUrl}/project/${project.slug}`,
-      lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.7,
     })),
     {
       url: `${baseUrl}/setup`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.5,
     },
     ...getAllSetupGuides().map((guide) => ({
       url: `${baseUrl}/setup/${guide.slug}`,
-      lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),
@@ -100,25 +90,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
        from — the daily page's content changes out from under any ranking. */
     ...getAllQuestions().map((q) => ({
       url: `${baseUrl}/arcade/quiz/${q.id}`,
-      lastModified: new Date(),
       changeFrequency: "yearly" as const,
       priority: 0.7,
     })),
     {
       url: `${baseUrl}/machine-coding`,
-      lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.9,
     },
     ...getMachineCodingCategories().map((c) => ({
       url: `${baseUrl}/machine-coding/category/${c.slug}`,
-      lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
     ...getAllMachineCodingQuestions().map((q) => ({
       url: `${baseUrl}/machine-coding/${q.slug}`,
-      lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),
@@ -126,13 +112,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
        — listing a URL that 308s only spends crawl budget to arrive here. */
     ...FLAVORS.map((f) => ({
       url: `${baseUrl}/patterns/${f.slug}`,
-      lastModified: new Date(),
       changeFrequency: "weekly" as const,
       priority: 0.8,
     })),
     ...getAllPatterns().map((p) => ({
       url: `${baseUrl}${p.href}`,
-      lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),

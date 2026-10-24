@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LuArrowRight, LuArrowUpRight } from "react-icons/lu";
+import { HoverList, HoverItem } from "@/components/motion/hover-list";
 
 export type Row = {
   /** Stable key + destination. */
@@ -16,34 +17,22 @@ export type Row = {
 };
 
 /**
- * The site's compact list primitive: one row per item, title over a mono meta
- * line, at roughly a third the height of a GridCell card.
+ * The site's compact list primitive: one row per item, title over a mono
+ * meta line, with a soft highlight that slides between rows on hover.
  *
  * Sections that are *pointers* — setup guides, arcade games, bookmarks — use
  * this instead of cards. Cards are reserved for things with their own
- * artwork and prose (projects, posts), so card weight stays meaningful
- * instead of every list on the site shouting equally loudly.
+ * artwork and prose (projects, posts), so card weight stays meaningful.
  */
 export function RowList({ rows }: { rows: Row[] }) {
   return (
-    <ul className="border-border border-x border-b">
-      {rows.map((row, index) => {
+    <HoverList className="flex flex-col">
+      {rows.map((row) => {
         const Arrow = row.external ? LuArrowUpRight : LuArrowRight;
         const inner = (
           <>
-            {/* A mono index gives the rows a left edge to line up against —
-                without it they read as an undifferentiated stack of text. */}
-            <span
-              aria-hidden="true"
-              className="font-code group-hover:text-blue text-2xs w-6 shrink-0 text-gray-300 tabular-nums transition-colors dark:text-gray-700"
-            >
-              {String(index + 1).padStart(2, "0")}
-            </span>
-
             <div className="min-w-0 flex-1">
-              <h3 className="ss01 normal-case-force group-hover:text-blue truncate text-sm font-medium transition-colors">
-                {row.title}
-              </h3>
+              <h3 className="truncate text-sm font-semibold">{row.title}</h3>
               {row.meta && (
                 <p className="font-code text-2xs text-faint mt-0.5 truncate">
                   {row.meta}
@@ -52,7 +41,7 @@ export function RowList({ rows }: { rows: Row[] }) {
             </div>
 
             {row.chip && (
-              <span className="border-border font-code text-2xs text-soft hidden shrink-0 border px-2 py-0.5 sm:inline">
+              <span className="font-code text-2xs text-soft bg-surface hidden shrink-0 rounded-full px-2.5 py-0.5 sm:inline">
                 {row.chip}
               </span>
             )}
@@ -60,21 +49,15 @@ export function RowList({ rows }: { rows: Row[] }) {
             <Arrow
               size={15}
               aria-hidden="true"
-              className="group-hover:text-blue shrink-0 text-gray-300 transition-transform group-hover:translate-x-0.5 dark:text-gray-600"
+              className="text-faint group-hover:text-foreground shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
             />
           </>
         );
 
-        // The accent bar on the left is the hover tell — a background tint
-        // alone was too quiet to say "this whole row is the target".
-        const className =
-          "flex items-center gap-3 border-l-2 border-transparent px-6 py-3.5 transition-colors hover:border-blue hover:bg-gray-50 sm:px-8 dark:hover:bg-black";
+        const className = "group flex items-center gap-3 py-3";
 
         return (
-          <li
-            key={row.href}
-            className="border-border group border-b last:border-b-0"
-          >
+          <HoverItem key={row.href} itemKey={row.href}>
             {row.external ? (
               <a
                 href={row.href}
@@ -90,9 +73,9 @@ export function RowList({ rows }: { rows: Row[] }) {
                 {inner}
               </Link>
             )}
-          </li>
+          </HoverItem>
         );
       })}
-    </ul>
+    </HoverList>
   );
 }

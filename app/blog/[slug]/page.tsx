@@ -8,47 +8,19 @@ import {
   tagSlug,
 } from "@/lib/blog";
 import { MDXRemote } from "next-mdx-remote/rsc";
-import Image from "next/image";
 import Link from "next/link";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode from "rehype-pretty-code";
+import { prettyCodeOptions } from "@/lib/code-theme";
 import remarkGfm from "remark-gfm";
-import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
+import { LuArrowRight } from "react-icons/lu";
 import { mdxComponents } from "@/components/blog/mdx-components";
-import { BlogProgress } from "@/components/blog/blog-progress";
-import { BlogToc } from "@/components/blog/blog-toc";
 import { BlogSchemaMarkup } from "@/components/blog/BlogSchemaMarkup";
 import { SeriesNav } from "@/components/blog/series-nav";
-import { ShareBar } from "@/components/blog/share-bar";
-import { ReadingNav } from "@/components/reading/reading-nav";
-import { blogNavGroups } from "@/components/blog/nav";
+import { ReadingPage } from "@/components/reading/reading-page";
+import { formatDate } from "@/lib/utils";
 import { SEO_CONFIG } from "@/config/seo";
-
-/* ------------------------------------------------------------------ *
- * Layout tokens
- *
- * GUTTER always goes on the outer band and MEASURE on the inner child,
- * never both on one element — that was the old bug: padding inside a
- * border-box max-width shrank the text column to 592px while the title
- * band above it ran a true 768px.
- *
- * The widths themselves live in globals.css as --blog-measure and
- * --blog-wide so the MDX diagram components can share them via
- * .blog-breakout. Change the measure in one place and the header, the
- * body, the footer and every diagram panel follow.
- * ------------------------------------------------------------------ */
-
-const GUTTER = "px-6 sm:px-10";
-const MEASURE = "blog-measure";
-const WIDE = "blog-wide";
-/** Article column + sticky contents rail from lg up; one column below it. */
-const LAYOUT = "blog-layout";
-
-/** font-code eyebrow / label. text-xs is 14px on this scale. The old
-    text-[11px] / text-xs / text-[13px] mix put three different sizes on the
-    same class of element, two of them below the scale's floor. */
-const LABEL = "font-code text-xs lowercase";
 
 export async function generateStaticParams() {
   const posts = getAllPosts();
@@ -94,12 +66,7 @@ export async function generateMetadata({
   };
 }
 
-const fmtDate = (d: string) =>
-  new Date(d).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+const fmtDate = formatDate;
 
 export default async function BlogPostPage({
   params,
@@ -120,210 +87,109 @@ export default async function BlogPostPage({
   return (
     <>
       <BlogSchemaMarkup post={post} />
-      <BlogProgress headings={headings} />
 
-      {/* Same three-column frame as patterns, machine coding and setup: an
-          index of the set on the left, the article in the measure, contents
-          on the right. */}
-      <div className="reading-shell">
-        <ReadingNav
-          title="Writing"
-          href="/blog"
-          groups={blogNavGroups()}
-          currentHref={`/blog/${post.slug}`}
+      <ReadingPage
+        back={{ href: "/blog", label: "All writing" }}
+        chips={post.tags.map((tag) => ({
+          label: tag,
+          href: `/blog/tags/${tagSlug(tag)}`,
+        }))}
+        title={post.title}
+        description={post.description}
+        meta={[
+          <time key="date" dateTime={post.date}>
+            {fmtDate(post.date)}
+          </time>,
+          <span key="time">{post.readingTime}</span>,
+          ...(post.updated
+            ? [
+                <span key="updated" className="text-blue">
+                  updated {fmtDate(post.updated)}
+                </span>,
+              ]
+            : []),
+        ]}
+        image={post.image ? { src: post.image, alt: post.title } : undefined}
+        headings={headings}
+        shareUrl={url}
+        before={
+          series.length > 1 && (
+            <SeriesNav
+              series={post.series!}
+              posts={series}
+              currentSlug={post.slug}
+            />
+          )
+        }
+        footer={more.length > 0 && <KeepReading posts={more} />}
+      >
+        <MDXRemote
+          source={post.content}
+          components={mdxComponents}
+          options={{
+            mdxOptions: {
+              remarkPlugins: [remarkGfm],
+              rehypePlugins: [
+                rehypeSlug,
+                // Makes every H2/H3 a shareable deep link.
+                [
+                  rehypeAutolinkHeadings,
+                  {
+                    behavior: "wrap",
+                    properties: { className: "heading-anchor" },
+                  },
+                ],
+                [rehypePrettyCode, prettyCodeOptions],
+              ],
+            },
+          }}
         />
-
-        <div className="border-border wide:border-l min-w-0">
-          <article id="blog-post-content">
-            {/* Title band — mirrors the homepage's section header treatment */}
-            <header
-              className={`border-border border-b bg-gray-50 ${GUTTER} py-10 sm:py-12 dark:bg-black`}
-            >
-              <div className={LAYOUT}>
-                <div className={MEASURE}>
-                  <Link
-                    href="/blog"
-                    className={`hover:text-blue ${LABEL} text-soft inline-flex items-center gap-1.5 transition-colors`}
-                  >
-                    <LuArrowLeft size={14} />
-                    all writing
-                  </Link>
-
-                  <div className="mt-5 flex flex-wrap gap-1.5">
-                    {post.tags.map((tag) => (
-                      <Link
-                        key={tag}
-                        href={`/blog/tags/${tagSlug(tag)}`}
-                        className={`border-blue/40 text-blue bg-blue/5 hover:bg-blue/10 ${LABEL} border px-2 py-0.5 transition-colors`}
-                      >
-                        {tag}
-                      </Link>
-                    ))}
-                  </div>
-
-                  {/* text-balance stops a long title dropping one orphan word */}
-                  <h1 className="ss01 normal-case-force page-title mt-4 text-balance">
-                    {post.title}
-                  </h1>
-
-                  {/* Was text-base + max-w-2xl, which introduced a third column
-                width inside the band. Now it inherits the measure and sits
-                one step above the 17px prose body — a deck, not body copy. */}
-                  <p className="text-soft mt-3.5 text-base leading-relaxed">
-                    {post.description}
-                  </p>
-
-                  <div
-                    className={`${LABEL} text-soft mt-6 flex flex-wrap items-center gap-2.5`}
-                  >
-                    <time dateTime={post.date}>{fmtDate(post.date)}</time>
-                    <span aria-hidden="true" className="bg-border h-3 w-px" />
-                    <span>{post.readingTime}</span>
-                    {post.updated && (
-                      <>
-                        <span
-                          aria-hidden="true"
-                          className="bg-border h-3 w-px"
-                        />
-                        <span className="text-blue">
-                          updated {fmtDate(post.updated)}
-                        </span>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </header>
-
-            {post.image && (
-              <div className="border-border relative aspect-[16/8] w-full overflow-hidden border-b">
-                <Image
-                  src={post.image}
-                  alt={post.title}
-                  fill
-                  priority
-                  sizes="(max-width: 1200px) 100vw, 1200px"
-                  className="object-cover"
-                />
-              </div>
-            )}
-
-            {/* Body — GUTTER outside, LAYOUT then MEASURE inside, so the text
-            column is a true 40rem and its left edge matches the h1 above it.
-            Sizes and heading scale come from the `.prose` block in
-            globals.css so every post is one type system; only colour and
-            link treatment are set per-instance here. */}
-            <div className={GUTTER}>
-              <div className={`${LAYOUT} pt-12 pb-20`}>
-                <div
-                  className={`prose prose-a:text-blue prose-a:no-underline hover:prose-a:underline ${MEASURE}`}
-                >
-                  {series.length > 1 && (
-                    <SeriesNav
-                      series={post.series!}
-                      posts={series}
-                      currentSlug={post.slug}
-                    />
-                  )}
-
-                  <MDXRemote
-                    source={post.content}
-                    components={mdxComponents}
-                    options={{
-                      mdxOptions: {
-                        remarkPlugins: [remarkGfm],
-                        rehypePlugins: [
-                          rehypeSlug,
-                          // Makes every H2/H3 a shareable deep link.
-                          [
-                            rehypeAutolinkHeadings,
-                            {
-                              behavior: "wrap",
-                              properties: { className: "heading-anchor" },
-                            },
-                          ],
-                          [rehypePrettyCode, { theme: "github-dark" }],
-                        ],
-                      },
-                    }}
-                  />
-
-                  {/* not-prose: the prose block would restyle the row's own
-                  spacing and link colours. */}
-                  <div className="not-prose">
-                    <ShareBar url={url} />
-                  </div>
-                </div>
-
-                <BlogToc
-                  headings={headings}
-                  footer={<ShareBar url={url} variant="rail" />}
-                />
-              </div>
-            </div>
-          </article>
-
-          {/* Keep reading — WIDE rather than full-bleed. Two cards stretched
-          across the whole viewport under a 640px article was part of what
-          made the article look pinched. */}
-          {more.length > 0 && (
-            <aside className="border-border border-t">
-              <div
-                className={`border-border border-b bg-gray-50 ${GUTTER} dark:bg-black`}
-              >
-                <div
-                  className={`${WIDE} flex items-center justify-between gap-3 py-4`}
-                >
-                  <h2 className="ss01 flex items-center gap-3 text-sm font-bold">
-                    <span
-                      aria-hidden="true"
-                      className="bg-blue h-3.5 w-[3px]"
-                    />
-                    keep reading
-                  </h2>
-                  <Link
-                    href="/blog"
-                    className={`hover:text-blue ${LABEL} text-soft transition-colors`}
-                  >
-                    all posts →
-                  </Link>
-                </div>
-              </div>
-
-              <div className={GUTTER}>
-                <div className={`${WIDE} grid grid-cols-1 sm:grid-cols-2`}>
-                  {more.map((p, i) => (
-                    <Link
-                      key={p.slug}
-                      href={`/blog/${p.slug}`}
-                      className={`group hover:bg-gray-50 dark:hover:bg-black ${
-                        i === 0 ? "border-border sm:border-r" : ""
-                      } border-border border-b py-6 transition-colors sm:border-b-0 ${
-                        i === 0 ? "sm:pr-8" : "sm:pl-8"
-                      } sm:py-8`}
-                    >
-                      <p className={`${LABEL} text-faint`}>
-                        {fmtDate(p.date)} · {p.readingTime}
-                      </p>
-                      <h3 className="ss01 normal-case-force group-hover:text-blue mt-2 text-base font-semibold transition-colors">
-                        {p.title}
-                      </h3>
-                      <p className="text-soft mt-2 line-clamp-2 text-sm leading-relaxed">
-                        {p.description}
-                      </p>
-                      <span
-                        className={`text-blue ${LABEL} mt-3 inline-flex items-center gap-1.5 opacity-0 transition-opacity group-hover:opacity-100`}
-                      >
-                        read <LuArrowRight size={14} />
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </aside>
-          )}
-        </div>
-      </div>
+      </ReadingPage>
     </>
+  );
+}
+
+/** Two related posts as soft cards — tag-overlap scored, so it stays on topic. */
+function KeepReading({ posts }: { posts: ReturnType<typeof getRelatedPosts> }) {
+  return (
+    <aside className="mt-10">
+      <div className="mb-4 flex items-baseline justify-between gap-3">
+        <h2 className="text-base font-bold tracking-tight">Keep reading</h2>
+        <Link
+          href="/blog"
+          className="text-soft hover:text-foreground text-sm transition-colors"
+        >
+          All posts →
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {posts.map((p) => (
+          <Link
+            key={p.slug}
+            href={`/blog/${p.slug}`}
+            className="group bg-background shadow-soft flex flex-col rounded-2xl p-5 transition-transform duration-500 ease-[cubic-bezier(0.34,1.4,0.64,1)] hover:-translate-y-1"
+          >
+            <p className="font-code text-faint text-2xs">
+              {fmtDate(p.date)} · {p.readingTime}
+            </p>
+            <h3 className="mt-2 text-base font-bold tracking-tight text-pretty">
+              {p.title}
+            </h3>
+            <p className="text-soft mt-1.5 line-clamp-2 text-sm leading-relaxed">
+              {p.description}
+            </p>
+            <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-sm font-semibold">
+              Read
+              <LuArrowRight
+                size={14}
+                aria-hidden="true"
+                className="transition-transform duration-200 group-hover:translate-x-0.5"
+              />
+            </span>
+          </Link>
+        ))}
+      </div>
+    </aside>
   );
 }

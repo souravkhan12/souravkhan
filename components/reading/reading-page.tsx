@@ -1,22 +1,11 @@
+import Image from "next/image";
 import Link from "next/link";
-import { LuArrowLeft } from "react-icons/lu";
+import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
 import { BlogProgress } from "@/components/blog/blog-progress";
 import { BlogToc } from "@/components/blog/blog-toc";
 import { ShareBar } from "@/components/blog/share-bar";
-import {
-  ReadingNav,
-  type ReadingNavGroup,
-} from "@/components/reading/reading-nav";
+import { PageHeader } from "@/components/ui/PageHeader";
 import type { Heading } from "@/lib/content";
-
-/* Layout tokens, kept identical to the blog's so every reading page on the
-   site is one system. GUTTER goes on the outer band and MEASURE on the inner
-   child, never both on one element — padding inside a border-box max-width
-   silently narrows the text column. */
-const GUTTER = "px-6 sm:px-10";
-const MEASURE = "blog-measure";
-const LAYOUT = "blog-layout";
-const LABEL = "font-code text-xs lowercase";
 
 export type ReadingChip = {
   label: string;
@@ -25,167 +14,140 @@ export type ReadingChip = {
 };
 
 /**
- * The frame every long-form page on the site shares: a section index on the
- * left, the article in a 40rem measure, and a contents rail on the right.
+ * The frame every long-form page on the site shares — posts, patterns,
+ * machine coding, setup guides.
  *
- * Before this existed, blog posts had the title band and rail while patterns,
- * setup guides and machine coding questions each had their own centred
- * `max-w-3xl` article with a different back-link, a different meta line and no
- * contents at all. Four layouts for one kind of page. Everything reading-shaped
- * now goes through here, so a change to the measure or the rail lands
- * everywhere at once.
+ * It sits in the same 860px column as the homepage: a hero-style header,
+ * the prose in a readable measure, and diagrams/code breaking out to the
+ * column's full width. The contents rail hangs in the right margin from the
+ * `wide` breakpoint up (see .reading-rail in globals.css); below that,
+ * BlogProgress's floating "contents" pill does the same job.
  */
 export function ReadingPage({
-  nav,
   back,
   chips,
   title,
   description,
   meta,
+  image,
   headings,
   shareUrl,
+  before,
   children,
   footer,
 }: {
-  nav: {
-    title: string;
-    href: string;
-    groups: ReadingNavGroup[];
-    currentHref: string;
-  };
   back: { href: string; label: string };
   chips?: ReadingChip[];
   title: string;
   description?: string;
   /** Small mono facts under the title — date, reading time, difficulty. */
   meta?: React.ReactNode[];
+  /** Cover art, shown as a rounded card under the header. */
+  image?: { src: string; alt: string };
   headings: Heading[];
   /** Omit to hide the share controls (setup guides don't need them). */
   shareUrl?: string;
+  /** Rendered at the top of the prose — e.g. the series navigator. */
+  before?: React.ReactNode;
   children: React.ReactNode;
-  /** Prev/next, full solutions, related posts — rendered inside the measure. */
+  /** Prev/next, full solutions, related posts — rendered under the article. */
   footer?: React.ReactNode;
 }) {
   return (
     <>
       <BlogProgress headings={headings} />
 
-      <div className="reading-shell">
-        <ReadingNav {...nav} />
+      <article id="blog-post-content">
+        <PageHeader back={back} title={title} description={description}>
+          {(!!chips?.length || !!meta?.length) && (
+            <div className="flex flex-col gap-4">
+              {meta && meta.length > 0 && (
+                <div className="font-code text-faint text-2xs flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                  {meta.map((item, index) => (
+                    <span key={index} className="flex items-center gap-2.5">
+                      {index > 0 && <span aria-hidden="true">·</span>}
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              )}
 
-        {/* The column rule between nav and article. On the article because it
-            is the full-height element — on the nav it stopped wherever the
-            list happened to end. */}
-        <article
-          id="blog-post-content"
-          className="border-border wide:border-l min-w-0"
-        >
-          <header
-            className={`border-border border-b bg-gray-50 ${GUTTER} py-10 sm:py-12 dark:bg-black`}
-          >
-            <div className={LAYOUT}>
-              <div className={MEASURE}>
-                <Link
-                  href={back.href}
-                  className={`hover:text-blue ${LABEL} text-soft inline-flex items-center gap-1.5 transition-colors`}
-                >
-                  <LuArrowLeft size={14} aria-hidden="true" />
-                  {back.label}
-                </Link>
-
-                {chips && chips.length > 0 && (
-                  <div className="mt-5 flex flex-wrap gap-1.5">
-                    {chips.map((chip) =>
-                      chip.href ? (
-                        <Link
-                          key={chip.label}
-                          href={chip.href}
-                          className={`border-blue/40 text-blue bg-blue/5 hover:bg-blue/10 ${LABEL} border px-2 py-0.5 transition-colors`}
-                        >
-                          {chip.label}
-                        </Link>
-                      ) : (
-                        <span
-                          key={chip.label}
-                          className={`border-border ${LABEL} text-soft border px-2 py-0.5`}
-                        >
-                          {chip.label}
-                        </span>
-                      ),
-                    )}
-                  </div>
-                )}
-
-                {/* text-balance stops a long title dropping one orphan word */}
-                <h1 className="ss01 normal-case-force page-title mt-4 text-balance">
-                  {title}
-                </h1>
-
-                {description && (
-                  <p className="text-soft mt-3.5 text-base leading-relaxed">
-                    {description}
-                  </p>
-                )}
-
-                {meta && meta.length > 0 && (
-                  <div
-                    className={`${LABEL} text-soft mt-6 flex flex-wrap items-center gap-2.5`}
-                  >
-                    {meta.map((item, index) => (
-                      <span key={index} className="flex items-center gap-2.5">
-                        {index > 0 && (
-                          <span
-                            aria-hidden="true"
-                            className="bg-border h-3 w-px"
-                          />
-                        )}
-                        {item}
+              {chips && chips.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {chips.map((chip) =>
+                    chip.href ? (
+                      <Link
+                        key={chip.label}
+                        href={chip.href}
+                        className="bg-surface text-soft hover:text-foreground hover:bg-surface-hover rounded-full px-3 py-1 text-xs transition-colors"
+                      >
+                        {chip.label}
+                      </Link>
+                    ) : (
+                      <span
+                        key={chip.label}
+                        className="bg-surface text-soft rounded-full px-3 py-1 text-xs"
+                      >
+                        {chip.label}
                       </span>
-                    ))}
-                  </div>
-                )}
-              </div>
+                    ),
+                  )}
+                </div>
+              )}
             </div>
-          </header>
+          )}
+        </PageHeader>
 
-          <div className={GUTTER}>
-            <div className={`${LAYOUT} pt-12 pb-20`}>
-              <div
-                className={`prose prose-a:text-blue prose-a:no-underline hover:prose-a:underline ${MEASURE}`}
-              >
-                {children}
-
-                {shareUrl && (
-                  // not-prose: the prose block would restyle the row's own
-                  // spacing and link colours.
-                  <div className="not-prose">
-                    <ShareBar url={shareUrl} />
-                  </div>
-                )}
-
-                {footer && <div className="not-prose">{footer}</div>}
-              </div>
-
-              <BlogToc
-                headings={headings}
-                footer={
-                  shareUrl ? (
-                    <ShareBar url={shareUrl} variant="rail" />
-                  ) : undefined
-                }
-              />
-            </div>
+        {image && (
+          <div className="bg-surface shadow-soft relative mb-10 aspect-[2/1] w-full overflow-hidden rounded-2xl">
+            <Image
+              src={image.src}
+              alt={image.alt}
+              fill
+              priority
+              sizes="(max-width: 860px) 100vw, 800px"
+              className="object-cover"
+            />
           </div>
-        </article>
-      </div>
+        )}
+
+        {/* `relative` anchors the contents rail to this block, so it starts
+            level with the first paragraph and stays sticky to the end. */}
+        <div className="relative pb-8">
+          <div className="prose prose-a:text-blue prose-a:no-underline hover:prose-a:underline blog-measure">
+            {before}
+            {children}
+
+            {shareUrl && (
+              // not-prose: the prose block would restyle the row's own
+              // spacing and link colours.
+              <div className="not-prose">
+                <ShareBar url={shareUrl} />
+              </div>
+            )}
+          </div>
+
+          <aside className="reading-rail">
+            <BlogToc
+              headings={headings}
+              footer={
+                shareUrl ? (
+                  <ShareBar url={shareUrl} variant="rail" />
+                ) : undefined
+              }
+            />
+          </aside>
+        </div>
+      </article>
+
+      {footer && <div className="pb-4">{footer}</div>}
     </>
   );
 }
 
 /**
- * The prev/next pair used at the foot of most reading pages. Extracted here so
- * patterns, machine coding and the blog don't each keep their own copy of the
- * same flex row.
+ * The prev/next pair at the foot of a reading page: two soft cards that
+ * lift on hover, the arrow nudging in the direction of travel.
  */
 export function ReadingPrevNext({
   prev,
@@ -196,33 +158,47 @@ export function ReadingPrevNext({
 }) {
   if (!prev && !next) return null;
 
+  const card =
+    "group bg-background shadow-soft flex min-w-0 flex-1 flex-col gap-1 rounded-2xl px-5 py-4 transition-transform duration-500 ease-[cubic-bezier(0.34,1.4,0.64,1)] hover:-translate-y-0.5";
+
   return (
-    <nav className="border-border font-code mt-12 flex items-stretch border-t pt-4 text-xs">
+    <nav
+      aria-label="More in this section"
+      className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2"
+    >
       {prev ? (
-        <Link
-          href={prev.href}
-          rel="prev"
-          className="hover:text-blue text-soft flex min-w-0 flex-1 items-center gap-2 py-2 transition-colors"
-        >
-          <LuArrowLeft size={14} aria-hidden="true" className="shrink-0" />
-          <span className="truncate">{prev.title}</span>
+        <Link href={prev.href} rel="prev" className={card}>
+          <span className="font-code text-faint text-2xs flex items-center gap-1.5">
+            <LuArrowLeft
+              size={13}
+              aria-hidden="true"
+              className="transition-transform duration-200 group-hover:-translate-x-0.5"
+            />
+            Previous
+          </span>
+          <span className="truncate text-sm font-semibold">{prev.title}</span>
         </Link>
       ) : (
-        <span className="flex-1" />
+        <span className="hidden sm:block" />
       )}
 
       {next && (
         <Link
           href={next.href}
           rel="next"
-          className="hover:text-blue text-soft flex min-w-0 flex-1 items-center justify-end gap-2 py-2 text-right transition-colors"
+          className={`${card} sm:items-end sm:text-right`}
         >
-          <span className="truncate">{next.title}</span>
-          <LuArrowLeft
-            size={14}
-            aria-hidden="true"
-            className="shrink-0 rotate-180"
-          />
+          <span className="font-code text-faint text-2xs flex items-center gap-1.5">
+            Next
+            <LuArrowRight
+              size={13}
+              aria-hidden="true"
+              className="transition-transform duration-200 group-hover:translate-x-0.5"
+            />
+          </span>
+          <span className="max-w-full truncate text-sm font-semibold">
+            {next.title}
+          </span>
         </Link>
       )}
     </nav>
