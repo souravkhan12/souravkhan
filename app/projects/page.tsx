@@ -4,6 +4,7 @@ import { LuArrowRight, LuGithub, LuExternalLink } from "react-icons/lu";
 import { getAllProjects } from "@/lib/projects";
 import { Section, GridBand, GridCell } from "@/components/ui";
 import { SEO_CONFIG } from "@/config/seo";
+import { ProjectSchemaMarkup } from "@/components/project/ProjectSchemaMarkup";
 
 export const metadata = {
   title: "Projects",
@@ -17,6 +18,7 @@ export default function ProjectsPage() {
 
   return (
     <>
+      <ProjectSchemaMarkup />
       <Section
         title="projects"
         subtitle="what i've built, and why it was built that way."

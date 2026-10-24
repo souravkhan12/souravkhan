@@ -17,7 +17,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 // Chrome paints the browser/status bar with this; matches the paper background.
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fcfcf9" },
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
     { media: "(prefers-color-scheme: dark)", color: "#181818" },
   ],
   width: "device-width",
@@ -127,12 +127,12 @@ export default function RootLayout({
     name: "Sourav Khan",
     alternateName: "Sourav",
     url: SEO_CONFIG.baseUrl,
-    jobTitle: "Software Engineer",
+    jobTitle: "Frontend Engineer",
     description: SEO_CONFIG.description,
     image: `${SEO_CONFIG.baseUrl}/sourav.webp`,
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Ambala",
+      addressLocality: "Noida",
       addressCountry: "IN",
     },
     email: CONTACT_INFO.email,
@@ -142,15 +142,15 @@ export default function RootLayout({
       "Software Engineering",
       "React",
       "Next.js",
-      "Node.js",
       "TypeScript",
       "JavaScript",
-      "C++",
-      "Web Development",
+      "Redux Toolkit",
+      "Frontend Engineering",
+      "Web Performance",
     ],
     alumniOf: {
-      "@type": "Organization",
-      name: "Software Engineer",
+      "@type": "CollegeOrUniversity",
+      name: "J.C. Bose University of Science and Technology",
     },
   };
 
@@ -166,10 +166,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         {/* Restore the saved accent before first paint so the swatch colours
-            never flash indigo on the way in. */}
+            never flash orange on the way in. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var a=localStorage.getItem("accent");if(a&&a!=="indigo")document.documentElement.setAttribute("data-accent",a)}catch(e){}`,
+            __html: `try{var a=localStorage.getItem("accent");if(a&&a!=="orange")document.documentElement.setAttribute("data-accent",a)}catch(e){}`,
           }}
         />
       </head>

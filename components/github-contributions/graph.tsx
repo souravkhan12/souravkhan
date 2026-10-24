@@ -1,6 +1,6 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useEffect, useRef } from "react";
 import {
   ContributionGraph,
   ContributionGraphBlock,
@@ -138,5 +138,61 @@ export function GitHubContributionFallback() {
         </div>
       </div>
     </Card>
+  );
+}
+
+/* Orange ramp for the homepage grid. Level 0 is a near-neutral so empty days
+   read as structure rather than as a fifth shade of the accent. */
+const MINIMAL_LEVEL_COLORS = [
+  'data-[level="0"]:fill-[#f0f0ee] dark:data-[level="0"]:fill-[#232323]',
+  'data-[level="1"]:fill-[#ffd9c7] dark:data-[level="1"]:fill-[#4a2414]',
+  'data-[level="2"]:fill-[#ffab85] dark:data-[level="2"]:fill-[#8a3a17]',
+  'data-[level="3"]:fill-[#ff7a45] dark:data-[level="3"]:fill-[#d4561f]',
+  'data-[level="4"]:fill-[#e4521b] dark:data-[level="4"]:fill-[#ff7a45]',
+];
+
+/**
+ * The homepage's bare grid: no card, legend or month labels. Fixed block
+ * size so it fits the content column exactly on desktop; on a phone it
+ * scrolls inside its own box and starts at the right end, because the most
+ * recent weeks are the ones worth seeing.
+ */
+export function MinimalContributionGraph({
+  contributions,
+}: {
+  contributions: Activity[];
+}) {
+  const scroller = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = scroller.current;
+    if (el) el.scrollLeft = el.scrollWidth;
+  }, []);
+
+  return (
+    <div
+      ref={scroller}
+      className="-mt-2 overflow-x-auto overflow-y-hidden pb-1 [scrollbar-width:none]"
+    >
+      <ContributionGraph
+        data={contributions}
+        blockSize={9}
+        blockMargin={2}
+        blockRadius={2}
+        fontSize={0}
+        className="w-max overflow-visible"
+      >
+        <ContributionGraphCalendar hideMonthLabels className="overflow-visible">
+          {({ activity, dayIndex, weekIndex }) => (
+            <ContributionGraphBlock
+              activity={activity}
+              dayIndex={dayIndex}
+              weekIndex={weekIndex}
+              className={cn(...MINIMAL_LEVEL_COLORS)}
+            />
+          )}
+        </ContributionGraphCalendar>
+      </ContributionGraph>
+    </div>
   );
 }

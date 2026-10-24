@@ -4,7 +4,7 @@ import { SunDim, MoonIcon, Search } from "lucide-react";
 import { motion } from "motion/react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
-import { Logo } from "@/components/ui";
+import Image from "next/image";
 import { AccentPicker } from "@/components/theme/AccentPicker";
 import { navLinks } from "@/config/nav-links";
 import { useMounted } from "@/hooks/use-mounted";
@@ -16,6 +16,7 @@ export default function Navbar() {
   const isDarkMode = theme === "dark";
 
   const pathname = usePathname();
+  const onHome = pathname === "/";
 
   const mounted = useMounted();
   if (!mounted) {
@@ -57,20 +58,33 @@ export default function Navbar() {
     <motion.nav
       initial={NAVBAR_ANIMATION.initial}
       animate={NAVBAR_ANIMATION.animate}
-      className="border-border bg-background/90 sticky top-0 z-30 border-b backdrop-blur-sm"
+      className="border-border bg-background/85 sticky top-0 z-30 border-b backdrop-blur-md"
     >
-      <div className="navbar-frame border-border mx-auto flex max-w-[1200px] items-center justify-between border-x px-6 py-3 sm:px-8">
+      {/* On the homepage the bar narrows to the 860px reading column and
+          drops the frame's side rules, which only exist on the inner pages. */}
+      <div
+        className={
+          onHome
+            ? "mx-auto flex max-w-[860px] items-center justify-between px-5 py-3 sm:px-8"
+            : "navbar-frame border-border mx-auto flex max-w-[1200px] items-center justify-between border-x px-6 py-3 sm:px-8"
+        }
+      >
         <Link
           href="/"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           className="group/logo flex shrink-0 items-center gap-2.5"
         >
-          <Logo
-            size={26}
-            className="group-hover/logo:text-blue shrink-0 cursor-pointer transition-colors"
-          />
-          <span className="ss01 text-[15px] font-semibold whitespace-nowrap">
-            sourav khan
+          <span className="relative size-7 shrink-0 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-900">
+            <Image
+              src="/sourav.webp"
+              alt=""
+              fill
+              sizes="28px"
+              className="object-cover"
+            />
+          </span>
+          <span className="group-hover/logo:text-blue text-[15px] font-semibold whitespace-nowrap transition-colors">
+            Sourav Khan
           </span>
         </Link>
 
@@ -82,7 +96,7 @@ export default function Navbar() {
                 key={i}
                 href={href}
                 onClick={(e) => handleSectionNavigation(e, href)}
-                className="hover:text-blue cursor-pointer text-sm font-normal whitespace-nowrap text-gray-600 lowercase transition-colors dark:text-gray-400"
+                className="text-soft hover:text-foreground cursor-pointer text-sm font-normal whitespace-nowrap transition-colors"
               >
                 {name}
               </a>
@@ -91,7 +105,7 @@ export default function Navbar() {
                 key={i}
                 href={href}
                 aria-current={isCurrent(href) ? "page" : undefined}
-                className={`hover:text-blue relative cursor-pointer text-sm font-normal whitespace-nowrap lowercase transition-colors ${
+                className={`hover:text-foreground relative cursor-pointer text-sm font-normal whitespace-nowrap transition-colors ${
                   isCurrent(href)
                     ? "text-foreground after:bg-blue font-medium after:absolute after:-bottom-1.5 after:left-0 after:h-[2px] after:w-full after:content-['']"
                     : "text-soft"
@@ -110,14 +124,14 @@ export default function Navbar() {
             }
             whileHover={{ scale: 1.015 }}
             whileTap={{ scale: 0.985 }}
-            className="border-border hover:border-blue group text-soft flex w-40 shrink cursor-pointer items-center gap-2 border px-3 py-1.5 text-left transition-colors lg:w-52"
+            className="border-border hover:border-foreground group text-soft flex w-40 shrink cursor-pointer items-center gap-2 rounded-full border px-3.5 py-1.5 text-left transition-colors lg:w-48"
           >
             <Search
               size={14}
-              className="group-hover:text-blue shrink-0 transition-colors"
+              className="group-hover:text-foreground shrink-0 transition-colors"
             />
-            <span className="flex-1 text-xs">search...</span>
-            <kbd className="border-border font-code text-2xs shrink-0 border px-1.5 py-0.5 leading-none">
+            <span className="flex-1 text-xs">Search…</span>
+            <kbd className="border-border font-code text-2xs shrink-0 rounded-full border px-1.5 py-0.5 leading-none">
               ⌘k
             </kbd>
           </motion.button>

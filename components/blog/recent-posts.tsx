@@ -1,33 +1,41 @@
 import { getAllPosts } from "@/lib/blog";
 import Link from "next/link";
 
+/**
+ * Latest three posts as title · dotted leader · date. On a phone the title
+ * gets the whole line and the leader shrinks to nothing rather than pushing
+ * the date onto its own row.
+ */
 export function RecentPosts() {
   const posts = getAllPosts().slice(0, 3);
 
-  return (
-    <div className="flex min-h-0 flex-1 flex-col gap-4">
-      {posts.length === 0 && (
-        <p className="text-soft text-sm">
-          The first post is still being written.
-        </p>
-      )}
+  if (posts.length === 0) {
+    return (
+      <p className="text-soft text-sm">
+        The first post is still being written.
+      </p>
+    );
+  }
 
+  return (
+    <div className="flex flex-col">
       <ul className="flex flex-col">
         {posts.map((post) => (
-          <li
-            key={post.slug}
-            className="border-border border-b last:border-b-0"
-          >
+          <li key={post.slug}>
             <Link
               href={`/blog/${post.slug}`}
-              className="group flex items-baseline justify-between gap-4 py-3"
+              className="group flex items-baseline gap-3 py-2.5"
             >
-              <span className="group-hover:text-blue min-w-0 truncate text-sm text-gray-600 transition-colors dark:text-gray-400">
+              <span className="group-hover:text-blue min-w-0 text-sm font-bold text-pretty transition-colors">
                 {post.title}
               </span>
+              <span
+                aria-hidden="true"
+                className="border-border min-w-4 flex-1 translate-y-[-4px] border-b border-dashed"
+              />
               <time
                 dateTime={post.date}
-                className="text-faint shrink-0 text-xs"
+                className="font-code text-faint text-2xs shrink-0"
               >
                 {new Date(post.date).toLocaleDateString("en-US", {
                   month: "short",
@@ -41,9 +49,9 @@ export function RecentPosts() {
 
       <Link
         href="/blog"
-        className="hover:text-blue mt-auto text-sm font-semibold lowercase transition-colors"
+        className="hover:text-blue mt-5 text-sm font-semibold transition-colors"
       >
-        read the blog<span aria-hidden="true"> →</span>
+        All posts <span aria-hidden="true">→</span>
       </Link>
     </div>
   );

@@ -41,11 +41,11 @@
 
 :root {
   /* Semantic — light. Swapped wholesale by .dark below. */
-  --background: var(--color-paper);
-  --foreground: var(--color-off-black);
-  --card: var(--color-paper);
-  --card-foreground: var(--color-off-black);
-  --popover: var(--color-paper);
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --card: #ffffff;
+  --card-foreground: #0a0a0a;
+  --popover: #ffffff;
   --popover-foreground: var(--color-off-black);
   --primary: var(--color-off-black);
   --primary-foreground: var(--color-paper);
@@ -69,9 +69,9 @@
   --soft: var(--color-gray-700); /* 6.61:1 on paper */
   --faint: var(--color-gray-600); /* 5.59:1 on paper */
 
-  --blue: #5b5bd6;
-  --focus: #5b5bd6;
-  --ring: #5b5bd6;
+  --blue: #e4521b;
+  --focus: #e4521b;
+  --ring: #e4521b;
 
   /* Sharp edges — paper uses hairline borders, not rounding */
   --radius: 0px;
@@ -98,9 +98,9 @@
   --soft: var(--color-gray-400); /* 7.47:1 on #181818 */
   --faint: var(--color-gray-500); /* 5.56:1 on #181818 */
 
-  --blue: #7c7cf0;
-  --focus: #7c7cf0;
-  --ring: #7c7cf0;
+  --blue: #ff7a45;
+  --focus: #ff7a45;
+  --ring: #ff7a45;
 }
 
 @theme inline {
@@ -222,6 +222,17 @@
    `data-accent` is set on <html> by the picker; each accent carries a
    lighter dark-mode value so it stays legible on the near-black bg.
    ============================================================ */
+:root[data-accent="indigo"] {
+  --blue: #5b5bd6;
+  --focus: #5b5bd6;
+  --ring: #5b5bd6;
+}
+:root[data-accent="indigo"].dark {
+  --blue: #7c7cf0;
+  --focus: #7c7cf0;
+  --ring: #7c7cf0;
+}
+
 :root[data-accent="emerald"] {
   --blue: #0e9f6e;
   --focus: #0e9f6e;

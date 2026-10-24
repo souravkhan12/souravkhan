@@ -12,7 +12,8 @@ import {
   CONTACT_INFO,
   SOCIAL_LINKS,
   WORK_EXPERIENCE,
-  HERO_TECH_STACK,
+  STACK,
+  ACHIEVEMENTS,
   PROJECTS,
 } from "@/config/data";
 import { SEO_CONFIG } from "@/config/seo";
@@ -99,6 +100,12 @@ export default function ResumePage() {
               <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
                 <h3 className="ss01 normal-case-force text-base font-semibold">
                   {job.position} · {job.company}
+                  {"via" in job && job.via && (
+                    <span className="text-soft font-normal">
+                      {" "}
+                      (contract via {job.via})
+                    </span>
+                  )}
                 </h3>
                 <span className="font-code text-2xs text-soft">
                   {job.duration}
@@ -122,16 +129,50 @@ export default function ResumePage() {
 
       {/* Skills */}
       <ResumeSection title="skills">
-        <div className="flex flex-wrap gap-2">
-          {HERO_TECH_STACK.map((tech) => (
-            <span
-              key={tech.name}
-              className="border-border font-code text-2xs text-soft border px-2 py-0.5"
-            >
-              {tech.name}
-            </span>
+        <dl className="grid grid-cols-[100px_minmax(0,1fr)] gap-x-4 gap-y-1.5 text-sm">
+          {STACK.map(({ group, items }) => (
+            <div key={group} className="contents">
+              <dt className="font-semibold">{group}</dt>
+              <dd className="text-soft">{items}</dd>
+            </div>
           ))}
+        </dl>
+      </ResumeSection>
+
+      {/* Achievements */}
+      <ResumeSection title="achievements">
+        <ul className="text-soft flex list-disc flex-col gap-1.5 pl-4 text-sm leading-relaxed">
+          {ACHIEVEMENTS.map(({ metric, text, href }) => (
+            <li key={text}>
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-blue transition-colors"
+              >
+                <strong className="text-foreground font-semibold">
+                  {metric}
+                </strong>{" "}
+                {text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </ResumeSection>
+
+      {/* Education */}
+      <ResumeSection title="education">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <h3 className="ss01 normal-case-force text-base font-semibold">
+            J.C. Bose University of Science and Technology
+          </h3>
+          <span className="font-code text-2xs text-soft">
+            Aug 2019 - Jun 2023
+          </span>
         </div>
+        <p className="text-soft mt-1 text-sm">
+          B.Tech in Computer Engineering · CGPA 8.63/10 · Faridabad, India
+        </p>
       </ResumeSection>
 
       {/* Selected work */}

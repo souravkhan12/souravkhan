@@ -2,15 +2,15 @@
 export const SEO_CONFIG = {
   // Base information
   baseUrl: "https://portfolio-souravkhan.vercel.app",
-  siteName: "Sourav Khan - Software Engineer Portfolio",
+  siteName: "Sourav Khan - Frontend Engineer Portfolio",
   author: "Sourav Khan",
   creator: "Sourav Khan",
 
   // Main metadata
-  title: "Sourav Khan | Software Engineer",
-  shortTitle: "Sourav Khan - Software Engineer",
+  title: "Sourav Khan | Frontend Engineer",
+  shortTitle: "Sourav Khan - Frontend Engineer",
   description:
-    "Portfolio of Sourav Khan, a goal-driven Software Engineer building sleek, scalable, modern web experiences with React, Next.js, Node.js, and C++. Located in Ambala, India.",
+    "Portfolio of Sourav Khan, a Frontend Engineer building fast, data-heavy web apps with React, TypeScript and Next.js. Based in Noida, India.",
 
   // Keywords for SEO - optimized for search queries like "sourav portfolio" and "sourav khan"
   keywords: [
@@ -27,14 +27,15 @@ export const SEO_CONFIG = {
     "TypeScript",
     "JavaScript",
     "Web Developer",
-    "Ambala India",
+    "Frontend Engineer",
+    "Noida India",
     "Sourav Khan Ambala",
   ],
 
   // Open Graph
-  ogTitle: "Sourav Khan | Software Engineer",
+  ogTitle: "Sourav Khan | Frontend Engineer",
   ogDescription:
-    "Discover how I build modern, scalable web applications with React, Next.js, Node.js, and C++. Check out my portfolio and projects.",
+    "Frontend Engineer building fast, data-heavy web apps with React, TypeScript and Next.js. Previously Samsung.",
   ogImage: "https://portfolio-souravkhan.vercel.app/preview.png",
   ogType: "website",
   ogLocale: "en_US",

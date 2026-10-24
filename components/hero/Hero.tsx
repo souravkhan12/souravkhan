@@ -2,147 +2,93 @@
 
 import { motion } from "motion/react";
 import Image from "next/image";
-import { HERO, CONTACT_INFO } from "@/config/data";
-import { MOTION, INTERACTIONS } from "@/config/theme";
-import {
-  Button,
-  GridBand,
-  GridCell,
-  DiagonalLine,
-  DotGrid,
-  VertexSquare,
-} from "@/components/ui";
-import { AvailabilityBadge } from "@/components/hero/AvailabilityBadge";
-import { SocialRail } from "@/components/hero/SocialRail";
+import { HERO, CONTACT_INFO, SOCIAL_LINKS } from "@/config/data";
+import { MOTION } from "@/config/theme";
+import { LocalTime } from "@/components/home/LocalTime";
 import { useInitialAnimation } from "@/hooks/use-initial-animation";
+
+const pill =
+  "inline-flex h-11 items-center justify-center rounded-full border px-5 text-sm transition-colors";
+
+const LINKS = [
+  { label: "Resume", href: CONTACT_INFO.resume },
+  { label: "GitHub", href: SOCIAL_LINKS.github },
+  { label: "LinkedIn", href: SOCIAL_LINKS.linkedin },
+];
 
 export default function Hero() {
   const shouldAnimate = useInitialAnimation();
 
   return (
-    <GridBand
-      id="about"
-      cols="grid-cols-1 lg:grid-cols-[1.6fr_1fr]"
-      className="border-t-0"
-    >
-      <GridCell className="order-2 flex flex-col justify-center gap-7 py-16 sm:py-20 lg:order-1">
-        <AvailabilityBadge text="available for work" />
-
-        {/* Transform-only entrance, and no delay.
-            This <h1> is the page's LCP element. `motion` inlines its `initial`
-            styles into the server HTML, so animating from opacity:0 behind a
-            150ms delay meant the headline wasn't merely late — it stayed
-            unpainted until hydration finished, then took another 320ms to
-            fade. Translate and blur are compositor-only and don't gate the
-            paint, so the movement survives and the LCP cost doesn't. */}
-        <motion.h1
-          initial={shouldAnimate ? { y: 6, filter: "blur(6px)" } : false}
-          animate={{ y: 0, filter: "blur(0px)" }}
-          transition={{ duration: MOTION.duration.slow, ease: MOTION.ease }}
-          className="ss01 normal-case-force hero-title font-semilight"
-        >
-          <span className="hero-wordmark">{HERO.name}</span>
-          <br />
-          <span className="font-pixel text-soft">{HERO.title}</span>
-        </motion.h1>
-
-        <motion.p
-          initial={shouldAnimate ? { opacity: 0, y: 3 } : false}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: MOTION.duration.slow,
-            delay: 0.1,
-            ease: MOTION.ease,
-          }}
-          className="text-soft max-w-xl text-base text-pretty"
-        >
-          {HERO.bio}
-        </motion.p>
-
-        <div className="mt-2 flex flex-col gap-3 sm:flex-row">
-          <motion.div {...INTERACTIONS.button} className="w-full sm:w-auto">
-            <Button asChild variant="default" size="sm">
-              <a
-                href={`mailto:${CONTACT_INFO.email}`}
-                className="w-full sm:w-auto"
-              >
-                get in touch
-              </a>
-            </Button>
-          </motion.div>
-
-          <motion.div {...INTERACTIONS.button} className="w-full sm:w-auto">
-            <Button asChild variant="outline" size="sm">
-              <a
-                href={CONTACT_INFO.resume}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto"
-              >
-                resume
-              </a>
-            </Button>
-          </motion.div>
-        </div>
-
-        <a
-          href="#arcade"
-          onClick={(e) => {
-            e.preventDefault();
-            document
-              .getElementById("arcade")
-              ?.scrollIntoView({ behavior: "smooth", block: "start" });
-          }}
-          className="hover:text-blue group text-soft inline-flex w-fit items-center gap-2 text-sm transition-colors"
-        >
-          <span aria-hidden="true">🐍</span>
-          feeling playful? play snake &amp; beat the high score
-          <span
-            aria-hidden="true"
-            className="transition-transform group-hover:translate-x-0.5"
-          >
-            →
-          </span>
-        </a>
-      </GridCell>
-
-      <GridCell
-        padded={false}
-        tinted
-        className="relative order-1 min-h-[360px] lg:order-2"
-      >
-        <DotGrid />
-        <DiagonalLine direction="tl-br" />
-        <DiagonalLine direction="tr-bl" />
-        <VertexSquare corner="top-left" />
-        {/* Also transform-only: the portrait is the other LCP candidate, and
-            fading it in from opacity:0 on a 450ms delay was cancelling out the
-            `priority` + `fetchPriority="high"` hints on the image inside. */}
-        <motion.div
-          initial={shouldAnimate ? { scale: 0.98 } : false}
-          animate={{ scale: 1 }}
-          transition={{
-            duration: MOTION.duration.slow,
-            delay: 0.1,
-            ease: MOTION.ease,
-          }}
-          className="absolute inset-0 flex items-center justify-center p-8"
-        >
-          <div className="border-border relative h-[260px] w-[210px] border sm:h-[300px] sm:w-[240px]">
+    <header id="about" className="pt-10 pb-6 sm:pt-16">
+      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+        <div className="flex items-center gap-3.5">
+          <div className="relative size-12 shrink-0 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-900">
             <Image
               src="/sourav.webp"
               alt={HERO.name}
               fill
+              priority
               fetchPriority="high"
-              priority={true}
+              sizes="48px"
               className="object-cover"
-              sizes="(max-width: 640px) 210px, 240px"
             />
-            {/* links ride the bottom edge of the frame */}
-            <SocialRail className="absolute -bottom-5 left-1/2 -translate-x-1/2" />
           </div>
-        </motion.div>
-      </GridCell>
-    </GridBand>
+          <div className="leading-tight">
+            <p className="text-base font-bold tracking-tight">{HERO.name}</p>
+            <p className="text-soft text-sm">{HERO.title}</p>
+          </div>
+        </div>
+
+        <p className="font-code text-soft text-2xs flex items-center gap-2">
+          <span
+            aria-hidden="true"
+            className="bg-blue ring-blue/20 size-2 rounded-full ring-4"
+          />
+          {CONTACT_INFO.city} · <LocalTime timeZone={CONTACT_INFO.timezone} />{" "}
+          IST
+        </p>
+      </div>
+
+      {/* Transform-only entrance, and no delay.
+          This <h1> is the page's LCP element. `motion` inlines its `initial`
+          styles into the server HTML, so animating from opacity:0 would keep
+          the headline unpainted until hydration finished. Translate and blur
+          are compositor-only and don't gate the paint. */}
+      <motion.h1
+        initial={shouldAnimate ? { y: 6, filter: "blur(6px)" } : false}
+        animate={{ y: 0, filter: "blur(0px)" }}
+        transition={{ duration: MOTION.duration.slow, ease: MOTION.ease }}
+        className="mt-10 text-[30px] leading-[1.15] font-bold tracking-[-0.03em] text-balance sm:mt-12 sm:text-[42px]"
+      >
+        {HERO.headline} <span className="text-faint">{HERO.headlineMuted}</span>
+      </motion.h1>
+
+      <div className="mt-9 flex flex-wrap gap-2.5">
+        <a
+          href="#contact"
+          onClick={(e) => {
+            e.preventDefault();
+            document
+              .getElementById("contact")
+              ?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }}
+          className={`${pill} bg-foreground text-background border-foreground font-semibold hover:opacity-85`}
+        >
+          Get in touch
+        </a>
+        {LINKS.map(({ label, href }) => (
+          <a
+            key={label}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`${pill} border-border hover:border-foreground`}
+          >
+            {label} <span aria-hidden="true">&nbsp;↗</span>
+          </a>
+        ))}
+      </div>
+    </header>
   );
 }

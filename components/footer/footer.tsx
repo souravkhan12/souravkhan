@@ -1,51 +1,48 @@
-import Link from "next/link";
-import { Logo } from "@/components/ui";
 import { SOCIAL_LINKS, CONTACT_INFO } from "@/config/data";
 
 const links = [
-  { name: "github", href: SOCIAL_LINKS.github, external: true },
-  { name: "linkedin", href: SOCIAL_LINKS.linkedin, external: true },
-  { name: "résumé", href: "/resume", external: false },
-  { name: "email", href: `mailto:${CONTACT_INFO.email}`, external: true },
-  { name: "rss", href: "/feed.xml", external: true },
+  { name: "GitHub", href: SOCIAL_LINKS.github },
+  { name: "LinkedIn", href: SOCIAL_LINKS.linkedin },
+  { name: "Résumé", href: CONTACT_INFO.resume },
+  { name: "Email", href: `mailto:${CONTACT_INFO.email}` },
+  { name: "RSS", href: "/feed.xml" },
 ];
 
-export default function Footer() {
+/**
+ * `inset` pads the footer to the inner pages' 1200px frame. The homepage
+ * column already carries its own gutter, so it renders the footer flush.
+ */
+export default function Footer({ inset = true }: { inset?: boolean }) {
   const year = new Date().getFullYear();
+  const pad = inset ? "px-6 sm:px-10" : "";
 
   return (
-    <footer className="border-border text-soft border-x border-t text-sm">
-      {/* Main band: wordmark left, links right */}
-      <div className="flex flex-col items-start justify-between gap-6 px-6 py-8 sm:flex-row sm:items-center sm:px-10">
-        <Link href="/" className="group/logo flex items-center gap-2.5">
-          <Logo
-            size={20}
-            className="group-hover/logo:text-blue text-foreground shrink-0 transition-colors"
-          />
-          <span className="ss01 text-foreground text-sm font-semibold">
-            sourav khan
-          </span>
-        </Link>
+    <footer
+      className={`text-soft text-sm ${inset ? "border-border border-t" : ""}`}
+    >
+      <nav
+        className={`flex flex-wrap gap-x-6 gap-y-2 pt-6 pb-8 ${pad}`}
+        aria-label="footer"
+      >
+        {links.map((l) => (
+          <a
+            key={l.name}
+            href={l.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-foreground transition-colors"
+          >
+            {l.name}
+          </a>
+        ))}
+      </nav>
 
-        <nav className="flex flex-wrap gap-x-6 gap-y-2">
-          {links.map((l) => (
-            <a
-              key={l.name}
-              href={l.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-blue text-sm lowercase transition-colors"
-            >
-              {l.name}
-            </a>
-          ))}
-        </nav>
-      </div>
-
-      {/* Baseline */}
-      <div className="border-border border-t px-6 py-4 sm:px-10">
-        <span className="font-code text-soft text-xs">
-          © {year} sourav khan
+      <div
+        className={`border-border font-code text-faint text-2xs flex flex-wrap items-center justify-between gap-2 border-t py-6 ${pad}`}
+      >
+        <span>© {year} Sourav Khan</span>
+        <span>
+          {CONTACT_INFO.hometown} → {CONTACT_INFO.city}
         </span>
       </div>
     </footer>

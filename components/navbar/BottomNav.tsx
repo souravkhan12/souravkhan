@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "motion/react";
-import { Home, Layers, PenLine, Compass, Mail } from "lucide-react";
+import { Home, Briefcase, PenLine, Compass, Mail } from "lucide-react";
 import { useMounted } from "@/hooks/use-mounted";
 
 /**
@@ -22,15 +22,17 @@ type Item = {
 
 const ITEMS: Item[] = [
   { name: "home", href: "/", icon: Home, match: "home" },
-  { name: "projects", href: "#projects", icon: Layers, match: "projects" },
+  { name: "work", href: "#experience", icon: Briefcase, match: "experience" },
   // Points at the site index rather than at /arcade directly: arcade is one of
-  // eight destinations there, and a phone tab is too scarce to spend on one.
+  // eight destinations there (projects included), and a phone tab is too
+  // scarce to spend on one.
   { name: "explore", href: "#explore", icon: Compass, match: "explore" },
   { name: "blog", href: "/blog", icon: PenLine, match: "blog" },
   { name: "contact", href: "#contact", icon: Mail, match: "contact" },
 ];
 
-const SECTION_IDS = ["explore", "projects", "contact"];
+// In page order — the scroll-spy keeps the last one past the midline.
+const SECTION_IDS = ["experience", "explore", "contact"];
 
 export default function BottomNav() {
   const pathname = usePathname();
